@@ -22,6 +22,9 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(express.cookieParser());
+app.use(express.cookieSession({ secret: 'cats go meow meow meow' }));
+app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -42,7 +45,6 @@ if (process.argv[2]) {
         console.log('Remote url: ' + url);
     });
 }
-
 
 
 app.get('/', routes.index);
