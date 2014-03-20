@@ -1,3 +1,7 @@
+var MongoClient = require('mongodb').MongoClient;
+
+
+
 // sets session ._token with the returned token after authenticating with moves
 // session ._movesId is moves user id
 // looks through users collection to see if a user with the moves id is registered, if so returns true
