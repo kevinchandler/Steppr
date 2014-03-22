@@ -7,7 +7,8 @@ var express = require('express');
 var routes = require('./routes')
 ,   moves = require('./routes/moves.js')
 ,   dashboard = require('./routes/dashboard.js')
-,   user = require('./routes/user.js');
+,   user = require('./routes/user.js')
+,   test = require('./routes/test.js');
 var http = require('http');
 var path = require('path');
 
@@ -67,6 +68,8 @@ app.get('/moves/auth', moves.authenticate);
 app.get('/home', dashboard.home);
 app.get('/user/register', user.register);
 
+
+app.get('/test', test.index);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

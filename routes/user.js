@@ -41,7 +41,7 @@ exports.register = function(req, res) {
                     else if (success) {
                         console.log(success);
                         console.log('user registered successfully');
-                        return res.redirect('/dashboard');
+                        return res.redirect('/home');
                     }
                 })
             }

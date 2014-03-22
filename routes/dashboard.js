@@ -7,24 +7,6 @@ var request = require('request')
 dotenv.load();
 
 
-function getData(movesId) {
-    MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-        if (err) {
-            return err;
-        }
-        db.collection('steps').findOne({ user: movesId, date: today }, function(err, userActivity) {
-            if (err) { return err };
-            if (userActivity) {
-                return userActivity;
-            }
-            else {
-                return null;
-            }
-        })
-    })
-}
-
-
 function updateUser(sessionToken, sessionMovesId, sessionEmail) {
 
     if (!sessionToken) {
@@ -105,12 +87,13 @@ function updateUser(sessionToken, sessionMovesId, sessionEmail) {
 
 
 exports.home = function(req, res) {
-
+    // update db with past months steps.
     updateUser(req.session._token, req.session._movesId, req.session._email, function(err, success) {
         console.log(err, success)
     });
+
     res.render('home.jade', {
-        user: req.session._email
+        user: req.session._email,
     })
 
 }
