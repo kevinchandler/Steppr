@@ -5,7 +5,9 @@
 
 var express = require('express');
 var routes = require('./routes')
-,   moves = require('./routes/moves.js');
+,   moves = require('./routes/moves.js')
+,   dashboard = require('./routes/dashboard.js')
+,   user = require('./routes/user.js');
 var http = require('http');
 var path = require('path');
 
@@ -35,6 +37,8 @@ if ('development' == app.get('env')) {
 
 if (process.argv[2]) {
     process.env.NGROK_SUBDOMAIN = process.argv[2];
+    process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
+    process.env.MOVES_REDIRECT_URL = "http://"+process.argv[2]+".ngrok.com/moves/auth"
     var ngrok = require('ngrok');
     ngrok.connect({
         subdomain: process.env.NGROK_SUBDOMAIN,
@@ -47,9 +51,21 @@ if (process.argv[2]) {
 }
 
 
+app.all('/home', function(req, res, next) {
+    if (!req.session._token) {
+        res.redirect('/'); //directly opens moves to authenticate
+    }
+    next();
+})
+
 app.get('/', routes.index);
 
-app.get('/moves/auth', moves.authenticate)
+app.get('/moves', moves.index);
+app.get('/moves/auth', moves.authenticate);
+
+
+app.get('/home', dashboard.home);
+app.get('/user/register', user.register);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

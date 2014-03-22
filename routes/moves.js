@@ -1,6 +1,11 @@
 var MongoClient = require('mongodb').MongoClient;
 
 
+// hit this route and it will authenticate with moves, then hit authenticate
+exports.index = function(req, res){
+    res.redirect('moves://app/authorize?client_id=1_SRAx6QvK94gDAOmds1yai52i5NDwbt&redirect_uri='+process.env.MOVES_REDIRECT_URL+'&scope=activity')
+};
+
 
 // sets session ._token with the returned token after authenticating with moves
 // session ._movesId is moves user id
@@ -9,7 +14,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 // after opening the moves app, it redirects here
 exports.authenticate = function(req, res) {
-  console.log('authenticate');
+  console.log('/authenticate');
   var movesApi = require('moves-api').MovesApi;
   var moves = new movesApi({
       "clientId": process.env.CLIENT_ID,
@@ -49,17 +54,17 @@ exports.authenticate = function(req, res) {
                           req.session._email = user.email;
                           console.log('set email session to: ' + req.session._email);
                           console.log('found user, ' + user.email + ' redirecting');
-                          return user;
+                          return res.redirect('/home');
                       }
                       else if (!user) {
                           console.log('no found user, redirecting');
-                          return false;
+                          return res.redirect('/user/register');
                       }
                   })
               })
             }
             else {
-                return;
+                return res.redirect('/');
             }
         });
     })

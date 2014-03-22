@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1= title
+  form(action='/register', method='POST')
+    input(type='email', name='email', placeholder='Your email')
+    input(type='text', name='firstname', placeholder='Your first name')
+    input(type='number', name='zipcode')
+    button(type='submit' placeholder='Zipcode', class='btn btn-success') Submit
