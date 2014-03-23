@@ -17,22 +17,25 @@ exports.home = function(req, res) {
 
     user.steps(req.session._movesId, function( err, data ){
         console.log('inside  user.step callback')
-        if (err) res.end('' + 500);
+        if (err) res.send(500);
         if (data) {
             var totalUserSteps = data.steps;
             console.log('user: ' + totalUserSteps);
-            steppr.getTotalSteps(function(totalSteps) {
+
+            steppr.getTotalSteps(function(payload) {
                 console.log('inside  steppr.getTotal callback');
 
-                if (totalSteps) {
-                    var totalStepsToday = totalSteps
-                    ,   userPercentage =  (totalUserSteps / totalStepsToday) * 100;
-                    console.log('total steps today: ' + totalStepsToday);
+                if (payload) {
+                    var totalStepsToday = payload.totalSteps
+                    ,   userPercentage =  ((totalUserSteps / totalStepsToday) * 100).toFixed(0)
+                    ,   usersToday = payload.usersToday;
+                    console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
 
                     res.render('home.jade', {
                         totalUserSteps : totalUserSteps,
                         totalStepsToday : totalStepsToday,
-                        userPercentage : userPercentage.toFixed(0)
+                        userPercentage : userPercentage,
+                        usersToday : usersToday,
                     })
                 }
             })

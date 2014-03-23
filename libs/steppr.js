@@ -8,16 +8,20 @@ dotenv.load();
 
 module.exports = {
 	getTotalSteps : function(callback) {
-		var totalSteps = 0;
+		var payload = {
+			totalSteps : 0,
+			usersToday : 0,
+		}
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
 			db.collection('steps').find({date: today}).each(function(err, doc) {
 				if (err) return callback( err );
 				if (!doc) {
-					callback( totalSteps );
+					callback( payload );
 				}
 				else {
-					totalSteps += doc.steps;
+					payload.usersToday += 1;
+					payload.totalSteps += doc.steps;
 				}
 			})
 		})
