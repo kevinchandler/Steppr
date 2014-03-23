@@ -23,12 +23,15 @@ exports.home = function(req, res) {
             console.log('user: ' + totalUserSteps);
             steppr.getTotalSteps(function(totalSteps) {
                     if (totalSteps) {
-                        var totalStepsToday = totalSteps;
+                        var totalStepsToday = totalSteps
+                        ,   userPercentage =  (totalUserSteps / totalStepsToday) * 100;
+                        console.log(userPercentage);
                         console.log('total: ' + totalStepsToday);
                         res.render('home.jade', {
                             user : req.session._email,
                             totalUserSteps : totalUserSteps,
-                            totalStepsToday : totalStepsToday
+                            totalStepsToday : totalStepsToday,
+                            userPercentage : userPercentage.toFixed(0)
                         })
                     }
             })

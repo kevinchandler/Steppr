@@ -7,6 +7,7 @@ var request = require('request')
 dotenv.load();
 
 module.exports = {
+	// inputs steps into db if not already in, updates if steps don't match what's in db
 	updateUser : function ( sessionToken, movesId, sessionEmail ) {
 		console.log('updating user');
 		if (!sessionToken || !movesId) {

@@ -43,25 +43,27 @@ exports.authenticate = function(req, res) {
             else if (accessToken) {
               req.session._token = accessToken;
               req.session._movesId = profile.userId;
+              res.redirect('/home');
 
-              MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-                  if (err) {
-                      throw err;
-                  }
-                  db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
-                      if (err) { throw err };
-                      if (user) {
-                          req.session._email = user.email;
-                          console.log('set email session to: ' + req.session._email);
-                          console.log('found user, ' + user.email + ' redirecting');
-                          return res.redirect('/home');
-                      }
-                      else if (!user) {
-                          console.log('no found user, redirecting');
-                          return res.redirect('/user/register');
-                      }
-                  })
-              })
+              // checks db to see if there's a user
+            //   MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+            //       if (err) {
+            //           throw err;
+            //       }
+            //       db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
+            //           if (err) { throw err };
+            //           if (user) {
+            //               req.session._email = user.email;
+            //               console.log('set email session to: ' + req.session._email);
+            //               console.log('found user, ' + user.email + ' redirecting');
+            //               return res.redirect('/home');
+            //           }
+            //           else if (!user) {
+            //               console.log('no found user, redirecting');
+            //               return res.redirect('/user/register');
+            //           }
+            //       })
+            //   })
             }
             else {
                 return res.redirect('/');
