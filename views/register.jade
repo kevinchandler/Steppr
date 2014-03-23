@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1= title
-  form(action='/register', method='POST')
+  form(action='/user/register', method='POST')
     input(type='email', name='email', placeholder='Your email')
     input(type='text', name='firstname', placeholder='Your first name')
     input(type='number', name='zipcode')

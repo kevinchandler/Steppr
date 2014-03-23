@@ -1,3 +1,10 @@
+var request = require('request')
+,   moment = require('moment')
+,   now = moment()
+,   today = now.format("YYYY-MM-DD")
+,   MongoClient = require('mongodb').MongoClient
+,   dotenv = require('dotenv');
+dotenv.load();
 
 /*
  * GET home page.
@@ -41,7 +48,7 @@ exports.register = function(req, res) {
                     else if (success) {
                         console.log(success);
                         console.log('user registered successfully');
-                        return res.redirect('/home');
+                        res.redirect('/home');
                     }
                 })
             }

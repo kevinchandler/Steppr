@@ -67,7 +67,7 @@ app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', dashboard.home);
 app.get('/user/register', user.register);
-
+app.post('/user/register', user.register);
 
 app.get('/test', test.index);
 http.createServer(app).listen(app.get('port'), function(){
