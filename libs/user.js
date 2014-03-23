@@ -8,9 +8,10 @@ dotenv.load();
 
 module.exports = {
 	// inputs steps into db if not already in, updates if steps don't match what's in db
-	updateUser : function ( sessionToken, movesId ) {
+	updateUser : function ( sessionToken, movesId, callback) {
+		callback(null, null, 'meow');
 		if (!sessionToken || !movesId) {
-			return res.redirect('/');
+			return res.redirect('/moves');
 		}
 		else { // user is authenticated and logged in
 			console.log('updating user ' + movesId);
@@ -22,7 +23,7 @@ module.exports = {
 					console.log('payload');
 					MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 						if (err) {
-							return err;
+							callback (err, null);
 						}
 							// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 							payload.forEach(function(moves_data) {
@@ -30,6 +31,7 @@ module.exports = {
 								return null;
 							}
 							moves_data.summary.forEach(function(activity) {
+								console.log(activity);
 								if (activity.steps) {
 									// format date from 20140201 -> 2014-02-01
 									var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
@@ -60,22 +62,37 @@ module.exports = {
 											}, function(err, success){
 												if (err) { return err; }
 												console.log( 'Data entered into db: ' + movesId, activityDate, steps );
+
+												callback ( null, success );
+
 											})
+											console.log('1')
 										}
+										console.log('2')
 									})
+									console.log('3')
 								}
-								else { //no activity steps
-									return;
-								}
+								// else { //no activity steps
+								// 	console.log('4')
+								// 	return;
+								// }
+								console.log('5')
 							})
+							console.log('6')
 						})
+						console.log('7')
 					})
+					console.log('8')
 				} //if payload
-				else {
-					return;
-				}
+				// else {
+				// 	console.log('9')
+				// 	return;
+				// }
+				console.log('10')
 			})
+			console.log('11')
 		}
+		console.log('12')
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {

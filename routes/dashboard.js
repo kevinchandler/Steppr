@@ -5,9 +5,14 @@ var user = require('../libs/user')
 exports.home = function(req, res) {
     // update db with past months steps.
     if (req.session._token && req.session._movesId) {
-        user.updateUser(req.session._token, req.session._movesId, function(err, success) {
+        user.updateUser(req.session._token, req.session._movesId, function(err, success, callback) {
             if( err ) {
                 res.end(500);
+            }
+            if (success) {
+                console.log('sssss')
+                console.log(success);
+                return;
             }
         })
     }
@@ -30,7 +35,7 @@ exports.home = function(req, res) {
                     ,   userPercentage =  ((totalUserSteps / totalStepsToday) * 100).toFixed(0)
                     ,   usersToday = payload.usersToday;
                     console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-
+                    console.log('render home.jade')
                     res.render('home.jade', {
                         totalUserSteps : totalUserSteps,
                         totalStepsToday : totalStepsToday,
