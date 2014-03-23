@@ -12,7 +12,7 @@ exports.home = function(req, res) {
         })
     }
     else {
-        res.redirect('/');
+        res.redirect('/moves');
     }
 
     user.steps(req.session._movesId, function( err, data ){
