@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.cookieSession({ secret: 'cats go meow meow meow' }));
+app.use(express.cookieSession({ secret: 'cats ¡12333333222222gdddaods dfadsm!!@$!#%@%%@w%#dmeow meow' }));
 app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,28 +36,29 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-if (process.argv[2]) {
-    process.env.NGROK_SUBDOMAIN = process.argv[2];
-    process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
-    process.env.MOVES_REDIRECT_URL = "http://"+process.argv[2]+".ngrok.com/moves/auth"
-    var ngrok = require('ngrok');
-    ngrok.connect({
-        subdomain: process.env.NGROK_SUBDOMAIN,
-        authtoken: process.env.NGROK_TOKEN,
-        port: app.get('port')
-    }, function(err, url) {
-        if (err) throw err;
-        console.log('Remote url: ' + url);
-    });
-}
+// if (process.env.PORT)
+// if (process.argv[2])  {
+//     process.env.NGROK_SUBDOMAIN = process.argv[2];
+//     process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
+//     process.env.MOVES_REDIRECT_URL = "http://"+process.argv[2]+".ngrok.com/moves/auth"
+//     var ngrok = require('ngrok');
+//     ngrok.connect({
+//         subdomain: process.env.NGROK_SUBDOMAIN,
+//         authtoken: process.env.NGROK_TOKEN,
+//         port: app.get('port')
+//     }, function(err, url) {
+//         if (err) throw err;
+//         console.log('Remote url: ' + url);
+//     });
+// }
 
-
-app.all('/home', function(req, res, next) {
-    if (!req.session._token) {
-        res.redirect('/'); //directly opens moves to authenticate
-    }
-    next();
-})
+// 
+// app.all('/home', function(req, res, next) {
+//     if (!req.session._token) {
+//         res.redirect('/'); //directly opens moves to authenticate
+//     }
+//     next();
+// })
 
 app.get('/', routes.index);
 
