@@ -5,7 +5,7 @@ var user = require('../libs/user')
 exports.home = function(req, res) {
     // update db with past months steps.
     if (req.session._token && req.session._movesId) {
-        user.updateUser(req.session._token, req.session._movesId, req.session._email, function(err, success) {
+        user.updateUser(req.session._token, req.session._movesId, function(err, success) {
             if( err ) {
                 res.end(500);
             }
@@ -22,18 +22,19 @@ exports.home = function(req, res) {
             var totalUserSteps = data.steps;
             console.log('user: ' + totalUserSteps);
             steppr.getTotalSteps(function(totalSteps) {
-                    if (totalSteps) {
-                        var totalStepsToday = totalSteps
-                        ,   userPercentage =  (totalUserSteps / totalStepsToday) * 100;
-                        console.log(userPercentage);
-                        console.log('total: ' + totalStepsToday);
-                        res.render('home.jade', {
-                            user : req.session._email,
-                            totalUserSteps : totalUserSteps,
-                            totalStepsToday : totalStepsToday,
-                            userPercentage : userPercentage.toFixed(0)
-                        })
-                    }
+                console.log('inside  steppr.getTotal callback');
+
+                if (totalSteps) {
+                    var totalStepsToday = totalSteps
+                    ,   userPercentage =  (totalUserSteps / totalStepsToday) * 100;
+                    console.log('total steps today: ' + totalStepsToday);
+
+                    res.render('home.jade', {
+                        totalUserSteps : totalUserSteps,
+                        totalStepsToday : totalStepsToday,
+                        userPercentage : userPercentage.toFixed(0)
+                    })
+                }
             })
         }
     })

@@ -8,13 +8,13 @@ dotenv.load();
 
 module.exports = {
 	// inputs steps into db if not already in, updates if steps don't match what's in db
-	updateUser : function ( sessionToken, movesId, sessionEmail ) {
-		console.log('updating user');
+	updateUser : function ( sessionToken, movesId ) {
 		if (!sessionToken || !movesId) {
 			return res.redirect('/');
 		}
 		else { // user is authenticated and logged in
-			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=31&access_token='+sessionToken, function(err, response, body) {
+			console.log('updating user ' + movesId);
+			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+sessionToken, function(err, response, body) {
 				console.log('req');
 				if (err) return err;
 				var payload = JSON.parse(body);
@@ -32,12 +32,12 @@ module.exports = {
 							moves_data.summary.forEach(function(activity) {
 								if (activity.steps) {
 									// format date from 20140201 -> 2014-02-01
-									var activity_date = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
+									var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
 									,   steps = activity.steps;
 
 									// checks to see if there's already a document in the db with the date from moves,
 									// updates db with # of steps from moves
-									var query = { user : movesId, date : activity_date };
+									var query = { user : movesId, date : activityDate };
 									db.collection('steps').findOne(query, function(err, doc) {
 										if (err) return err;
 										if (doc) { // if this date is in the db
@@ -54,17 +54,13 @@ module.exports = {
 										    // no data found for this date in our db, save it
 											db.collection('steps').insert({
 												"user"  : movesId,
-												"email" : sessionEmail,
-												"date"  : activity_date,
+												"date"  : activityDate,
 												"steps" : steps,
 												"last_updated" : today,
 											}, function(err, success){
 												if (err) { return err; }
-												else {
-													console.log('Data entered into db: \n');
-												}
+												console.log( 'Data entered into db: ' + movesId, activityDate, steps );
 											})
-											return;
 										}
 									})
 								}
@@ -76,11 +72,10 @@ module.exports = {
 					})
 				} //if payload
 				else {
-					return res.send('didn\'t get anything back from moves. Are you sure you\'re attempting this from your phone?');
+					return;
 				}
 			})
 		}
-	return;
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {

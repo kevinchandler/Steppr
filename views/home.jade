@@ -1,7 +1,15 @@
 extends layout
 
 block content
-  p Welcome, #{user}
-  p You're at #{totalUserSteps} steps today
-  p #{totalStepsToday} steps total today
-  p You own #{userPercentage}% of steps
+  p You've logged
+    i  #{totalUserSteps}
+    |  steps today. You own
+    b  #{userPercentage}%
+    |  of the
+    i  #{totalStepsToday}
+    |  total steps today
+  br
+  br
+  br
+  br
+  h1 Steppr on!
