@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.cookieSession({ secret: 'cats ¡12333333222222gdddaods dfadsm!!@$!#%@%%@w%#dmeow meow' }));
+app.use(express.cookieSession({ secret: 'cats ¡12333333222222sqgdddaods dfadsm!!@$!#%@%%@w%#dmeow meow' }));
 app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,14 +51,6 @@ if (process.argv[2])  {
     });
 }
 
-//
-// app.all('/home', function(req, res, next) {
-//     if (!req.session._token) {
-//         res.redirect('/'); //directly opens moves to authenticate
-//     }
-//     next();
-// })
-
 app.get('/', dashboard.home);
 
 app.get('/moves', moves.index);
@@ -70,6 +62,8 @@ app.get('/user/register', user.register);
 app.post('/user/register', user.register);
 
 app.get('/test', test.index);
+
+app.post('/notification', test.notification);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

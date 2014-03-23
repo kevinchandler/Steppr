@@ -17,7 +17,7 @@ module.exports = {
 			db.collection('steps').find({date: today}).each(function(err, doc) {
 				if (err) return callback( err );
 				if (!doc) {
-					callback( payload );
+					callback( null, payload );
 				}
 				else {
 					payload.usersToday += 1;

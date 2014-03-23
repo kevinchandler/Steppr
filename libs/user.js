@@ -48,9 +48,9 @@ module.exports = {
 									// updates db with # of steps from moves
 									var query = { user : movesId, date : activityDate };
 									db.collection('steps').findOne(query, function(err, doc) {
+										console.log('inside steps collection. Finding a document with date: ' + activityDate + '\n')
 										if (err) return err;
 										if (doc) { // if this date is in the db
-											console.log('found doc ' + doc);
 											if (doc.steps !== steps) { // updates user's steps in db if it differs
 												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 													if (err) return err;
@@ -58,6 +58,9 @@ module.exports = {
 														console.log('Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
 													}
 												})
+											}
+											else {
+												console.log('Nothing to update. Steps in db matches moves-app \n');
 											}
 										}
 										if (!doc) {
@@ -76,7 +79,6 @@ module.exports = {
 									})
 								}
 							})
-							callback ( null, null, true )
 						})
 					})
 				} //if payload

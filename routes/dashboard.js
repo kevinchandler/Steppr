@@ -14,16 +14,16 @@ exports.home = function(req, res) {
             }
             else {
                 user.steps(req.session._movesId, function( err, data ){
-                    console.log('inside  user.step callback')
+                    console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     if (err) {
                         console.log('error connecting to db in user.steps')
-                        res.redirect('/moves');
-                    } 
+                    }
                     if (data) {
                         var totalUserSteps = data.steps;
-                        console.log('user: ' + totalUserSteps);
+                        console.log('user steps: ' + totalUserSteps);
 
-                        steppr.getTotalSteps(function(payload) {
+                        steppr.getTotalSteps(function(err, payload) {
+                            if (err) res.send(err);
                             console.log('inside  steppr.getTotal callback');
 
                             if (payload) {
@@ -31,7 +31,7 @@ exports.home = function(req, res) {
                                 ,   userPercentage =  ((totalUserSteps / totalStepsToday) * 100).toFixed(0)
                                 ,   usersToday = payload.usersToday;
                                 console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                                console.log('render home.jade')
+                                console.log('rendering home.jade');
                                 res.render('home.jade', {
                                     totalUserSteps : totalUserSteps,
                                     totalStepsToday : totalStepsToday,
@@ -45,11 +45,4 @@ exports.home = function(req, res) {
             }
         })
     }
-
-
-
-
-
-
-
 }

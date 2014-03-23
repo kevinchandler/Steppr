@@ -20,3 +20,10 @@ exports.index = function(req, res) {
     })
 
 }
+
+
+exports.notification = function(req, res) {
+    console.log('posting to notfiicaiont')
+    console.log(req.body);
+    res.end();
+}
