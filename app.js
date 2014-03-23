@@ -52,7 +52,7 @@ if ('development' == app.get('env')) {
 //     });
 // }
 
-// 
+//
 // app.all('/home', function(req, res, next) {
 //     if (!req.session._token) {
 //         res.redirect('/'); //directly opens moves to authenticate
@@ -60,7 +60,7 @@ if ('development' == app.get('env')) {
 //     next();
 // })
 
-app.get('/', routes.index);
+app.get('/', dashboard.home);
 
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
