@@ -17,7 +17,7 @@ exports.home = function(req, res) {
 
     user.steps(req.session._movesId, function( err, data ){
         console.log('inside  user.step callback')
-        if (err) res.send(500);
+        if (err) res.send('i\'m broke like you: biaaaaatch ');
         if (data) {
             var totalUserSteps = data.steps;
             console.log('user: ' + totalUserSteps);
