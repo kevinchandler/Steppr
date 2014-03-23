@@ -53,7 +53,7 @@ exports.register = function(req, res) {
                 })
             }
             else {
-                res.redirect('/');
+                res.redirect('/moves');
                 console.error('something went wrong when registering the user err 545');
             }
         })

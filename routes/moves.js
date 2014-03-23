@@ -66,7 +66,8 @@ exports.authenticate = function(req, res) {
             //   })
             }
             else {
-                return res.redirect('/');
+                console.log('no accessToken');
+                return res.redirect('/moves');
             }
         });
     })
