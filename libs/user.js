@@ -92,7 +92,10 @@ module.exports = {
 			if (err) return callback( err, null );
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
-				if (err) return callback( err );
+				if (err) {
+					db.close();
+					return callback( err );
+				}
 				if (data) {
 					callback( null, data );
 				}
