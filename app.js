@@ -52,7 +52,7 @@ if (process.argv[2])  {
     });
 }
 
-app.get('/', routes.index);
+app.get('/', dashboard.home);
 
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);

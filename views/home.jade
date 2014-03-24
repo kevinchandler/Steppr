@@ -1,24 +1,18 @@
 extends layout
 
 block content
-  img(id='rect', src='http://step.ngrok.com/images/gray_rect.png')
-  img(class='center' src='http://step.ngrok.com/images/steppr_logo.png')
-  p You've logged
-    i  #{totalUserSteps}
-    |  steps today. You own
-    b  #{userPercentage}%
-    |  of the
-    i  #{totalStepsToday}
-    |  total steps today
-  br
-  br
-  br
-  br
-  p #{usersToday} Users today
-  h1 Steppr on!
-  br
-  br
-  br
-  br
-  p if refresh
-    a(href='/moves')  click
+  img(id='rect', src='../images/gray_rect.png')
+  img(class='center' src='../images/steppr_logo.png')
+  div#name
+    h1 Steppr
+  p#totalUserSteps.alert.alert-info You've given #{totalUserSteps} steps today
+  p#userPercentage.alert.alert-warning You own: #{userPercentage}% of todays steps
+  p#totalStepsToday.alert.alert-success #{usersToday} people have given #{totalStepsToday} steps today
+  a(href='/moves')
+    img(id='moves_logo', src='../images/moves_logo.png')
+
+
+// bootstrap. use columns. profit
+
+//little icon in bottom right of gray box to switch to user > group > steppr
+                                        Steps, %, total <       Not in a group > join?

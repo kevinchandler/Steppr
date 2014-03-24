@@ -13,13 +13,25 @@ body {
     left: -1%;
     z-index: -1;
 }
-
+#moves_logo {
+    width: 3em;
+    height: 3em;
+    position: absolute;
+    top: 80%;
+    left: 80%;
+}
+#totalStepsToday, #userPercentage, #totalUserSteps {
+    text-align: center;
+}
 .center {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
+h1 {
+    margin-left: 34%;
+}
 a {
   color: #00B7FF;
 }
