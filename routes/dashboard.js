@@ -35,7 +35,7 @@ exports.home = function(req, res) {
                             if (payload) {
                                 var totalStepsToday = delimitNumbers(payload.totalStepsToday)
                                 ,   totalStepsLifetime = delimitNumbers(payload.totalStepsLifetime)
-                                ,   userPercentage =  (totalUserStepsToday / delimitNumbers(totalStepsToday) * 100)
+                                ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                                 ,   usersToday = payload.usersToday;
 
                                 console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
