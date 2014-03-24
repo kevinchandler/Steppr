@@ -61,10 +61,10 @@ module.exports = {
 											}
 											else {
 												console.log('Nothing to update. Steps in db matches moves-app \n');
-
 											}
 										}
 										if (!doc) {
+											console.log('No doc found, inserting: ');
 										    // no data found for this date in our db, save it
 											db.collection('steps').insert({
 												"user"  : movesId,
@@ -83,10 +83,9 @@ module.exports = {
 						})
 					})
 				} //if payload
-				callback (null, null, true)
 			})
 		}
-		callback ( null, null, true );
+		return callback ( null, null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
