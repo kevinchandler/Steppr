@@ -35,18 +35,18 @@ exports.home = function(req, res) {
                             if (payload) {
                                 var totalStepsToday = delimitNumbers(payload.totalStepsToday)
                                 ,   totalStepsLifetime = delimitNumbers(payload.totalStepsLifetime)
-                                // ,   userPercentage =  (totalUserStepsToday / delimitNumbers(totalStepsToday) * 100).toFixed(0)
+                                ,   userPercentage =  (totalUserStepsToday / delimitNumbers(totalStepsToday) * 100)
                                 ,   usersToday = payload.usersToday;
 
                                 console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
                                 console.log('rendering home.jade');
-                                // console.log('user % is : ' + userPercentage);
+                                console.log('user % is : ' + userPercentage);
 
                                 res.render('home.jade', {
                                     totalUserStepsToday : totalUserStepsToday,
                                     totalStepsToday : totalStepsToday,
                                     totalStepsLifetime : totalStepsLifetime,
-                                    // userPercentage : userPercentage,
+                                    userPercentage : userPercentage,
                                     usersToday : usersToday,
                                 })
                             }
