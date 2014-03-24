@@ -61,6 +61,7 @@ module.exports = {
 											}
 											else {
 												console.log('Nothing to update. Steps in db matches moves-app \n');
+
 											}
 										}
 										if (!doc) {
@@ -82,6 +83,7 @@ module.exports = {
 						})
 					})
 				} //if payload
+				callback (null, null, true)
 			})
 		}
 		callback ( null, null, true );
