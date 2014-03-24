@@ -61,7 +61,6 @@ module.exports = {
 											}
 											else {
 												console.log('Nothing to update. Steps in db matches moves-app \n');
-												return;
 											}
 										}
 										if (!doc) {
@@ -75,7 +74,6 @@ module.exports = {
 											}, function(err, success){
 												if (err) { return err; }
 												console.log( 'Data entered into db: ' + movesId, activityDate, steps );
-												callback ( null, success );
 											})
 										}
 									})
