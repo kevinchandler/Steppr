@@ -61,6 +61,7 @@ module.exports = {
 											}
 											else {
 												console.log('Nothing to update. Steps in db matches moves-app \n');
+												return;
 											}
 										}
 										if (!doc) {
@@ -85,7 +86,7 @@ module.exports = {
 				} //if payload
 			})
 		}
-		return callback ( null, null, true );
+		callback ( null, null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
