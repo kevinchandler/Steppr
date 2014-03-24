@@ -89,15 +89,14 @@ module.exports = {
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) return callback( err, null );
+			if (err)  callback( err, null );
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					db.close();
 					return callback( err );
 				}
 				if (data) {
-					callback( null, data );
+					return callback( null, data );
 				}
 			})
 		})

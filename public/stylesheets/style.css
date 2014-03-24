@@ -1,9 +1,23 @@
 
-html, body { margin:0; padding:0; overflow:hidden }
-svg { position:fixed; top:0; left:0; height:100%; width:100% }
-
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: #fff;
+  background: url('../images/steppr_landing_bg.png');
+  background-size: cover;
+  z-index: 0;
+}
+
+#rect {
+    position: absolute;
+    top: 13%;
+    left: -1%;
+    z-index: -1;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 a {
