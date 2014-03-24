@@ -33,7 +33,7 @@ module.exports = {
 				}
 				else {
 					payload.usersToday += 1;
-					payload.totalStepsToday += stepsToday.steps;
+					payload.totalStepsToday += Number(stepsToday.steps);
 				}
 			})
 		})
