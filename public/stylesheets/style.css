@@ -35,3 +35,8 @@ h1 {
 a {
   color: #00B7FF;
 }
+i.fa-refresh {
+    position: absolute;
+    right: 10%;
+    font-size: 2em;
+}

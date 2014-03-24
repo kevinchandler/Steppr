@@ -3,15 +3,15 @@ extends layout
 block content
   img(id='rect', src='../images/gray_rect.png')
   img(class='center' src='../images/steppr_logo.png')
+  a(href='/moves')
+    i(class="fa fa-refresh")
   div#name
     h1 Steppr
-    h4.alert(style='text-align: center;') #{totalStepsLifetime} Steps taken on Steppr
+    h4.alert(style='text-align: center;') #{totalStepsLifetime} steps taken on Steppr
   br
   p#totalUserSteps.alert.alert-info You've taken #{totalUserStepsToday} steps today
-  p#userPercentage.alert.alert-warning You own: #{userPercentage}% of todays steps
-  p#totalStepsToday.alert.alert-success #{usersToday} people have given #{totalStepsToday} steps today
-  a(href='/moves')
-    img(id='moves_logo', src='../images/moves_logo.png')
+  p#userPercentage.alert.alert-warning You own #{userPercentage}% of todays steps
+  p#totalStepsToday.alert.alert-success #{usersToday} people have taken #{totalStepsToday} steps today
 
 
 // bootstrap. use columns. profit

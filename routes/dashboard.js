@@ -33,8 +33,8 @@ exports.home = function(req, res) {
                             console.log('inside  steppr.getTotal callback');
 
                             if (payload) {
-                                var totalStepsToday = delimitNumbers(payload.totalStepsToday)
-                                ,   totalStepsLifetime = delimitNumbers(payload.totalStepsLifetime)
+                                var totalStepsToday = payload.totalStepsToday
+                                ,   totalStepsLifetime = payload.totalStepsLifetime
                                 ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                                 ,   usersToday = payload.usersToday;
 
@@ -43,11 +43,11 @@ exports.home = function(req, res) {
                                 console.log('user % is : ' + userPercentage);
 
                                 res.render('home.jade', {
-                                    totalUserStepsToday : totalUserStepsToday,
-                                    totalStepsToday : totalStepsToday,
-                                    totalStepsLifetime : totalStepsLifetime,
+                                    totalUserStepsToday : delimitNumbers(totalUserStepsToday),
+                                    totalStepsToday : delimitNumbers(totalStepsToday),
+                                    totalStepsLifetime : delimitNumbers(totalStepsLifetime),
                                     userPercentage : userPercentage,
-                                    usersToday : usersToday,
+                                    usersToday : delimitNumbers(usersToday),
                                 })
                             }
                         })
