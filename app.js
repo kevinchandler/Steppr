@@ -32,25 +32,25 @@ app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-// if ('development' == app.get('env')) {
-//   app.use(express.errorHandler());
-// }
-//
-// if (process.argv[2])  {
-//     process.env.NGROK_SUBDOMAIN = process.argv[2];
-//     process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
-//     process.env.MOVES_REDIRECT_URL = "http://"+process.argv[2]+".ngrok.com/moves/auth"
-//     var ngrok = require('ngrok');
-//     ngrok.connect({
-//         subdomain: process.env.NGROK_SUBDOMAIN,
-//         authtoken: process.env.NGROK_TOKEN,
-//         port: app.get('port')
-//     }, function(err, url) {
-//         if (err) throw err;
-//         console.log('Remote url: ' + url);
-//     });
-// }
+development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+if (process.argv[2])  {
+    process.env.NGROK_SUBDOMAIN = process.argv[2];
+    process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
+    process.env.MOVES_REDIRECT_URL = "http://"+process.argv[2]+".ngrok.com/moves/auth"
+    var ngrok = require('ngrok');
+    ngrok.connect({
+        subdomain: process.env.NGROK_SUBDOMAIN,
+        authtoken: process.env.NGROK_TOKEN,
+        port: app.get('port')
+    }, function(err, url) {
+        if (err) throw err;
+        console.log('Remote url: ' + url);
+    });
+}
 
 app.get('/', routes.index);
 
