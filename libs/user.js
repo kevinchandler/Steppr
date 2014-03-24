@@ -49,11 +49,11 @@ module.exports = {
 									var query = { user : movesId, date : activityDate };
 									db.collection('steps').findOne(query, function(err, doc) {
 										console.log('inside steps collection. Finding a document with date: ' + activityDate + '\n')
-										if (err) return err;
+										if (err) callback(err);
 										if (doc) { // if this date is in the db
 											if (doc.steps !== steps) { // updates user's steps in db if it differs
 												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
-													if (err) return err;
+													if (err) callback(err);
 													else if (success) {
 														console.log('Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
 													}
@@ -72,7 +72,7 @@ module.exports = {
 												"steps" : steps,
 												"last_updated" : today,
 											}, function(err, success){
-												if (err) { return err; }
+												if (err) { callback( err ) }
 												console.log( 'Data entered into db: ' + movesId, activityDate, steps );
 											})
 										}
