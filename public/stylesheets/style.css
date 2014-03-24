@@ -17,7 +17,7 @@ body {
     width: 3em;
     height: 3em;
     position: absolute;
-    top: 80%;
+    top: 90%;
     left: 80%;
 }
 #totalStepsToday, #userPercentage, #totalUserSteps {

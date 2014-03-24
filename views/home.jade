@@ -5,10 +5,12 @@ block content
   img(class='center' src='../images/steppr_logo.png')
   div#name
     h1 Steppr
-  p#totalUserSteps.alert.alert-info You've given #{totalUserSteps} steps today
-  p#userPercentage.alert.alert-warning You own: #{userPercentage}% of todays steps
+    h4.alert(style='text-align: center;') #{totalStepsLifetime} Steps taken on Steppr
+  br
+  p#totalUserSteps.alert.alert-info You've taken #{totalUserStepsToday} steps today
+  // p#userPercentage.alert.alert-warning You own: #{userPercentage}% of todays steps
   p#totalStepsToday.alert.alert-success #{usersToday} people have given #{totalStepsToday} steps today
-  a(href='/moves')
+  // a(href='/moves')
     img(id='moves_logo', src='../images/moves_logo.png')
 
 
