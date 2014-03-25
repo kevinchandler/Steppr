@@ -41,7 +41,7 @@ exports.authenticate = function(req, res) {
           // required for moves-api
           console.log('dddddd');
           console.log(body)
-          moves.options.accessToken = access_token;
+          moves.options.accessToken = body.access_token;
           console.log('refresh_token is : ' + body.refresh_token);
           console.log('access token is : ' + body.access_token);
 
