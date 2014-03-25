@@ -32,3 +32,12 @@ CLIENT_SECRET = ''
 MONGODB_URL = ''
 ```
 
+How to use:
+```
+$ git clone
+$ cd Steppr
+$ npm install
+One of the following depending on ngrok usage:
+  $ node app.js *ngroksubdomain*
+  $ node app.js
+  
