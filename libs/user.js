@@ -35,7 +35,7 @@ module.exports = {
 							// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 							payload.forEach(function(moves_data) {
 							if (!moves_data.summary) {
-								return;
+								return db.close();
 							}
 							moves_data.summary.forEach(function(activity) {
 								console.log('inside moves_data.forEach: ');
@@ -80,11 +80,11 @@ module.exports = {
 								}
 							})
 						})
+						callback(null, db.close());
 					})
 				} //if payload
 			})
 		}
-		db.close();
 		return callback ( null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today

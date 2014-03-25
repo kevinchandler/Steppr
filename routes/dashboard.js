@@ -21,14 +21,12 @@ exports.home = function(req, res) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
                 console.log('err user.updateUser ');
-                res.redirect('/');
             }
             if (data) {
                 user.steps(req.session._movesId, function( err, data ){
                     console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     if (err) {
                         console.log('error connecting to db in user.steps')
-                        res.redirect('/') // probably shouldn't redirect to /
                     }
                     if (data) {
                         var totalUserStepsToday = data.steps;
