@@ -2,6 +2,9 @@
 var user = require('../libs/user')
 ,   steppr = require('../libs/steppr');
 
+
+// turn 1000 into 1,000 etc etc
+
 function delimitNumbers(str) {
   return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
     return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
@@ -11,23 +14,24 @@ function delimitNumbers(str) {
 exports.home = function(req, res) {
     // update db with past months steps.
     if (!req.session._token || !req.session._movesId) {
-        res.redirect('/moves');
+        res.redirect('/');
     }
     if (req.session._token && req.session._movesId) {
         user.updateUser(req.session._token, req.session._movesId, function(err, data) {
+            console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
-                res.end(500);
+                console.log('err user.updateUser ');
+                res.redirect('/');
             }
-            else {
+            if (data) {
                 user.steps(req.session._movesId, function( err, data ){
                     console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     if (err) {
                         console.log('error connecting to db in user.steps')
+                        res.redirect('/') // probably shouldn't redirect to /
                     }
                     if (data) {
                         var totalUserStepsToday = data.steps;
-                        console.log('user steps: ' + totalUserStepsToday);
-
                         steppr.getTotalSteps(function(err, payload) {
                             if (err) res.send(err);
                             console.log('inside  steppr.getTotal callback');
@@ -50,6 +54,16 @@ exports.home = function(req, res) {
                                     usersToday : delimitNumbers(usersToday),
                                 })
                             }
+                            else {
+                                res.render('home.jade', {
+                                    totalUserStepsToday : delimitNumbers(totalUserStepsToday)
+                                })
+                            }
+                        })
+                    }
+                    else {
+                        res.render('home.jade', {
+                            totalUserStepsToday : 'err, no data',
                         })
                     }
                 })

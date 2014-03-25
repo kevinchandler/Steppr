@@ -19,7 +19,7 @@ module.exports = {
 	updateUser : function ( sessionToken, movesId, callback) {
 
 		if (!sessionToken || !movesId) {
-			return res.redirect('/moves');
+			return res.redirect('/');
 		}
 		else { // user is authenticated and logged in
 			console.log('updating user ' + movesId);
@@ -30,12 +30,12 @@ module.exports = {
 					console.log('Parsed payload');
 					MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 						if (err) {
-							return err;
+							return db.close();
 						}
 							// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 							payload.forEach(function(moves_data) {
 							if (!moves_data.summary) {
-								return null;
+								return;
 							}
 							moves_data.summary.forEach(function(activity) {
 								console.log('inside moves_data.forEach: ');
@@ -84,7 +84,8 @@ module.exports = {
 				} //if payload
 			})
 		}
-		callback ( null, null, true );
+		db.close();
+		return callback ( null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
@@ -93,7 +94,7 @@ module.exports = {
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					return callback( err );
+				    return callback( err );
 				}
 				if (data) {
 					return callback( null, data );
