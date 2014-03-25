@@ -30,12 +30,12 @@ module.exports = {
 					console.log('Parsed payload');
 					MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 						if (err) {
-							return db.close();
+							return;
 						}
 							// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 							payload.forEach(function(moves_data) {
 							if (!moves_data.summary) {
-								return db.close();
+								return;
 							}
 							moves_data.summary.forEach(function(activity) {
 								console.log('inside moves_data.forEach: ');
