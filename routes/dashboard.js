@@ -29,41 +29,45 @@ exports.home = function(req, res) {
                 }
                 if (data) {
                     var totalUserStepsToday = data.steps;
+
                     steppr.getTotalSteps(function(err, payload) {
                         if (err) res.send(err);
                         console.log('inside  steppr.getTotal callback');
 
                         if (payload) {
-                            var totalStepsToday = payload.totalStepsToday
-                            ,   totalStepprSteps = payload.totalStepprSteps
+                            var totalStepsToday = delimitNumbers(payload.totalStepsToday)
+                            ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
                             ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
-                            ,   usersToday = payload.usersToday;
+                            ,   usersToday = delimitNumbers(payload.usersToday);
 
                             console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
                             console.log('rendering home.jade');
-                            console.log('user % is : ' + userPercentage);
+                            console.log(req.session._movesId + ' % is : ' + userPercentage);
 
-                            res.render('home.jade', {
-                                totalUserStepsToday : delimitNumbers(totalUserStepsToday),
-                                totalStepsToday : delimitNumbers(totalStepsToday),
-                                totalStepprSteps : delimitNumbers(totalStepprSteps),
+                            return res.render('home.jade', {
+                                totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
+                                totalStepsToday : totalStepsToday,
+                                totalStepprSteps : totalStepprSteps,
                                 userPercentage : userPercentage,
-                                usersToday : delimitNumbers(usersToday),
+                                usersToday : usersToday,
                             })
                         }
                         else {
-                            res.render('home.jade', {
-                                totalUserStepsToday : delimitNumbers(totalUserStepsToday)
+                            return res.render('home.jade', {
+                                totalUserStepsToday : totalUserStepsToday
                             })
                         }
                     })
                 }
                 else {
-                    res.render('home.jade', {
+                    return res.render('home.jade', {
                         totalUserStepsToday : 'err, no data',
                     })
                 }
             })
+        }
+        else {
+            res.redirect('/');
         }
     })
 }

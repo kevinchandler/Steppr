@@ -79,13 +79,14 @@ module.exports = {
 									})
 								}
 							})
+							callback(null, true );
 						})
-						return callback(null, true );
+						callback(null, true );
 					})
 				} //if payload
 			})
 		}
-		return callback ( null, true );
+		 callback ( null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
