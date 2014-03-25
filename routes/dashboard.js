@@ -16,58 +16,60 @@ exports.home = function(req, res) {
     if (!req.session._token || !req.session._movesId) {
         res.redirect('/');
     }
-    user.updateUser(req.session._token, req.session._movesId, function(err, data) {
-        console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
-        if( err ) {
-            console.log('err user.updateUser ');
-        }
-        if (data) {
-            user.steps(req.session._movesId, function( err, data ){
-                console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
-                if (err) {
-                    console.log('error connecting to db in user.steps')
-                }
-                if (data) {
-                    var totalUserStepsToday = data.steps;
+    else {
+        user.updateUser(req.session._token, req.session._movesId, function(err, data) {
+            console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
+            if( err ) {
+                console.log('err user.updateUser ');
+            }
+            if (data) {
+                user.steps(req.session._movesId, function( err, data ){
+                    console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
+                    if (err) {
+                        console.log('error connecting to db in user.steps')
+                    }
+                    if (data) {
+                        var totalUserStepsToday = data.steps;
 
-                    steppr.getTotalSteps(function(err, payload) {
-                        if (err) res.send(err);
-                        console.log('inside  steppr.getTotal callback');
+                        steppr.getTotalSteps(function(err, payload) {
+                            if (err) res.send(err);
+                            console.log('inside  steppr.getTotal callback');
 
-                        if (payload) {
-                            var totalStepsToday = delimitNumbers(payload.totalStepsToday)
-                            ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
-                            ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
-                            ,   usersToday = delimitNumbers(payload.usersToday);
+                            if (payload) {
+                                var totalStepsToday = delimitNumbers(payload.totalStepsToday)
+                                ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
+                                ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
+                                ,   usersToday = delimitNumbers(payload.usersToday);
 
-                            console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                            console.log('rendering home.jade');
-                            console.log(req.session._movesId + ' % is : ' + userPercentage);
+                                console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
+                                console.log('rendering home.jade');
+                                console.log(req.session._movesId + ' % is : ' + userPercentage);
 
-                            return res.render('home.jade', {
-                                totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
-                                totalStepsToday : totalStepsToday,
-                                totalStepprSteps : totalStepprSteps,
-                                userPercentage : userPercentage,
-                                usersToday : usersToday,
-                            })
-                        }
-                        else {
-                            return res.render('home.jade', {
-                                totalUserStepsToday : totalUserStepsToday
-                            })
-                        }
-                    })
-                }
-                else {
-                    return res.render('home.jade', {
-                        totalUserStepsToday : 'err, no data',
-                    })
-                }
-            })
-        }
-        else {
-            res.redirect('/');
-        }
-    })
+                                res.render('home.jade', {
+                                    totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
+                                    totalStepsToday : totalStepsToday,
+                                    totalStepprSteps : totalStepprSteps,
+                                    userPercentage : userPercentage,
+                                    usersToday : usersToday,
+                                })
+                            }
+                            // else {
+                            //     return res.render('home.jade', {
+                            //         totalUserStepsToday : totalUserStepsToday
+                            //     })
+                            // }
+                        })
+                    }
+                    // else {
+                    //     return res.render('home.jade', {
+                    //         totalUserStepsToday : 'err, no data',
+                    //     })
+                    // }
+                })
+            }
+            // else {
+            //     res.redirect('/');
+            // }
+        })
+    }
 }

@@ -61,6 +61,7 @@ module.exports = {
 											}
 											else {
 												console.log('Nothing to update. Steps in db matches moves-app \n');
+												return;
 											}
 										}
 										if (!doc) {
