@@ -36,7 +36,7 @@ exports.home = function(req, res) {
 
                             if (payload) {
                                 var totalStepsToday = payload.totalStepsToday
-                                ,   totalStepsLifetime = payload.totalStepsLifetime
+                                ,   totalStepprSteps = payload.totalStepprSteps
                                 ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                                 ,   usersToday = payload.usersToday;
 
@@ -47,7 +47,7 @@ exports.home = function(req, res) {
                                 res.render('home.jade', {
                                     totalUserStepsToday : delimitNumbers(totalUserStepsToday),
                                     totalStepsToday : delimitNumbers(totalStepsToday),
-                                    totalStepsLifetime : delimitNumbers(totalStepsLifetime),
+                                    totalStepprSteps : delimitNumbers(totalStepprSteps),
                                     userPercentage : userPercentage,
                                     usersToday : delimitNumbers(usersToday),
                                 })
