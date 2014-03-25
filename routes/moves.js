@@ -26,15 +26,9 @@ exports.authenticate = function(req, res) {
     // Redirect your user to this url
     var url = moves.generateAuthUrl();
 
-    moves.getAccessToken(req.query.code, function(err, body) {
-        console.log('logging body');
-        console.log(body);
-        // var access_token = body.access_token,
-        //     refresh_token = body.refresh_token;
-
-        console.log('getting access token from moves-api');
+    moves.getAccessToken(req.query.code, function(err, accessToken) {
           if (err) console.log(err);
-          if (!body) {
+          if (!accessToken) {
               console.error('no accessToken');
               res.redirect('/');
           }
