@@ -80,7 +80,7 @@ module.exports = {
 								}
 							})
 						})
-						callback(null, true );
+						return callback(null, true );
 					})
 				} //if payload
 			})
