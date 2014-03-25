@@ -27,11 +27,12 @@ exports.authenticate = function(req, res) {
     var url = moves.generateAuthUrl();
 
     moves.getAccessToken(req.query.code, function(err, body) {
-        var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+        console.log('logging body');
+        console.log(body);
+        // var access_token = body.access_token,
+        //     refresh_token = body.refresh_token;
 
         console.log('getting access token from moves-api');
-        console.log(body)
           if (err) console.log(err);
           if (!body) {
               console.error('no accessToken');
@@ -39,18 +40,13 @@ exports.authenticate = function(req, res) {
           }
 
           // required for moves-api
-          console.log('dddddd');
-          console.log(body)
-          moves.options.accessToken = body.access_token;
-          console.log('refresh_token is : ' + body.refresh_token);
-          console.log('access token is : ' + body.access_token);
-
+          moves.options.accessToken = accessToken;
           moves.getProfile(function(err, profile) {
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            if (body.access_token) {
-              req.session._token = body.access_token;
+            if (accessToken) {
+              req.session._token = accessToken;
               req.session._movesId = profile.userId;
             //   res.redirect('/home');
 
@@ -77,8 +73,8 @@ exports.authenticate = function(req, res) {
                               },
                               badges: [],
                               groups: [],
-                              access_token : body.access_token,
-                              refresh_token : body.refresh_token
+                              access_token : accessToken,
+                              refresh_token : ''
                           }, function(err, success) {
                               if (err) {
                                   res.send(err);
