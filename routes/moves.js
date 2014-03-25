@@ -31,7 +31,7 @@ exports.authenticate = function(req, res) {
           if (err) console.log(err);
           if (!accessToken) {
               console.error('no accessToken');
-              res.redirect('/moves');
+              res.redirect('/');
           }
 
           // required for moves-api
@@ -68,7 +68,7 @@ exports.authenticate = function(req, res) {
             }
             else {
                 console.log('no accessToken');
-                res.redirect('/moves');
+                res.redirect('/');
             }
         });
     })
