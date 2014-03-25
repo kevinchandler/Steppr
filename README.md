@@ -9,7 +9,7 @@ Create or join an organization. Compete for the most steps daily, weekly, monthl
 A working idea in progress. Currently only supports moves-app for iOS/Android
 
 
-[Demo](http://step.ngrok.com)
+[Demo](http://step.ngrok.com) (Currently only a mobile UI)
 
 If using [ngrok](https://ngrok.com/) you can run Steppr by "node app.js Steppr" That will start Steppr on an ngrok tunnel http://steppr.ngrok.com
 Alternatively leave the NGROK variables alone. Except for NGROK_URL which is Steppr's main URL. ie. http://steppr.herokuapp.com and you can run Steppr by "node app.js"
