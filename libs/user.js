@@ -80,7 +80,7 @@ module.exports = {
 								}
 							})
 						})
-						callback(null, db.close());
+						callback(null, true );
 					})
 				} //if payload
 			})
