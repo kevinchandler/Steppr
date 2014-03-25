@@ -26,50 +26,72 @@ exports.authenticate = function(req, res) {
     // Redirect your user to this url
     var url = moves.generateAuthUrl();
 
-    moves.getAccessToken(req.query.code, function(err, accessToken) {
-        console.log(accessToken)
+    moves.getAccessToken(req.query.code, function(err, body) {
+        console.log('getting access token from moves-api');
+        console.log(body)
           if (err) console.log(err);
-          if (!accessToken) {
+          if (!body) {
               console.error('no accessToken');
               res.redirect('/');
           }
 
           // required for moves-api
-          moves.options.accessToken = accessToken;
+          moves.options.accessToken = body.access_token;
+          console.log('refresh_token is : ' + body.refresh_token);
+          console.log('access token is : ' + body.access_token);
 
           moves.getProfile(function(err, profile) {
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            else if (accessToken) {
-              req.session._token = accessToken;
+            if (body.access_token) {
+              req.session._token = body.access_token;
               req.session._movesId = profile.userId;
-              res.redirect('/home');
+            //   res.redirect('/home');
 
               // checks db to see if there's a user
-            //   MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-            //       if (err) {
-            //           throw err;
-            //       }
-            //       db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
-            //           if (err) { throw err };
-            //           if (user) {
-            //               req.session._email = user.email;
-            //               console.log('set email session to: ' + req.session._email);
-            //               console.log('found user, ' + user.email + ' redirecting');
-            //               return res.redirect('/home');
-            //           }
-            //           else if (!user) {
-            //               console.log('no found user, redirecting');
-            //               return res.redirect('/user/register');
-            //           }
-            //       })
-            //   })
+              MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+                    if (err) {
+                      throw err;
+                    }
+                    db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
+                      if (err) { res.send(err) } ;
+                      if (user) {
+                            res.redirect('/home');
+                      }
+                      else if (!user) {
+                          var  placeholder = '';
+                          db.collection('users').insert({
+                              user: req.session._movesId,
+                              email: placeholder,
+                              name: placeholder.toLowerCase(),
+                              state : placeholder,
+                              zipcode: placeholder,
+                              points: {
+                                  total: 0
+                              },
+                              badges: [],
+                              groups: [],
+                              access_token : body.access_token,
+                              refresh_token : body.refresh_token
+                          }, function(err, success) {
+                              if (err) {
+                                  res.send(err);
+                              }
+                              if (success) {
+                                  console.log(success);
+                                  console.log('user registered successfully');
+                                  res.redirect('/home');
+                              }
+                          })
+                      }
+                  })
+                })
             }
             else {
                 console.log('no accessToken');
                 res.redirect('/');
-            }
-        });
-    })
-}
+                }
+            })
+        })
+    }
