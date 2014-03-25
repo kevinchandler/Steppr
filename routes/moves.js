@@ -27,6 +27,9 @@ exports.authenticate = function(req, res) {
     var url = moves.generateAuthUrl();
 
     moves.getAccessToken(req.query.code, function(err, body) {
+        var access_token = body.access_token,
+            refresh_token = body.refresh_token;
+
         console.log('getting access token from moves-api');
         console.log(body)
           if (err) console.log(err);
@@ -36,7 +39,9 @@ exports.authenticate = function(req, res) {
           }
 
           // required for moves-api
-          moves.options.accessToken = body.access_token;
+          console.log('dddddd');
+          console.log(body)
+          moves.options.accessToken = access_token;
           console.log('refresh_token is : ' + body.refresh_token);
           console.log('access token is : ' + body.access_token);
 
@@ -90,7 +95,7 @@ exports.authenticate = function(req, res) {
             }
             else {
                 console.log('no accessToken');
-                res.redirect('/');
+                // res.redirect('/');
                 }
             })
         })
