@@ -21,29 +21,30 @@ exports.home = function(req, res) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
                 console.log('err user.updateUser ');
+                return res.redirect('/');
             }
             if (data) {
                 user.steps(req.session._movesId, function( err, data ){
-                    console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     if (err) {
                         console.log('error connecting to db in user.steps')
                     }
                     if (data) {
+                        console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                         var totalUserStepsToday = data.steps;
 
                         steppr.getTotalSteps(function(err, payload) {
                             if (err) res.send(err);
                             console.log('inside  steppr.getTotal callback');
 
-                            if (payload) {
+                            if (payload) { // data retrieved from getTotalSteps callback
                                 var totalStepsToday = delimitNumbers(payload.totalStepsToday)
                                 ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
                                 ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                                 ,   usersToday = delimitNumbers(payload.usersToday);
 
-                                console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                                console.log('rendering home.jade');
-                                console.log(req.session._movesId + ' % is : ' + userPercentage);
+                                // console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
+                                // console.log('rendering home.jade');
+                                // console.log(req.session._movesId + ' % is : ' + userPercentage);
 
                                 res.render('home.jade', {
                                     totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
@@ -53,23 +54,10 @@ exports.home = function(req, res) {
                                     usersToday : usersToday,
                                 })
                             }
-                            // else {
-                            //     return res.render('home.jade', {
-                            //         totalUserStepsToday : totalUserStepsToday
-                            //     })
-                            // }
                         })
                     }
-                    // else {
-                    //     return res.render('home.jade', {
-                    //         totalUserStepsToday : 'err, no data',
-                    //     })
-                    // }
                 })
             }
-            // else {
-            //     res.redirect('/');
-            // }
         })
     }
 }

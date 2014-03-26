@@ -17,9 +17,9 @@ dotenv.load();
 module.exports = {
 	// inputs steps into db if not already in, updates if steps don't match what's in db
 	updateUser : function ( sessionToken, movesId, callback) {
-
 		if (!sessionToken || !movesId) {
-			return res.redirect('/');
+			callback('updateUser: no sessionToken or movesId');
+			return;
 		}
 		else { // user is authenticated and logged in
 			console.log('updating user ' + movesId);
@@ -30,6 +30,7 @@ module.exports = {
 					console.log('Parsed payload');
 					MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 						if (err) {
+							callback(err);
 							return;
 						}
 							// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
