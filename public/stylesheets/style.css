@@ -42,14 +42,13 @@ i.fa-refresh {
     font-size: 1.5em;
 }
 i.fa-arrow-right {
+    margin-left: 10%;
 }
-#take_your_first {
+#take_your_first, #take_your_first a{
     background: transparent;
     background-size: cover;
-}
-#take_your_first, #take_your_first a {
     color: #fff;
     font-size: 1.3em;
-    margin-top: 20%;
-    margin-left: 20%;
+    margin-top: 30%;
+    margin-left: 10%;
 }

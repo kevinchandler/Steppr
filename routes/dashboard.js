@@ -3,12 +3,10 @@ var user = require('../libs/user')
 ,   steppr = require('../libs/steppr');
 
 
-// turn 1000 into 1,000 etc etc
-
-function delimitNumbers(str) {
-  return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
-    return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
-  });
+function delimitNumbers(str, callback) {
+    return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
+        return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
+    });
 }
 
 exports.home = function(req, res) {

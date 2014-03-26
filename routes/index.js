@@ -1,8 +1,13 @@
 var steppr = require('../libs/steppr.js');
-/*
- * GET home page.
- */
+
+function delimitNumbers(str, callback) {
+    return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
+        return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
+    });
+}
+
 exports.index = function(req, res) {
+    // // redirect if authenticated
     // if (!req.session._token || !req.session._movesId) {
     //     res.render('landing.jade');
     // }
@@ -15,9 +20,9 @@ exports.index = function(req, res) {
         }
         if (payload) {
             res.render('landing.jade', {
-                totalStepprSteps: payload.totalStepprSteps,
+                totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
                 usersToday : payload.usersToday,
-                totalStepsToday : payload.totalStepsToday
+                totalStepsToday : delimitNumbers(payload.totalStepsToday)
             });
         }
     })
