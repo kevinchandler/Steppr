@@ -49,7 +49,7 @@ exports.authenticate = function(req, res) {
                     }
                     db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
                       if (err) { res.send(err) } ;
-                      if (user) {
+                      else if (user) {
                             res.redirect('/home');
                       }
                       else if (!user) {
