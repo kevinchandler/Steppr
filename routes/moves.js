@@ -28,7 +28,7 @@ exports.authenticate = function(req, res) {
     var url = moves.generateAuthUrl();
 
     moves.getAccessToken(req.query.code, function(err, body) {
-          if (err) console.log(err);
+          if (err) return res.redirect('/');
           if (!body.access_token) {
               console.error('no body.accessToken');
               res.redirect('/');
@@ -58,7 +58,6 @@ exports.authenticate = function(req, res) {
                             res.redirect('/home');
                       }
                       else if (!user) {
-                          console.log('\n inside db inserting user: second check of \n refresh token is: ' + body.refresh_token);
                           var  placeholder = '';
                           db.collection('users').insert({
                               user: req.session._movesId,
