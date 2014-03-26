@@ -22,6 +22,8 @@ module.exports = {
 			return;
 		}
 		else { // user is authenticated and logged in
+
+
 			console.log('updating user ' + movesId);
 			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+sessionToken, function(err, response, body) {
 				if (err) return err;

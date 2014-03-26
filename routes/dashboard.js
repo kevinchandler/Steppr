@@ -13,10 +13,10 @@ function delimitNumbers(str) {
 
 exports.home = function(req, res) {
     // update db with past months steps.
-    if (!req.session._token || !req.session._movesId) {
-        res.redirect('/');
-    }
-    else {
+    // if (!req.session._token || !req.session._movesId) {
+    //     res.redirect('/');
+    // }
+    // else {
         user.updateUser(req.session._token, req.session._movesId, function(err, data) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
@@ -59,5 +59,5 @@ exports.home = function(req, res) {
                 })
             }
         })
-    }
+    // }
 }

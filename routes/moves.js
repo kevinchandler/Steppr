@@ -21,27 +21,30 @@ exports.authenticate = function(req, res) {
       "clientSecret": process.env.CLIENT_SECRET,
       "redirectUri": process.env.MOVES_REDIRECT_URL,
       "accessToken": "",
+      "refreshToken":""
   });
 
     // Redirect your user to this url
     var url = moves.generateAuthUrl();
 
-    moves.getAccessToken(req.query.code, function(err, accessToken) {
+    moves.getAccessToken(req.query.code, function(err, body) {
           if (err) console.log(err);
-          if (!accessToken) {
-              console.error('no accessToken');
+          if (!body.access_token) {
+              console.error('no body.accessToken');
               res.redirect('/');
           }
 
           // required for moves-api
-          moves.options.accessToken = accessToken;
+          moves.options.accessToken = body.access_token;
           moves.getProfile(function(err, profile) {
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            if (accessToken) {
-              req.session._token = accessToken;
+            if (body.access_token && profile) {
+              req.session._token = body.access_token;
               req.session._movesId = profile.userId;
+              console.log('Profile:  ')
+              console.log(profile);
             //   res.redirect('/home');
 
               // checks db to see if there's a user
@@ -55,6 +58,7 @@ exports.authenticate = function(req, res) {
                             res.redirect('/home');
                       }
                       else if (!user) {
+                          console.log('\n inside db inserting user: second check of \n refresh token is: ' + body.refresh_token);
                           var  placeholder = '';
                           db.collection('users').insert({
                               user: req.session._movesId,
@@ -67,8 +71,8 @@ exports.authenticate = function(req, res) {
                               },
                               badges: [],
                               groups: [],
-                              access_token : accessToken,
-                              refresh_token : ''
+                              access_token : body.access_token,
+                              refresh_token : body.refresh_token
                           }, function(err, success) {
                               if (err) {
                                   res.send(err);
@@ -84,7 +88,7 @@ exports.authenticate = function(req, res) {
                 })
             }
             else {
-                console.log('no accessToken');
+                console.log('no body.access_token');
                 // res.redirect('/');
                 }
             })
