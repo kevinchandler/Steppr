@@ -28,11 +28,8 @@ exports.authenticate = function(req, res) {
     var url = moves.generateAuthUrl();
 
     moves.getAccessToken(req.query.code, function(err, body) {
+        console.log(body);
           if (err) return res.redirect('/');
-          if (!body.access_token) {
-              console.error('no body.accessToken');
-              res.redirect('/');
-          }
 
           // required for moves-api
           moves.options.accessToken = body.access_token;
@@ -40,17 +37,15 @@ exports.authenticate = function(req, res) {
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            if (body.access_token && profile) {
-              req.session._token = body.access_token;
-              req.session._movesId = profile.userId;
-              console.log('Profile:  ')
-              console.log(profile);
-            //   res.redirect('/home');
-
+            else if (body.access_token && profile.userId) {
+                req.session._token = body.access_token;
+                req.session._movesId = profile.userId;
+                console.log('sessions set: ' + req.session._token, req.session._movesId);
+            }
               // checks db to see if there's a user
               MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
                     if (err) {
-                      throw err;
+                      return err;
                     }
                     db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
                       if (err) { res.send(err) } ;
@@ -85,11 +80,6 @@ exports.authenticate = function(req, res) {
                       }
                   })
                 })
-            }
-            else {
-                console.log('no body.access_token');
-                // res.redirect('/');
-                }
             })
         })
     }
