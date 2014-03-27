@@ -26,16 +26,15 @@ module.exports = {
 			if (err) return callback( err );
 
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
-				if (err) return callback( err );
+				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (!stepsToday) {
 					db.collection('steps').find().each(function(err, stepprSteps) {
-						if (err) return callback( err );
+						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!stepprSteps) {
 							console.log(payload);
-							db.close();
-							return callback( null, payload );
+							callback( null, payload );
 						}
 						else {
 							payload.totalStepprSteps +=  stepprSteps.steps;

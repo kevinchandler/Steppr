@@ -23,7 +23,7 @@ module.exports = {
 						// each of the 31 days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 						payload.forEach(function(moves_data) {
 						if (!moves_data.summary) {
-							return;
+							console.log('no moves data summary');
 						}
 						moves_data.summary.forEach(function(activity) {
 							console.log('inside moves_data.forEach: ');
@@ -43,12 +43,13 @@ module.exports = {
 											if (err) callback(err);
 											else if (success) {
 												console.log('Steps Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
-											}
-										})
-										db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-											if (err) callback(err);
-											else if (success) {
-												console.log('User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+												//update users collection
+												db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+													if (err) callback(err);
+													else if (success) {
+														console.log('User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+													}
+												})
 											}
 										})
 									}
@@ -64,7 +65,7 @@ module.exports = {
 											if (err) { callback( err ) }
 											console.log( 'Data entered into db: ' + movesId, activityDate, steps );
 										})
-									}
+									};
 								})
 							}
 						})
@@ -73,10 +74,9 @@ module.exports = {
 				})
 			} //if payload
 			else {
-				callback(null, false)
+				callback(null, true)
 			}
 		})
-		callback(null, true)
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
@@ -85,10 +85,10 @@ module.exports = {
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-				    return callback( err );
+				    callback( err );
 				}
 				if (data) {
-					return callback( null, data );
+					callback( null, data );
 				}
 			})
 		})

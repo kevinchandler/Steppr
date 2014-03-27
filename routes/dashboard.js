@@ -15,12 +15,12 @@ exports.home = function(req, res) {
         res.redirect('/');
     }
     else {
-        user.updateUser(req.session._token, req.session._movesId, function(err, data) {
+        user.updateUser(req.session._token, req.session._movesId, function(err, success) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
                 console.log(err);
             }
-            if (data) {
+            else if (success) {
                 user.steps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
@@ -39,9 +39,9 @@ exports.home = function(req, res) {
                                 ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                                 ,   usersToday = delimitNumbers(payload.usersToday);
 
-                                // console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                                // console.log('rendering home.jade');
-                                // console.log(req.session._movesId + ' % is : ' + userPercentage);
+                                console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
+                                console.log('rendering home.jade');
+                                console.log(req.session._movesId + ' % is : ' + userPercentage);
 
                                 res.render('home.jade', {
                                     totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
@@ -52,6 +52,7 @@ exports.home = function(req, res) {
                                 })
                             }
                         })
+                        res.render('home.jade');
                     }
                 })
             }
