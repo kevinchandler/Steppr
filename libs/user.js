@@ -5,14 +5,6 @@ var request = require('request')
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv');
 dotenv.load();
-// user.steps(req.session._movesId, function( err, data ){
-// steps : function (movesId, callback) {
-// callback( null, data );
-
-
-// user.updateUser(req.session._token, req.session._movesId, function(err, data) {
-// updateUser : function ( sessionToken, movesId, callback) {
-// callback ( null, null, data )
 
 module.exports = {
 	// inputs steps into db if not already in, updates if steps don't match what's in db

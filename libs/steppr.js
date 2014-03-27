@@ -9,7 +9,12 @@ dotenv.load();
 
 
 module.exports = {
-	// gets total steps for the day, and since Steprr's inception
+
+	// { // sample output
+	//   "totalStepsToday": 4255,
+	//   "totalStepprSteps": 10713,
+	//   "usersToday": 1
+	// }
 	getTotalSteps : function(callback) {
 		var payload = {
 			totalStepsToday : 0,
@@ -18,7 +23,6 @@ module.exports = {
 		}
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
-
 
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
 				if (err) return callback( err );

@@ -54,7 +54,7 @@ exports.authenticate = function(req, res) {
                     db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
                       if (err) { res.send(err) } ;
 
-                      
+
                       if (user) {
                             console.log('Found user, redirecting ' + user);
                             return res.redirect('/home');
@@ -67,8 +67,10 @@ exports.authenticate = function(req, res) {
                               name: placeholder.toLowerCase(),
                               state : placeholder,
                               zipcode: placeholder,
+                              stepsToday : placeholder,
+                              stepsTotal : placeholder,
                               points: {
-                                  total: 0
+                                total: 0
                               },
                               badges: [],
                               groups: [],
