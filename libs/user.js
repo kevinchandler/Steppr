@@ -7,7 +7,11 @@ var request = require('request')
 dotenv.load();
 
 module.exports = {
-	// inputs steps into db if not already in, updates if steps don't match what's in db
+	// gets each day of moves activity for pastDays in the request query
+		// loops each of them and checks to see if that date is in the database
+			// if so it will update the number of steps if different than what moves tells us
+			// if not it will save to db & update stepsToday in the users collection
+
 	updateUser : function (sessionToken, movesId, callback) {
 		console.log('updating user ',  sessionToken, movesId);
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+sessionToken, function(err, response, body) {
@@ -44,16 +48,22 @@ module.exports = {
 											else if (success) {
 												console.log('Steps Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
 												//update users collection
-												db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-													if (err) callback(err);
-													else if (success) {
-														console.log('User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
-													}
-												})
+												console.log(activityDate, today);
+
+												if (activityDate === today) {
+													console.log('yes they equiality	eopwlpdlpasldpaslpsadsadplaspdsad');
+													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+														if (err) callback(err);
+														else if (success) {
+															console.log('User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+														}
+													})
+												}
 											}
 										})
 									}
-									else if (!doc) {
+
+									if (!doc) {
 										console.log('No doc found, inserting: ');
 									    // no data found for this date in our db, save it
 										db.collection('steps').insert({
