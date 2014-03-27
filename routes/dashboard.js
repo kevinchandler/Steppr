@@ -19,7 +19,6 @@ exports.home = function(req, res) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if( err ) {
                 console.log(err);
-                return;
             }
             if (data) {
                 user.steps(req.session._movesId, function( err, data ){
