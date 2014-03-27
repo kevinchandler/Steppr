@@ -41,13 +41,12 @@ exports.authenticate = function(req, res) {
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            if (body.access_token && profile.userId) {
                 req.session._token = body.access_token;
                 req.session._movesId = profile.userId;
                 console.log('sessions set: ' + req.session._token, req.session._movesId);
-            }
-              // checks db to see if there's a user
-              MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+
+                // checks db to see if there's a user
+                MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
                     if (err) {
                       return err;
                     }

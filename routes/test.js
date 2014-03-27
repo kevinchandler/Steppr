@@ -3,7 +3,8 @@ var request = require('request')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
-,   dotenv = require('dotenv');
+,   dotenv = require('dotenv')
+,   user = require('../libs/user.js');
 
 dotenv.load();
 // libs
@@ -13,21 +14,10 @@ var steppr = require('../libs/steppr.js');
 
 
 exports.index = function(req, res) {
-    //
-    // var steps;
-    //
-    steppr.getTotalSteps(function(err, steps){
-        console.log('stepsssss is: ' + steps.totalStepsToday);
+
+    user.updateAllUsers(function(err, success) {
+        console.log(success);
     })
-
-    // MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-    //     if (err) return err;
-    // request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+req.session._token, function(err, response, body) {
-    //     body = JSON.parse(body);
-    //     res.json(body);
-    //
-    // })
-
 
 
 

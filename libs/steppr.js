@@ -21,6 +21,7 @@ module.exports = {
 			totalStepprSteps : 0,
 			usersToday : 0,
 		}
+
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
 

@@ -44,7 +44,13 @@ module.exports = {
 												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 													if (err) callback(err);
 													else if (success) {
-														console.log('Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+														console.log('Steps Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+													}
+												})
+												db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+													if (err) callback(err);
+													else if (success) {
+														console.log('User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
 													}
 												})
 											}
@@ -92,5 +98,34 @@ module.exports = {
 				}
 			})
 		})
-	}
+	},
+
+	// //updates all usesr steps for today
+	// updateAllUsers : function(callback) {
+	// 	MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+	// 		if (err)  return callback( err, null );
+	// 		var userStepsToday;
+	//
+	// 		// loop through each user collection, then queries the steps collection with the userid,
+	// 		// and updates the user steps collection with the number of steps the user has taken today
+	// 		db.collection('users').find({}).each(function(err, user) {
+	// 			console.log(user);
+	// 			var query = { "user": user.user, date: today }
+	// 			db.collection('steps').find(query, function(err, userStepsToday) {
+	// 				console.log(userStepsToday);
+	// 				// if (err) {
+	// 				// 	return callback( err );
+	// 				// }
+	// 			// 	if (!userSteps) {
+	// 			// 		console.log('USER STEPS FOR TODAY IN USER.UPDATEALLUSERS IS: ' + userStepsToday);
+	// 			// 		// callback(userStepsToday);
+	// 			// 		// update users document with the userStepsToday
+	// 			// 	}
+	// 			// 	if (userSteps) {
+	// 			// 		userStepsToday += userSteps.steps
+	// 			// 	}
+	// 			})
+	// 		})
+	// 	})
+	// }
 }
