@@ -72,7 +72,11 @@ module.exports = {
 					callback(null, true)
 				})
 			} //if payload
+			else {
+				callback(null, false)
+			}
 		})
+		callback(null, true)
 	},
 	// gets the user and returns. Used to get the users steps for today
 	steps : function (movesId, callback) {
