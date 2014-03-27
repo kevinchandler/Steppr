@@ -33,11 +33,15 @@ exports.authenticate = function(req, res) {
 
           // required for moves-api
           moves.options.accessToken = body.access_token;
+
+
           moves.getProfile(function(err, profile) {
+            console.log("Got user profile");
+            console.log(profile);
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-            else if (body.access_token && profile.userId) {
+            if (body.access_token && profile.userId) {
                 req.session._token = body.access_token;
                 req.session._movesId = profile.userId;
                 console.log('sessions set: ' + req.session._token, req.session._movesId);
@@ -49,8 +53,11 @@ exports.authenticate = function(req, res) {
                     }
                     db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
                       if (err) { res.send(err) } ;
+
+                      
                       if (user) {
-                            res.redirect('/home');
+                            console.log('Found user, redirecting ' + user);
+                            return res.redirect('/home');
                       }
                       else if (!user) {
                           var  placeholder = '';
