@@ -17,11 +17,8 @@ dotenv.load();
 module.exports = {
 	// inputs steps into db if not already in, updates if steps don't match what's in db
 	updateUser : function (sessionToken, movesId, callback) {
-		if (!sessionToken || movesId) {
-			callback('updateUser: no sessionToken or movesId', null);
-		}
-		else { // user is authenticated and logged in
-			console.log('updating user ' + movesId);
+		// else { // user is authenticated and logged in
+			console.log('updating user ',  sessionToken, movesId);
 			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+sessionToken, function(err, response, body) {
 				if (err) return err;
 				var payload = JSON.parse(body);
@@ -86,7 +83,7 @@ module.exports = {
 					})
 				} //if payload
 			})
-		}
+		// }
 		 callback ( null, true );
 	},
 	// gets the user and returns. Used to get the users steps for today
