@@ -86,12 +86,9 @@ module.exports = {
 						}
 					})
 				}
-				else if (stepsToday) {
+				if (stepsToday) {
 					payload.usersToday += 1;
-					payload.totalStepsToday += Number(stepsToday.steps);
-				}
-				else {
-					callback('error getTotalSteps')
+					payload.totalStepsToday += stepsToday.steps
 				}
 			})
 		})
