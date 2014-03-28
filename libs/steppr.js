@@ -74,7 +74,7 @@ module.exports = {
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (!stepsToday) {
-					db.collection('steps').find().each(function(err, stepprSteps) {
+					db.collection('steps').find({}).each(function(err, stepprSteps) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!stepprSteps) {
