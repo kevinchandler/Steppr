@@ -74,7 +74,7 @@ module.exports = {
 											}
 										})
 									}
-									else if (doc && doc.steps !== steps) { // if this date is in the db
+									if (doc && doc.steps !== steps) { // if this date is in the db
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) callback(err);
 											else if (success) {
