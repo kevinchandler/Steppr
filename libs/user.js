@@ -17,7 +17,7 @@ module.exports = {
 
 		console.log('updateUser: ',  accessToken, movesId + '\n');
 		if ( !accessToken || !movesId ) {
-			callback(err);
+			return callback('err, no accessToken || movesId');
 		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			var payload = JSON.parse(body);
