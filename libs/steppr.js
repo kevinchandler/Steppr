@@ -12,11 +12,55 @@ dotenv.load();
 
 module.exports = {
 
-	// { // sample output
-	//   "totalStepsToday": 4255,
-	//   "totalStepprSteps": 10713,
-	//   "usersToday": 1
-	// }
+
+	findUser : function(userId, callback) {
+		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+			if (err) return callback( err );
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err) return callback(err);
+				if (doc) {
+					callback(null, doc);
+				}
+				else if (!doc) {
+					callback(null);
+				}
+			})
+		})
+	},
+
+	createNewUser : function(accessToken, refreshToken, movesId, callback) {
+		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+			if (err) return callback( err );
+			var  placeholder = '';
+			db.collection('users').insert({
+				user: movesId,
+				username: placeholder,
+				email: placeholder,
+				name: placeholder,
+				state : placeholder,
+				zipcode: placeholder,
+				stepsToday : 0,
+				stepsTotal : 0,
+				points: {
+					total: 0
+				},
+				badges: [],
+				groups: [],
+				access_token : accessToken,
+				refresh_token : refreshToken,
+			}, function(err, success) {
+				if (err) {
+					res.send(err);
+				}
+				if (success) {
+					console.log('user registered successfully');
+					callback(null, success);
+				}
+			})
+		})
+	},
+
+	// checks steps collection for today's date and returns the sum of each documents steps
 	getTotalSteps : function(callback) {
 		var payload = {
 			totalStepsToday : 0,
@@ -26,7 +70,6 @@ module.exports = {
 
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
-
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
@@ -54,7 +97,6 @@ module.exports = {
 		})
 	},
 
-
 	// //updates all usesr steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
@@ -79,8 +121,4 @@ module.exports = {
 			})
 		})
 	}
-	// 	checkForUser : function(callback) {
-	//
-	// 	}
-	// }
 }

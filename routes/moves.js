@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-,   user = require('../libs/user.js');
+,   steppr = require('../libs/steppr.js');
 
 
 // hit this route and it will authenticate with moves, then hit authenticate
@@ -52,15 +52,13 @@ exports.authenticate = function(req, res) {
                       return err;
                     }
 
-                    user.findUser(profile.userId, function(err, doc) {
+                    steppr.findUser(profile.userId, function(err, doc) {
                         if (err) { return err; }
                         if (doc) {
-                            console.log('doc found');
-                            console.log(doc);
                             res.redirect('/home');
                         }
                         if (!doc) {
-                            user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                            steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                                 if (err) {
                                     console.log(err + ' error: unable to create user');
                                     res.redirect('/');
