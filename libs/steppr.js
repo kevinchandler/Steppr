@@ -3,8 +3,10 @@ var request = require('request')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
-,   dotenv = require('dotenv');
+,   dotenv = require('dotenv')
+,   user = require('./user.js');
 dotenv.load();
+
 
 
 
@@ -47,6 +49,31 @@ module.exports = {
 				}
 				else {
 					callback('error getTotalSteps')
+				}
+			})
+		})
+	},
+
+
+	// //updates all usesr steps for today
+	updateAllUsers : function(callback) {
+		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+			if (err) callback( err );
+			var userStepsToday;
+
+			db.collection('users').find({}).each(function(err, doc) {
+				if (doc) {
+					console.log(doc);
+					var movesId = doc.user
+					,   accessToken = doc.access_token;
+
+					user.updateUser(accessToken, movesId, function(err, success) {
+						if (err) console.log(err);
+						console.log(success);
+					})
+				}
+				if (!doc) {
+					callback(null, 'updateAllUsers complete');
 				}
 			})
 		})
