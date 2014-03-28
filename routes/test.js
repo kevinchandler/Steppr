@@ -16,7 +16,6 @@ var steppr = require('../libs/steppr.js');
 exports.index = function(req, res) {
 
 
-
 }
 
 

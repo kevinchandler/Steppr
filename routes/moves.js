@@ -1,4 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
+var MongoClient = require('mongodb').MongoClient
+,   user = require('../libs/user.js');
 
 
 // hit this route and it will authenticate with moves, then hit authenticate
@@ -50,15 +51,20 @@ exports.authenticate = function(req, res) {
                     if (err) {
                       return err;
                     }
-                    db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
-                        if (err) { res.send(err) } ;
-                        if (user) {
-                            console.log('Found user, redirecting ' + user + '\n');
-                            return res.redirect('/home');
+
+                    user.findUser(profile.userId, function(err, doc) {
+                        if (err) { return err; }
+                        if (doc) {
+                            console.log('doc found');
+                            console.log(doc);
+                            res.redirect('/home');
                         }
-                        else if (!user) {
+                        if (!doc) {
                             user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
-                                if (err) console.log(err + ' error: unable to create user');
+                                if (err) {
+                                    console.log(err + ' error: unable to create user');
+                                    res.redirect('/');
+                                }
                                 if (success) {
                                     console.log('Registered user successfully \n');
                                     res.redirect('/home');
