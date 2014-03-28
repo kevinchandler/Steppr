@@ -8,13 +8,9 @@ block content
   div#name
     h1 Steppr
     h4.alert(style='text-align: center;') #{totalStepprSteps} steps taken on Steppr
+    h4.col-md-4.alert(style='text-align: center;')  Today: #{totalStepsToday}  steps taken
+      span.col-md-4.col-md-offset-4 #{usersToday} users
   br
-  p#totalUserSteps.alert.alert-success You've taken #{totalUserStepsToday} steps today
-  p#userPercentage.alert.alert-danger You own #{userPercentage}% of todays steps
-  p#totalStepsToday.alert.alert #{usersToday} people have taken #{totalStepsToday} steps today
-
-
-// bootstrap. use columns. profit
-
-//little icon in bottom right of gray box to switch to user > group > steppr
-                                        Steps, %, total <       Not in a group > join?
+  p#totalUserSteps.alert.alert-success You're at: #{totalUserStepsToday} steps
+  .col-md-4
+    p#userPercentage.alert.alert-danger That's #{userPercentage}% of todays steps

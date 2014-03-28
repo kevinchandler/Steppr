@@ -26,32 +26,34 @@ exports.home = function(req, res) {
                     if (err) {
                         console.log('error connecting to db in user.steps')
                     }
-                    console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
-                    var totalUserStepsToday = data.steps;
+                    if (data) {
+                        console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
+                        var totalUserStepsToday = data.steps;
 
-                    steppr.getTotalSteps(function(err, payload) {
-                        if (err) res.send(err);
-                        console.log('inside  steppr.getTotal callback');
+                        steppr.getTotalSteps(function(err, payload) {
+                            if (err) res.send(err);
+                            console.log('inside  steppr.getTotal callback');
 
-                        if (payload) { // data retrieved from getTotalSteps callback
-                            var totalStepsToday = delimitNumbers(payload.totalStepsToday)
-                            ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
-                            ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
-                            ,   usersToday = delimitNumbers(payload.usersToday);
+                            if (payload) { // data retrieved from getTotalSteps callback
+                                var totalStepsToday = delimitNumbers(payload.totalStepsToday)
+                                ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
+                                ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
+                                ,   usersToday = delimitNumbers(payload.usersToday);
 
-                            console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                            console.log('rendering home.jade');
-                            console.log(req.session._movesId + ' % is : ' + userPercentage);
+                                console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
+                                console.log('rendering home.jade');
+                                console.log(req.session._movesId + ' % is : ' + userPercentage);
 
-                            res.render('home.jade', {
-                                totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
-                                totalStepsToday : totalStepsToday,
-                                totalStepprSteps : totalStepprSteps,
-                                userPercentage : userPercentage,
-                                usersToday : usersToday,
-                            })
-                        }
-                    })
+                                res.render('home.jade', {
+                                    totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
+                                    totalStepsToday : totalStepsToday,
+                                    totalStepprSteps : totalStepprSteps,
+                                    userPercentage : userPercentage,
+                                    usersToday : usersToday,
+                                })
+                            }
+                        })
+                    }
                 })
             }
         })
