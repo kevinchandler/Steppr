@@ -7,13 +7,13 @@ function delimitNumbers(str, callback) {
 }
 
 exports.index = function(req, res) {
-    // // redirect if authenticated
-    // if (!req.session._token || !req.session._movesId) {
-    //     res.render('landing.jade');
-    // }
-    // else {
-    //     res.redirect('/home');
-    // }
+    // redirect if authenticated
+    if (!req.session._token || !req.session._movesId) {
+        res.render('landing.jade');
+    }
+    else {
+        res.redirect('/home');
+    }
     steppr.getTotalSteps(function(err, payload) {
         if (err) {
             res.error;
