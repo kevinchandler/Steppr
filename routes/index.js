@@ -7,25 +7,21 @@ function delimitNumbers(str, callback) {
 }
 
 exports.index = function(req, res) {
-    // redirect if authenticated
-    if (!req.session._token || !req.session._movesId) {
-        res.render('landing.jade');
-    }
-    else {
-        res.redirect('/home');
-    }
     steppr.getTotalSteps(function(err, payload) {
         if (err) {
-            res.error;
+            res.end(500);
         }
         if (payload) {
-            res.render('landing.jade', {
-                totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
-                usersToday : payload.usersToday,
-                totalStepsToday : delimitNumbers(payload.totalStepsToday)
-            });
+            if (req.session._token && req.session._movesId) {
+                res.redirect('/home');
+            }
+            else {
+                res.render('landing.jade', {
+                    totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
+                    usersToday : payload.usersToday,
+                    totalStepsToday : delimitNumbers(payload.totalStepsToday)
+                });
+            }
         }
     })
-
-
 }
