@@ -7,6 +7,44 @@ var request = require('request')
 dotenv.load();
 
 module.exports = {
+
+	createNewUser : function(sessionToken, refreshToken, movesId, callback) {
+		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+			if (err) return callback( err );
+			var  placeholder = '';
+			db.collection('users').insert({
+				user: req.session._movesId,
+				email: placeholder,
+				name: placeholder.toLowerCase(),
+				state : placeholder,
+				zipcode: placeholder,
+				stepsToday : 0,
+				stepsTotal : 0,
+				points: {
+				total: 0
+				},
+				badges: [],
+				groups: [],
+				access_token : body.access_token,
+				refresh_token : body.refresh_token
+			}, function(err, success) {
+				if (err) {
+					res.send(err);
+				}
+				if (success) {
+					console.log('user registered successfully');
+					callback(null, success);	
+				}
+			})
+		})
+	},
+
+	findUser : function(userId, callback) {
+
+	},
+
+
+
 	// usage : user.updateUser(sessionToken, movesId, callback)
 //
 	// gets each day of moves activity for pastDays in the request query
@@ -60,11 +98,14 @@ module.exports = {
 												//update users collection
 
 												if (activityDate === today) {
-													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-														if (err) callback(err);
-														else if (success) {
-															console.log('Update db - User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
-														}
+													db.collection('users').findOne({user: doc.user}, function(err, doc) { // make sure there's a user in the db before updating nothing
+														if (err || !doc) { return };
+														db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+															if (err) callback(err);
+															else if (success) {
+																console.log('Update db - User Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+															}
+														})
 													})
 												}
 											}

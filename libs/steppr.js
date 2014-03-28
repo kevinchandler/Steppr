@@ -79,4 +79,8 @@ module.exports = {
 			})
 		})
 	}
+	// 	checkForUser : function(callback) {
+	//
+	// 	}
+	// }
 }

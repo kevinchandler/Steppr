@@ -51,42 +51,25 @@ exports.authenticate = function(req, res) {
                       return err;
                     }
                     db.collection('users').findOne({user: req.session._movesId}, function(err, user) {
-                      if (err) { res.send(err) } ;
-
-
-                      if (user) {
-                            console.log('Found user, redirecting ' + user);
+                        if (err) { res.send(err) } ;
+                        if (user) {
+                            console.log('Found user, redirecting ' + user + '\n');
                             return res.redirect('/home');
-                      }
-                      else if (!user) {
-                          var  placeholder = '';
-                          db.collection('users').insert({
-                              user: req.session._movesId,
-                              email: placeholder,
-                              name: placeholder.toLowerCase(),
-                              state : placeholder,
-                              zipcode: placeholder,
-                              stepsToday : placeholder,
-                              stepsTotal : placeholder,
-                              points: {
-                                total: 0
-                              },
-                              badges: [],
-                              groups: [],
-                              access_token : body.access_token,
-                              refresh_token : body.refresh_token
-                          }, function(err, success) {
-                              if (err) {
-                                  res.send(err);
-                              }
-                              if (success) {
-                                  console.log(success);
-                                  console.log('user registered successfully');
-                                  res.redirect('/home');
-                              }
-                          })
-                      }
-                  })
+                        }
+                        else if (!user) {
+                            user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                                if (err) console.log(err + ' error: unable to create user');
+                                if (success) {
+                                    console.log('Registered user successfully \n');
+                                    res.redirect('/home');
+                                }
+                                else {
+                                    console.log('unable to createNewUser \n');
+                                    res.redirect('/');
+                                }
+                            })
+                        }
+                    })
                 })
             })
         })
