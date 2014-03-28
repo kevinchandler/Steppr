@@ -34,8 +34,9 @@ module.exports = {
 						if (!db) {
 							callback(err +' \n no db -- updateUser: payload.forEach')
 						}
-						if (!moves_data.summary) {
+						if (!moves_data || !moves_data.summary) {
 							console.log('no moves data summary');
+							callback(null, undefined);
 						}
 						moves_data.summary.forEach(function(activity) {
 							if (!db) {
