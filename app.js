@@ -9,7 +9,9 @@ var routes = require('./routes')
 ,   dashboard = require('./routes/dashboard.js')
 ,   user = require('./routes/user.js')
 ,   groups = require('./routes/groups.js')
-,   test = require('./routes/test.js');
+,   test = require('./routes/test.js')
+,   steppr = require('./libs/steppr.js')
+,   USER = require('./libs/user.js');
 var http = require('http');
 var path = require('path');
 
@@ -69,6 +71,21 @@ app.post('/groups/create', groups.createGroup);
 app.get('/test', test.index);
 
 app.post('/notification', test.notification); // moves posts data every so often
+
+function updateAllUsers() {
+    steppr.updateAllUsers(function(err, success) {
+        if (err) console.log(err);
+        console.log(success);
+    })
+}
+
+//will run check() every so often // what the minutes variable is set to
+var minutes = 1, the_interval = minutes * 60 * 1000;
+setInterval(function() {
+    console.log('Updating:::: \n');
+  updateAllUsers();
+}, the_interval);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

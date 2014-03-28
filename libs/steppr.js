@@ -58,10 +58,11 @@ module.exports = {
 	// //updates all usesr steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) callback( err );
+			if (err || !db) callback( err );
 			var userStepsToday;
 
 			db.collection('users').find({}).each(function(err, doc) {
+				if (err) { callback (err) }
 				if (doc) {
 					console.log(doc);
 					var movesId = doc.user

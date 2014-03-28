@@ -15,7 +15,10 @@ module.exports = {
 			// if not it will save to db & update stepsToday in the users collection
 
 	updateUser : function (sessionToken, movesId, callback) {
-		console.log('updating user ',  sessionToken, movesId + '\n');
+		console.log('updateUser: ',  sessionToken, movesId + '\n');
+		if (!sessionToken || !movesId) {
+			callback(err + 'no sessionToken or movesId');
+		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+sessionToken, function(err, response, body) {
 			var payload = JSON.parse(body);
 			if (err) return err;
@@ -29,10 +32,16 @@ module.exports = {
 					}
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
+						if (!db) {
+							callback(err +' \n no db -- updateUser: payload.forEach')
+						}
 						if (!moves_data.summary) {
 							console.log('no moves data summary');
 						}
 						moves_data.summary.forEach(function(activity) {
+							if (!db) {
+								callback(err +' \n no db -- updateUser: payload.forEach')
+							}
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
 								var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
@@ -79,7 +88,7 @@ module.exports = {
 						})
 					})
 					// we're done checking/updating db
-					callback(null, 'updateUser complete')
+					callback(null, 'updateUser complete');
 				})
 			}
 		})

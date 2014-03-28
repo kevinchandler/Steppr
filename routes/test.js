@@ -15,20 +15,6 @@ var steppr = require('../libs/steppr.js');
 
 exports.index = function(req, res) {
 
-    // user.updateAllUsers(function(err, success) {
-    //     console.log(success);
-    // })
-    //
-
-    // user.updateUser('H9qW98vb5RTuuUb2dwKhQt56I9qCNbn6NL2CRWsNJOAcw6mSNOoKc3U8M04wyc4F', '14104144053355464', function(err, success) {
-    //     if (err) console.log(err);
-    //     console.log(success);
-    // })
-
-    steppr.updateAllUsers(function(err, success) {
-        if (err) console.log(err);
-        console.log(success);
-    })
 
 
 }

@@ -17,8 +17,9 @@ exports.home = function(req, res) {
     else {
         user.updateUser(req.session._token, req.session._movesId, function(err, success) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
-            if( err ) {
+            if ( err ) {
                 console.log(err);
+                res.redirect('/');
             }
             else if (success) {
                 user.steps(req.session._movesId, function( err, data ){
