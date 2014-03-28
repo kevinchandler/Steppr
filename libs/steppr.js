@@ -100,25 +100,29 @@ module.exports = {
 	// //updates all usesr steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err || !db) callback( err );
+			if (err) callback( err );
 			var userStepsToday;
+			if (db) {
+				db.collection('users').find({}).each(function(err, doc) {
+					if (err) { callback (err) }
+					if (doc) {
+						console.log(doc);
+						var movesId = doc.user
+						,   accessToken = doc.access_token;
 
-			db.collection('users').find({}).each(function(err, doc) {
-				if (err) { callback (err) }
-				if (doc) {
-					console.log(doc);
-					var movesId = doc.user
-					,   accessToken = doc.access_token;
-
-					user.updateUser(accessToken, movesId, function(err, success) {
-						if (err) console.log(err);
-						console.log(success);
-					})
-				}
-				if (!doc) {
-					callback(null, 'updateAllUsers complete');
-				}
-			})
+						user.updateUser(accessToken, movesId, function(err, success) {
+							if (err) console.log(err);
+							console.log(success);
+						})
+					}
+					if (!doc) {
+						callback(null, 'updateAllUsers complete');
+					}
+				})
+			}
+			else {
+				callback(err)
+			}
 		})
 	}
 }

@@ -16,7 +16,7 @@ module.exports = {
 	//			 if not it will save to db & update stepsToday in the users collection
 
 		console.log('updateUser: ',  accessToken, movesId + '\n');
-		if (!accessToken || !movesId) {
+		if ( !accessToken || !movesId ) {
 			callback(err);
 		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
@@ -66,6 +66,7 @@ module.exports = {
 										})
 									}
 									// update users doc w/ # of steps today
+									// check for date so we can manipulate the number of days in the request to moves api and it won't affect stepsToday
 									if (activityDate === today) {
 										db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 											if (err) callback(err);
