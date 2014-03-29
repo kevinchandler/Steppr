@@ -16,13 +16,14 @@ dotenv.load();
 
 
 exports.index = function(req, res) {
-
-    database.connectToDb(function(err, db) {
+    console.log(req.session._movesId);
+    user.isRegistered(req.session._movesId, function(err, success) {
         if (err) console.log(err);
-        else {
-            db.collection('users').find({}).each(function(err, doc) {
-                console.log(doc);
-            })
+        if (success) {
+            console.log('user exists');
+        }
+        else if (!success) {
+            res.redirect('/user/register');
         }
     })
 }

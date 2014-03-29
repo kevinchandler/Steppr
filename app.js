@@ -62,6 +62,9 @@ app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', dashboard.home);
 
+app.get('/user/register', user.register);
+app.post('/user/register', user.register);
+
 app.get('/groups', groups.index);
 app.post('/groups/create', groups.createGroup);
 

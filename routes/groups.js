@@ -10,5 +10,9 @@ exports.index = function(req, res) {
 
 
 exports.createGroup = function(req, res) {
+	// check users coll against movesId and see if user has a username
+		// render setusername.jade
+		// redirect back here
+	// render creategroup.jade
 
 }
