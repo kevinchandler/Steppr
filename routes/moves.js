@@ -31,50 +31,47 @@ exports.authenticate = function(req, res) {
     moves.getAccessToken(req.query.code, function(err, body) {
         console.log(body);
           if (err) return res.redirect('/');
-
-          // required for moves-api
+          // required for moves-api library
           moves.options.accessToken = body.access_token;
 
-
           moves.getProfile(function(err, profile) {
-            console.log("Got user profile");
-            console.log(profile);
             if (err) {
                 res.send('unable to get moves profile info - 565');
             }
-                req.session._token = body.access_token;
-                req.session._movesId = profile.userId;
-                console.log('sessions set: ' + req.session._token, req.session._movesId);
+            if (profile) {
+                    req.session._token = body.access_token;
+                    req.session._movesId = profile.userId;
+                    console.log('sessions set: ' + req.session._token, req.session._movesId);
 
-                // checks db to see if there's a user
-                MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-                    if (err) {
-                      return err;
-                    }
-
-                    steppr.findUser(profile.userId, function(err, doc) {
-                        if (err) { return err; }
-                        if (doc) {
-                            res.redirect('/home');
+                    // checks db to see if there's a user
+                    MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+                        if (err) {
+                          return err;
                         }
-                        if (!doc) {
-                            steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
-                                if (err) {
-                                    console.log(err + ' error: unable to create user');
-                                    res.redirect('/');
-                                }
-                                if (success) {
-                                    console.log('Registered user successfully \n');
-                                    res.redirect('/home');
-                                }
-                                else {
-                                    console.log('unable to createNewUser \n');
-                                    res.redirect('/');
-                                }
-                            })
-                        }
+                        steppr.findUser(profile.userId, function(err, doc) {
+                            if (err) { return err; }
+                            if (doc) {
+                                res.redirect('/home');
+                            }
+                            if (!doc) {
+                                steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                                    if (err) {
+                                        console.log(err + ' error: unable to create user');
+                                        res.redirect('/');
+                                    }
+                                    if (success) {
+                                        console.log('Registered user successfully \n');
+                                        res.redirect('/home');
+                                    }
+                                    else {
+                                        console.log('unable to createNewUser \n');
+                                        res.redirect('/');
+                                    }
+                                })
+                            }
+                        })
                     })
-                })
+                }
             })
         })
     }
