@@ -2,60 +2,44 @@ var request = require('request')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
-,   MongoClient = require('mongodb').MongoClient
-,   dotenv = require('dotenv');
+,   database = require('../libs/database.js')
+,   dotenv = require('dotenv')
+,   fs = require('fs')
+,   Log = require('log')
+,   log = new Log('debug', fs.createWriteStream('log.txt'));
+
 dotenv.load();
 
-/*
- * GET home page.
- */
+
 // register user info with moves id, their email, create db schema
 exports.register = function(req, res) {
     if (req.method === 'GET') {
         res.render('register.jade');
     }
-    else if (req.method === 'POST') {
-        var email = req.body.email
-        ,   first_name = req.body.firstname
-        ,   zip_code = req.body.zipcode;
-        req.session._email = email;
-        if (!email || !first_name || !zip_code) {
-            console.error('user lacking registration information');
-            return res.redirect('/register');
-        }
-        // open db, check if new user, if not, /register, if so /authenticate
-        MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-            var users = db.collection('users');
-            if (err) {
-                console.error('unable to connect to db. 105');
-                return res.end('Unable to connect to db. Try again 105');
-            }
-            else if (db) {
-                users.insert({
-                    user: req.session._movesId,
-                    email: email.toLowerCase(),
-                    name: first_name.toLowerCase(),
-                    zipcode: zip_code,
-                    points: {
-                        today: 0,
-                        total: 0
-                    },
-                    opponent: undefined
-                }, function(err, success) {
-                    if (err) {
-                        res.send(err);
-                    }
-                    else if (success) {
-                        log('user registered successfully', success);
-                        res.redirect('/home');
-                    }
-                })
-            }
-            else {
-                res.redirect('/moves');
-                console.error('something went wrong when registering the user err 545 \n Trying to reauthenticate');
-            }
-        })
-    }
+    if (req.method === 'POST') {
+        var user = req.session._movesId
+        ,   username = req.body.username;
 
+        if (!user || !username) {
+            log.error('user registration lacks user or username')
+            return res.redirect('back');
+        }
+        else {
+            database.connect(function(err, db) {
+                var users = db.collection('users');
+                ///db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+
+                if (db) {
+                    users.update({ user : user }, { $set: { "username" : username }}, function(err, success) {
+                        if (err) { log.error(err); return res.redirect('back'); }
+                        if (success) {
+                            log.info( success, 'username set: ' + username, user );
+                            console.log('username successfully set: ', user, username );
+                            res.redirect('/groups');
+                        }
+                    })
+                }
+            })
+        }
+    }
 }

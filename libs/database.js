@@ -14,7 +14,7 @@ module.exports = {
 			if (err || !db) {
 				callback(err)
 			}
-			else if (db) {
+			if (db) {
 				callback(null, db);
 			}
 		})

@@ -54,25 +54,38 @@ if (process.argv[2])  {
     });
 }
 
+function authenticate(req, res, next) {
+    if (req.session._token && req.session._movesId) {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
+
 app.get('/', routes.index);
 
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
+app.get('/home', authenticate, dashboard.home);
 
-app.get('/home', dashboard.home);
+app.get('/user/register', user.register);
+app.post('/user/register', user.register);
 
 app.get('/groups', groups.index);
-app.post('/groups/create', groups.createGroup);
+app.get('/groups/create', authenticate, groups.createGroup)
+app.post('/groups/create', authenticate, groups.createGroup);
 
 app.get('/test', test.index);
 
 app.post('/notification', test.notification); // moves posts data every so often
 
-
 app.get('/logs', function(req, res) {
       res.sendfile('log.txt');
 })
+
 
 
 

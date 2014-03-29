@@ -16,15 +16,7 @@ dotenv.load();
 
 
 exports.index = function(req, res) {
-
-    database.connectToDb(function(err, db) {
-        if (err) console.log(err);
-        else {
-            db.collection('users').find({}).each(function(err, doc) {
-                console.log(doc);
-            })
-        }
-    })
+    res.render('test.jade');
 }
 
 
