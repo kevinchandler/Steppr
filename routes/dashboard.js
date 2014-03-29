@@ -1,7 +1,8 @@
 
-var user = require('../libs/user')
-,   steppr = require('../libs/steppr');
-
+var user = require('../libs/user.js')
+,   steppr = require('../libs/steppr.js')
+,   Log = require('log')
+  , log = new Log('info');
 
 function delimitNumbers(str, callback) {
     return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
@@ -16,15 +17,16 @@ exports.home = function(req, res) {
     }
     else {
         user.updateUser(req.session._token, req.session._movesId, function(err, success) {
-            console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if ( err ) {
                 console.log(err);
-
+                log.error(err);
             }
-            else if (success) {
-                user.steps(req.session._movesId, function( err, data ){
+            if (success) {
+                log.error(success)
+                user.getSteps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
+                        log.error('error connecting to db in user.steps')
                     }
                     console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     var totalUserStepsToday = data.steps;

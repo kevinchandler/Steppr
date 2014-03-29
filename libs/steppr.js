@@ -4,7 +4,11 @@ var request = require('request')
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
-,   user = require('./user.js');
+,   user = require('./user.js')
+,   fs = require('fs')
+,   Log = require('log')
+,   log = new Log('debug', fs.createWriteStream('log.txt'));
+
 dotenv.load();
 
 
@@ -12,16 +16,17 @@ dotenv.load();
 
 module.exports = {
 
-
 	findUser : function(userId, callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err) return callback(err);
 				if (doc) {
+					log.info('findUser complete: ', doc);
 					callback(null, doc);
 				}
 				else if (!doc) {
+					log.error('findUser: no doc found')
 					callback(null);
 				}
 			})
@@ -50,10 +55,11 @@ module.exports = {
 				refresh_token : refreshToken,
 			}, function(err, success) {
 				if (err) {
-					res.send(err);
+					log(err);
+					callback(err);
 				}
 				if (success) {
-					console.log('user registered successfully');
+					log.info('createNewUser: ', success);
 					callback(null, success);
 				}
 			})
@@ -78,7 +84,7 @@ module.exports = {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!stepprSteps) {
-							console.log(payload);
+							log.error('getTotalSteps complete: ', payload);
 							callback( null, payload );
 						}
 						else {
@@ -103,13 +109,11 @@ module.exports = {
 				db.collection('users').find({}).each(function(err, doc) {
 					if (err) { callback (err) }
 					if (doc) {
-						console.log(doc);
 						var movesId = doc.user
 						,   accessToken = doc.access_token;
-
+						log.info(movesId, accessToken)
 						user.updateUser(accessToken, movesId, function(err, success) {
-							if (err) console.log(err);
-							console.log(success);
+							if (err) log.error(err);
 						})
 					}
 					if (!doc) {
