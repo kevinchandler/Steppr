@@ -41,7 +41,7 @@ module.exports = {
 						}
 						if (!moves_data || !moves_data.summary) {
 							log.info('no moves data summary');
-							callback(null, undefined);
+							return callback(null, undefined);
 						}
 						moves_data.summary.forEach(function(activity) {
 							if (!db) {
