@@ -3,7 +3,7 @@ var user = require('../libs/user.js')
 ,   steppr = require('../libs/steppr.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('log.txt'));
+,   log = new Log('debug', fs.createWriteStream('logs/dashboard-log.txt', {"flags": "a"}));
 
 
 function delimitNumbers(str, callback) {

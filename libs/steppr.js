@@ -7,7 +7,7 @@ var request = require('request')
 ,   user = require('./user.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('log.txt'));
+,   log = new Log('debug', fs.createWriteStream('logs/libs-steppr-log.txt', {"flags": "a"}));
 
 dotenv.load();
 

@@ -7,7 +7,7 @@ var request = require('request')
 ,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('my.log', {"flags": "a"}));
+,   log = new Log('debug', fs.createWriteStream('logs/libs-user-log.txt', {"flags": "a"}));
 
 dotenv.load();
 
@@ -57,7 +57,7 @@ module.exports = {
 								db.collection('steps').findOne(query, function(err, doc) {
 									if (err) callback(err);
 									if (!doc) {
-										log.info('No data for ' + today + ' found, inserting: ')
+										log.info('Inserting into db: ', movesId, activityDate, steps, today)
 										console.log('No data for ' + today + ' found, inserting: ');
 										// no data found for this date in our db, save it
 										db.collection('steps').insert({

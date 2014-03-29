@@ -3,7 +3,11 @@ var request = require('request')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
-,   dotenv = require('dotenv');
+,   dotenv = require('dotenv')
+,   fs = require('fs')
+,   Log = require('log')
+,   log = new Log('debug', fs.createWriteStream('logs/libs-groups-log.txt', {"flags": "a"}));
+
 dotenv.load();
 
 
@@ -38,7 +42,7 @@ module.exports = {
 			})
 		})
 	},
-	// list groups in groups collection. 
+	// list groups in groups collection.
 	displayGroups : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) callback( err );
