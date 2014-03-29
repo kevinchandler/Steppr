@@ -24,7 +24,7 @@ exports.home = function(req, res) {
                 log.error(err);
             }
             if (success) {
-                log.error(success)
+                log.info(success)
                 user.getSteps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
