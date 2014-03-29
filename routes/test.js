@@ -16,19 +16,7 @@ dotenv.load();
 
 
 exports.index = function(req, res) {
-    console.log(req.session._movesId);
-    user.isRegistered(req.session._movesId, function(err, isRegistered) {
-        if (err) {
-            log.error(err);
-            res.redirect('back');
-        }
-        if (isRegistered) {
-            res.redirect('/groups');
-        }
-        else if (!isRegistered) {
-            res.redirect('/user/register');
-        }
-    })
+    res.render('test.jade');
 }
 
 

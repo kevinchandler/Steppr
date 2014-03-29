@@ -115,13 +115,21 @@ module.exports = {
 	// checks users collection and returns true or false if the username is set.
 	// we'll consider having a username being registered
 	isRegistered : function( movesId, callback ) {
+		if (!movesId) {
+			callback("error: no movesId to check if user is registered");
+		}
 		database.connect(function( err, db ) {
-			if ( err ) callback( err );
+			if ( err ) {
+				console.log('error: unable to connect to database');
+				callback( err );
+			}
 			var users = db.collection('users')
 			,   query = { user: movesId };
 			users.findOne(query, function(err, doc) {
-				if (err) throw err;
-				console.log( doc.username || null );
+				if (err || !doc) {
+					log.error(err);
+					callback(err)
+				}
 				if (doc.username) {
 					callback( null, true );
 				}

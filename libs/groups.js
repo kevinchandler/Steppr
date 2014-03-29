@@ -19,7 +19,7 @@ module.exports = {
 		}
 		database.connect(function(err, db) {
 			if (err || !db) callback(err);
-			
+
 			var groups = db.collection('groups');
 			groups.findOne({name: name}, function(err, group) {
 				if (!group) {
@@ -38,7 +38,7 @@ module.exports = {
 			})
 		})
 	},
-
+	// list groups in groups collection. 
 	displayGroups : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) callback( err );

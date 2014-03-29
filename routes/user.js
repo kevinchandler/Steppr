@@ -34,6 +34,7 @@ exports.register = function(req, res) {
                         if (err) { log.error(err); return res.redirect('back'); }
                         if (success) {
                             log.info( success, 'username set: ' + username, user );
+                            console.log('username successfully set: ', user, username );
                             res.redirect('/groups');
                         }
                     })

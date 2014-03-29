@@ -1,4 +1,5 @@
-var groups = require('../libs/groups.js');
+var groups = require('../libs/groups.js')
+,   user = require('../libs/user.js');
 
 exports.index = function(req, res) {
 	groups.displayGroups(function(err, groups) {
@@ -10,9 +11,21 @@ exports.index = function(req, res) {
 
 
 exports.createGroup = function(req, res) {
-	// check users coll against movesId and see if user has a username
-		// render setusername.jade
-		// redirect back here
-	// render creategroup.jade
-
+	if (req.method == 'GET') {
+		user.isRegistered(req.session._movesId, function(err, isRegistered) {
+			if (err) {
+				log.error(err);
+				res.redirect('back');
+			}
+			if (!isRegistered) {
+				res.redirect('/user/register');
+			}
+			if (isRegistered) {
+				res.render('creategroup.jade')
+			}
+		})
+	}
+	if ( req.method === 'POST' ) {
+		//create group here
+	}
 }
