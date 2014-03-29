@@ -1,2 +1,2 @@
-[Sat Mar 29 2014 08:52:56 GMT-0700 (PDT)] INFO 14104144053355464 'RUJUx3701gWbl04no5h13f4X6B_1oEPXqEU9q6r1JxVZ8XfoInK05935pXZAi8Kk'
-[Sat Mar 29 2014 08:53:56 GMT-0700 (PDT)] INFO 14104144053355464 'RUJUx3701gWbl04no5h13f4X6B_1oEPXqEU9q6r1JxVZ8XfoInK05935pXZAi8Kk'
+[Sat Mar 29 2014 09:14:00 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:14:04 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }

@@ -13,16 +13,16 @@ function delimitNumbers(str, callback) {
 exports.home = function(req, res) {
     // update db with past months steps.
     if (!req.session._token || !req.session._movesId) {
-        res.redirect('/');
+         res.redirect('/');
     }
     else {
-        // user.updateUser(req.session._token, req.session._movesId, function(err, success) {
-        //     if ( err ) {
-        //         console.log(err);
-        //         log.error(err);
-        //     }
-        //     if (success) {
-        //         log.error(success)
+        user.updateUser(req.session._token, req.session._movesId, function(err, success) {
+            if ( err ) {
+                console.log(err);
+                log.error(err);
+            }
+            if (success) {
+                log.error(success)
                 user.getSteps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
@@ -31,7 +31,7 @@ exports.home = function(req, res) {
                     var totalUserStepsToday = data.steps;
 
                     steppr.getTotalSteps(function(err, payload) {
-                        if (err) res.send(err);
+                        if (err) return res.send(err);
                         console.log('inside  steppr.getTotal callback');
 
                         if (payload) { // data retrieved from getTotalSteps callback
@@ -42,7 +42,7 @@ exports.home = function(req, res) {
 
                             console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
                             log.info('rendering home.jade');
-                            res.render('home.jade', {
+                            return res.render('home.jade', {
                                 totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
                                 totalStepsToday : totalStepsToday,
                                 totalStepprSteps : totalStepprSteps,
@@ -52,7 +52,7 @@ exports.home = function(req, res) {
                         }
                     })
                 })
-            // }
-        // })
+            }
+        })
     }
 }
