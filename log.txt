@@ -1,2 +1,23 @@
-[Sat Mar 29 2014 09:14:00 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
-[Sat Mar 29 2014 09:14:04 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:20:57 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:21:01 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:21:07 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:21:18 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 0, totalStepprSteps: 0, usersToday: 0 }
+[Sat Mar 29 2014 09:21:24 GMT-0700 (PDT)] ERROR findUser: no doc found
+[Sat Mar 29 2014 09:21:24 GMT-0700 (PDT)] INFO createNewUser:  [ { user: 14104144053355464,
+    username: '',
+    email: '',
+    name: '',
+    state: '',
+    zipcode: '',
+    stepsToday: 0,
+    stepsTotal: 0,
+    points: { total: 0 },
+    badges: [],
+    groups: [],
+    access_token: 'ibK6W43f20demGSHMsHHhL_9ni77neBDoi7PHySyO20J0ZaYaJ2trq2w39d55x9c',
+    refresh_token: 'D_FdNuZaf2Etw9tNQ5o45v4xw4BnnY1n88jsPKnR1W9tcwyJ6iuuCUpojDhC0f7Z',
+    _id: 5336f304306d0116b739cf45 } ]
+[Sat Mar 29 2014 09:21:25 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:21:29 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
+[Sat Mar 29 2014 09:21:41 GMT-0700 (PDT)] INFO 14104144053355464 'ibK6W43f20demGSHMsHHhL_9ni77neBDoi7PHySyO20J0ZaYaJ2trq2w39d55x9c'
+[Sat Mar 29 2014 09:21:42 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }

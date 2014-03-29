@@ -1,10 +1,29 @@
-[Sat Mar 29 2014 09:14:00 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
+[Sat Mar 29 2014 09:20:57 GMT-0700 (PDT)] INFO No data for 2014-03-29 found, inserting: 
+[Sat Mar 29 2014 09:20:57 GMT-0700 (PDT)] INFO Data entered into db: 14104144053355464 2014-03-29 849
+[Sat Mar 29 2014 09:20:57 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
   date: '2014-03-29',
   steps: 849,
   last_updated: '2014-03-29',
-  _id: 5336f0ef1f937d7fb53fcbdb }
-[Sat Mar 29 2014 09:14:04 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
+  _id: 5336f2e9306d0116b739cf44 }
+[Sat Mar 29 2014 09:21:01 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
   date: '2014-03-29',
   steps: 849,
   last_updated: '2014-03-29',
-  _id: 5336f0ef1f937d7fb53fcbdb }
+  _id: 5336f2e9306d0116b739cf44 }
+[Sat Mar 29 2014 09:21:25 GMT-0700 (PDT)] INFO No data for 2014-03-29 found, inserting: 
+[Sat Mar 29 2014 09:21:25 GMT-0700 (PDT)] INFO Data entered into db: 14104144053355464 2014-03-29 849
+[Sat Mar 29 2014 09:21:25 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
+  date: '2014-03-29',
+  steps: 849,
+  last_updated: '2014-03-29',
+  _id: 5336f305306d0116b739cf46 }
+[Sat Mar 29 2014 09:21:29 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
+  date: '2014-03-29',
+  steps: 849,
+  last_updated: '2014-03-29',
+  _id: 5336f305306d0116b739cf46 }
+[Sat Mar 29 2014 09:21:42 GMT-0700 (PDT)] INFO data callback: { user: 14104144053355464,
+  date: '2014-03-29',
+  steps: 849,
+  last_updated: '2014-03-29',
+  _id: 5336f305306d0116b739cf46 }
