@@ -7,7 +7,7 @@ var request = require('request')
 ,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('my.log'));
+,   log = new Log('debug', fs.createWriteStream('my.log', {"flags": "a"}));
 
 dotenv.load();
 
