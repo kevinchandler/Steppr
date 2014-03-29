@@ -16,19 +16,18 @@ exports.home = function(req, res) {
         res.redirect('/');
     }
     else {
-        user.updateUser(req.session._token, req.session._movesId, function(err, success) {
-            if ( err ) {
-                console.log(err);
-                log.error(err);
-            }
-            if (success) {
-                log.error(success)
+        // user.updateUser(req.session._token, req.session._movesId, function(err, success) {
+        //     if ( err ) {
+        //         console.log(err);
+        //         log.error(err);
+        //     }
+        //     if (success) {
+        //         log.error(success)
                 user.getSteps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
                         log.error('error connecting to db in user.steps')
                     }
-                    console.log('inside  user.step callback: ---- User: ' + req.session._movesId )
                     var totalUserStepsToday = data.steps;
 
                     steppr.getTotalSteps(function(err, payload) {
@@ -42,9 +41,7 @@ exports.home = function(req, res) {
                             ,   usersToday = delimitNumbers(payload.usersToday);
 
                             console.log( 'total steps today: ' + totalStepsToday + '\n total users today: ' + usersToday );
-                            console.log('rendering home.jade');
-                            console.log(req.session._movesId + ' % is : ' + userPercentage);
-
+                            log.info('rendering home.jade');
                             res.render('home.jade', {
                                 totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
                                 totalStepsToday : totalStepsToday,
@@ -55,7 +52,7 @@ exports.home = function(req, res) {
                         }
                     })
                 })
-            }
-        })
+            // }
+        // })
     }
 }
