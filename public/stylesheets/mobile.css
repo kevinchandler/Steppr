@@ -4,7 +4,7 @@ html {
 body {
   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
   color: #fff;
-  background: url('../images/steppr_landing_bg.png');
+  background: url('../images/steppr_landing_bg.png') no-repeat;
   background-size: cover;
   z-index: 0;
 }

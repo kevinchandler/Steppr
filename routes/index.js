@@ -7,19 +7,27 @@ function delimitNumbers(str, callback) {
 }
 
 exports.index = function(req, res) {
+    var ua = req.header('user-agent');
     steppr.getTotalSteps(function(err, payload) {
         if (err) {
-            res.end(500);
+            res.send(500);
         }
         if (payload) {
             if (req.session._token && req.session._movesId) {
                 res.redirect('/home');
             }
+            if(!/mobile/i.test(ua)) {
+                res.render('desktop.jade', {
+                    totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
+                    usersToday : payload.usersToday,
+                    totalStepsToday : delimitNumbers(payload.totalStepsToday),
+                });
+            }
             else {
                 res.render('landing.jade', {
                     totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
                     usersToday : payload.usersToday,
-                    totalStepsToday : delimitNumbers(payload.totalStepsToday)
+                    totalStepsToday : delimitNumbers(payload.totalStepsToday),
                 });
             }
         }
