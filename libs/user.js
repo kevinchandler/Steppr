@@ -92,7 +92,7 @@ module.exports = {
 						})
 					})
 					// we're done checking/updating db
-					callback(null, 'updateUser complete \n');
+					return callback(null, 'updateUser complete \n');
 				})
 			}
 		})
@@ -104,7 +104,7 @@ module.exports = {
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					callback( err );
+					return;
 				}
 				else if (data) {
 					log.info('data callback:', data)

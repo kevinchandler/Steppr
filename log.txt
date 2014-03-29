@@ -1,19 +1,2 @@
-[Fri Mar 28 2014 22:31:23 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 6494, totalStepprSteps: 20875, usersToday: 1 }
-[Fri Mar 28 2014 22:31:23 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 6494, totalStepprSteps: 20875, usersToday: 1 }
-[Fri Mar 28 2014 22:31:28 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 6494, totalStepprSteps: 20875, usersToday: 1 }
-[Fri Mar 28 2014 22:31:38 GMT-0700 (PDT)] INFO findUser complete:  { user: 14104144053355464,
-  username: '',
-  email: '',
-  name: '',
-  state: '',
-  zipcode: '',
-  stepsToday: 6494,
-  stepsTotal: 0,
-  points: { total: 0 },
-  badges: [],
-  groups: [],
-  access_token: 'RUJUx3701gWbl04no5h13f4X6B_1oEPXqEU9q6r1JxVZ8XfoInK05935pXZAi8Kk',
-  refresh_token: '54nhKdMNclDK25BGSvEs6talDWkQ2k48we73D8XU7SlWDNAsD17CQi0tgWmZ4b2c',
-  _id: 5336222e953680ef7981e108 }
-[Fri Mar 28 2014 22:31:39 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 6494, totalStepprSteps: 20875, usersToday: 1 }
-[Fri Mar 28 2014 22:31:42 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 6494, totalStepprSteps: 20875, usersToday: 1 }
+[Sat Mar 29 2014 08:52:56 GMT-0700 (PDT)] INFO 14104144053355464 'RUJUx3701gWbl04no5h13f4X6B_1oEPXqEU9q6r1JxVZ8XfoInK05935pXZAi8Kk'
+[Sat Mar 29 2014 08:53:56 GMT-0700 (PDT)] INFO 14104144053355464 'RUJUx3701gWbl04no5h13f4X6B_1oEPXqEU9q6r1JxVZ8XfoInK05935pXZAi8Kk'

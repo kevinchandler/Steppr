@@ -14,7 +14,7 @@ var routes = require('./routes')
 ,   USER = require('./libs/user.js');
 var http = require('http');
 var path = require('path');
-
+var fs = require('fs');
 var app = express();
 var dotenv = require('dotenv');
 dotenv.load();
@@ -70,7 +70,9 @@ app.get('/test', test.index);
 app.post('/notification', test.notification); // moves posts data every so often
 
 
-
+app.get('/logs', function(req, res) {
+      res.sendfile('log.txt');
+})
 
 
 
