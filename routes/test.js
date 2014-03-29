@@ -17,12 +17,15 @@ dotenv.load();
 
 exports.index = function(req, res) {
     console.log(req.session._movesId);
-    user.isRegistered(req.session._movesId, function(err, success) {
-        if (err) console.log(err);
-        if (success) {
-            console.log('user exists');
+    user.isRegistered(req.session._movesId, function(err, isRegistered) {
+        if (err) {
+            log.error(err);
+            res.redirect('back');
         }
-        else if (!success) {
+        if (isRegistered) {
+            res.redirect('/groups');
+        }
+        else if (!isRegistered) {
             res.redirect('/user/register');
         }
     })

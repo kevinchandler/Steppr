@@ -1,8 +1,10 @@
 
 var user = require('../libs/user.js')
 ,   steppr = require('../libs/steppr.js')
+,   fs = require('fs')
 ,   Log = require('log')
-  , log = new Log('info');
+,   log = new Log('debug', fs.createWriteStream('log.txt'));
+
 
 function delimitNumbers(str, callback) {
     return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
