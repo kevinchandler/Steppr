@@ -1,2 +1,0 @@
-[Sat Mar 29 2014 09:14:00 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
-[Sat Mar 29 2014 09:14:04 GMT-0700 (PDT)] ERROR getTotalSteps complete:  { totalStepsToday: 849, totalStepprSteps: 849, usersToday: 1 }
