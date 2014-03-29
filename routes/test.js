@@ -4,18 +4,27 @@ var request = require('request')
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
-,   user = require('../libs/user.js');
+,   user = require('../libs/user.js')
+,   database = require('../libs/database.js')
+,   steppr = require('../libs/steppr.js');
 
 dotenv.load();
-// libs
-var steppr = require('../libs/steppr.js');
+
+
 
 
 
 
 exports.index = function(req, res) {
 
-
+    database.connectToDb(function(err, db) {
+        if (err) console.log(err);
+        else {
+            db.collection('users').find({}).each(function(err, doc) {
+                console.log(doc);
+            })
+        }
+    })
 }
 
 

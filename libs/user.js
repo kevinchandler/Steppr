@@ -4,6 +4,7 @@ var request = require('request')
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
+,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('my.log'));
@@ -27,9 +28,6 @@ module.exports = {
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			var payload = JSON.parse(body);
 			if (err) return err;
-			else if (!body) {
-				callback(err)
-			}
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 					if (err) {
@@ -101,16 +99,14 @@ module.exports = {
 	},
 	// returns users steps for today
 	getSteps : function(movesId, callback) {
-		log.info('inside user.steps: ' + movesId)
-		console.log('inside user.steps: ' + movesId);
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+		database.connect(function(err, db) {
 			if (err) callback( err, null );
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-				     callback( err );
+					callback( err );
 				}
-				if (data) {
+				else if (data) {
 					log.info('data callback:', data)
 					callback( null, data );
 				}
