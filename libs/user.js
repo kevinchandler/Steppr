@@ -16,7 +16,7 @@ module.exports = {
 	//			 if not it will save to db & update stepsToday in the users collection
 		console.log('updateUser: ',  accessToken, movesId + '\n');
 		if (!accessToken || !movesId) {
-			callback('err');
+			return callback('err');
 		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			var payload = JSON.parse(body);
