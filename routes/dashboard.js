@@ -19,10 +19,11 @@ exports.home = function(req, res) {
             console.log('inside user.updateUser callback: ---- User: ' + req.session._movesId);
             if ( err ) {
                 console.log(err);
-                res.redirect('/');
+
             }
             else if (success) {
                 user.steps(req.session._movesId, function( err, data ){
+                    console.log('meowmowemowm errrorror');
                     if (err) {
                         console.log('error connecting to db in user.steps')
                     }

@@ -66,19 +66,16 @@ module.exports = {
 										})
 									}
 									// update users doc w/ # of steps today
-									if (activityDate === today) {
+									if (doc && activityDate === today) {
 										db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 											if (err) callback(err);
 											else if (success) {
-												console.log(success);
-											}
-										})
-									}
-									else if (doc && doc.steps !== steps) { // if this date is in the db
-										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
-											if (err) callback(err);
-											else if (success) {
-												console.log('Steps Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
+													if (err) callback(err);
+													if (success) {
+														console.log('Steps Collection: Steps updated from ' + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+													}
+												})
 											}
 										})
 									}
@@ -93,18 +90,21 @@ module.exports = {
 		})
 	},
 	// gets the user and returns. Used to get the users steps for today
-	steps : function (movesId, callback) {
+	steps : function(movesId, callback) {
+		console.log('FFFFFFFFFF');
+		console.log('inside user.steps: ' + movesId);
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err)  return callback( err, null );
+			if (err) callback( err, null );
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
+				console.log(data);
 				if (err) {
-				    callback( err );
+				     callback( err );
 				}
 				if (data) {
-					callback( null, data );
+					 callback( null, data );
 				}
 			})
 		})
-	},
+	}
 }
