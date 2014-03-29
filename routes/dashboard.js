@@ -23,7 +23,6 @@ exports.home = function(req, res) {
             }
             else if (success) {
                 user.steps(req.session._movesId, function( err, data ){
-                    console.log('meowmowemowm errrorror');
                     if (err) {
                         console.log('error connecting to db in user.steps')
                     }
