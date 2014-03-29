@@ -81,7 +81,7 @@ module.exports = {
 												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 													if (err) callback(err);
 													if (success) {
-														console.log('Steps Collection: ' + doc.user + doc.steps + ' -> ' + steps + ': ' + doc.date + '\n');
+														log.info('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
 													}
 												})
 											}

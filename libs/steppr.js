@@ -41,15 +41,12 @@ module.exports = {
 				user: movesId,
 				username: placeholder,
 				email: placeholder,
-				name: placeholder,
-				state : placeholder,
-				zipcode: placeholder,
 				stepsToday : 0,
 				stepsTotal : 0,
 				points: {
 					total: 0
 				},
-				badges: [],
+				badges: ['Alpha Tester'],
 				groups: [],
 				access_token : accessToken,
 				refresh_token : refreshToken,
