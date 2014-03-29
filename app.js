@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.cookieSession({ secret: 'cats ¡12333333222222sqgdddaods dfadsm!!@$!#%@%%@w%#dmeow meow' }));
+app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meow' }));
 app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -62,15 +62,17 @@ app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', dashboard.home);
 
-app.get('/user/register', user.register);
-app.post('/user/register', user.register);
-
 app.get('/groups', groups.index);
 app.post('/groups/create', groups.createGroup);
 
 app.get('/test', test.index);
 
 app.post('/notification', test.notification); // moves posts data every so often
+
+
+
+
+
 
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
@@ -82,7 +84,7 @@ function updateAllUsers() {
 //will run check() every so often // what the minutes variable is set to
 var minutes = 1, the_interval = minutes * 60 * 1000;
 setInterval(function() {
-    console.log('Updating:::: \n');
+    console.log('Updating: \n');
   updateAllUsers();
 }, the_interval);
 
