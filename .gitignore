@@ -4,5 +4,4 @@ node_modules
 .DS_Store
 public/app
 routes/test.js
-log.txt
-my.log
+logs/

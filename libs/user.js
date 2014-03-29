@@ -7,7 +7,7 @@ var request = require('request')
 ,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('my.log', {"flags": "a"}));
+,   log = new Log('debug', fs.createWriteStream('logs/libs-user-log.txt', {"flags": "a"}));
 
 dotenv.load();
 
@@ -24,8 +24,13 @@ module.exports = {
 			return callback('err');
 		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
+			if (err) callback(err);
+			if (!body || !response) {
+				callback('error: no body or response\n');
+				log.error('error: no body or response\n');
+			}
 			var payload = JSON.parse(body);
-			if (err) return err;
+
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 					if (err) {
@@ -34,7 +39,7 @@ module.exports = {
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
 						if (!db) {
-							log.error('inside payload.forEach: no db connection');
+							log.error('inside payload.forEach: no db connection\n');
 							callback(err +' \n no db -- updateUser: payload.forEach')
 						}
 						if (!moves_data || !moves_data.summary) {
@@ -43,7 +48,7 @@ module.exports = {
 						}
 						moves_data.summary.forEach(function(activity) {
 							if (!db) {
-								log.error('inside moves_data.summary.forEach: no db connection');
+								log.error('inside moves_data.summary.forEach: no db connection\n');
 								callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							if (activity.steps) {
@@ -57,7 +62,7 @@ module.exports = {
 								db.collection('steps').findOne(query, function(err, doc) {
 									if (err) callback(err);
 									if (!doc) {
-										log.info('No data for ' + today + ' found, inserting: ')
+										log.info('Inserting into db: ', movesId, activityDate, steps, today)
 										console.log('No data for ' + today + ' found, inserting: ');
 										// no data found for this date in our db, save it
 										db.collection('steps').insert({
@@ -102,10 +107,10 @@ module.exports = {
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					return;
+					callback(err);
 				}
 				else if (data) {
-					log.info('data callback:', data)
+					log.info('user.getSteps:', data);
 					callback( null, data );
 				}
 			})
@@ -120,6 +125,7 @@ module.exports = {
 		}
 		database.connect(function( err, db ) {
 			if ( err ) {
+				log.error(err);
 				console.log('error: unable to connect to database');
 				callback( err );
 			}
@@ -131,7 +137,7 @@ module.exports = {
 					callback(err)
 				}
 				if (doc.username) {
-					callback( null, true );
+					callback( null, doc );
 				}
 				else {
 					callback( null, false );
