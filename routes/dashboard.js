@@ -23,8 +23,8 @@ exports.home = function(req, res) {
                 console.log(err);
                 log.error(err);
             }
-            if (success) {
-                log.info(success)
+            // if (success) {
+            //     log.info(success)
                 user.getSteps(req.session._movesId, function( err, data ){
                     if (err) {
                         console.log('error connecting to db in user.steps')
@@ -54,7 +54,7 @@ exports.home = function(req, res) {
                         }
                     })
                 })
-            }
+            // }
             else {
                 res.render('home.jade');
                 console.log('no success dashboard.js');
