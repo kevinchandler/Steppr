@@ -144,10 +144,10 @@ module.exports = {
 					callback(err)
 				}
 				if (doc.username) {
-					return callback( null, doc );
+					callback( null, doc );
 				}
 				else {
-					return callback( null, false );
+					callback( null, false );
 				}
 			})
 		})
@@ -165,8 +165,12 @@ module.exports = {
 					console.log('user is already in a group');
 					callback(null, false);
 				}
-				if (user.groups.length === 0) {				
-					db.collection('groups').update({ name: groupName }, { $push: { members: userId }}, function(err, success) {
+				if (user.groups.length === 0) {
+					newMember = {
+						id : userId,
+						username : user.username
+					}
+					db.collection('groups').update({ name: groupName }, { $push: { members: newMember }}, function(err, success) {
 						if (err) callback(err);
 						if (success) {
 							db.collection('users').update({ user : userId }, { $push: { groups: groupName }}, function(err, success) {

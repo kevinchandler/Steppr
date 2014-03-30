@@ -1,7 +1,9 @@
 extends layout
 
 block content
-  a(href='/groups/create') Create a group
   each group in locals.groups
-    li #{group.name}
-      a(href='/groups/join/#{group.name}')  Join
+    li
+      a(href='/groups/#{group.name}') #{group.name}
+  br
+  br
+  a(href='/groups/create') Create a group

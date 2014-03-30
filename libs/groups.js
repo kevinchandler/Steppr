@@ -44,15 +44,15 @@ module.exports = {
 					})
 				}
 				else if (group) {
-					callback('Unable to create group: already exists')
+					callback('Unable to create group: already exists');
 				}
 			})
 		})
 	},
 	// list groups in groups collection.
-	displayGroups : function(callback) {
+	viewAllGroups : function(callback) {
 		database.connect(function(err, db) {
-			if (err) callback( err );
+			if (err) callback(err);
 			var package = [];
 			// push each group object into the package array and send once there's no more groups
 			db.collection('groups').find().each(function(err, group) {
@@ -64,9 +64,30 @@ module.exports = {
 					package.push({
 						_id: group._id,
 						name: group.name,
-						creator : group.creator,
-						members: group.members,
 					})
+				}
+			})
+		})
+	},
+
+	viewGroup : function(groupName, callback) {
+		database.connect(function(err, db){
+			if (err) callback(err);
+			var package = [];
+			db.collection('groups').findOne({name: groupName}, function(err, group) {
+				if (err) return callback(err);
+				if (!group) {
+					callback(null, null);
+				}
+				else {
+					package.push({
+						name : group.name,
+						creator : group.creator,
+						members : group.members,
+						stepsToday : group.stepsToday,
+						stepsTotal : group.stepsTotal,
+					})
+					callback(null, package);
 				}
 			})
 		})

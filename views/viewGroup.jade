@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 #{group.name}
+  each member in locals.group.members
+    li #{member.username} - #{member.stepsToday}
+  br
+  br
+  br
+  a(href='/groups/join/#{group.name}')  Join #{group.name}

@@ -6,40 +6,57 @@ var groups = require('../libs/groups.js')
 
 
 exports.index = function(req, res) {
-	groups.displayGroups(function(err, groups) {
+	groups.viewAllGroups(function(err, groups) {
 		console.log('inside of displayGroups callback');
 		if (err) { console.log(err) }
 		res.render('groups.jade', { groups: groups });
 	})
 }
 
+
+// individual group page
+exports.viewGroup = function(req, res) {
+	var groupName = req.params.groupName;
+	groups.viewGroup(groupName, function(err, group) {
+		res.render('viewGroup.jade', { group : group[0] });
+	})
+
+}
+
 exports.createGroup = function(req, res) {
+	console.log('inside create group');
 	if ( req.method == 'GET' ) {
 		user.isRegistered(req.session._movesId, function(err, isRegistered) {
+			console.log(isRegistered);
 			if (err) {
+				console.log(err);
 				log.error(err);
 				res.redirect('back');
 			}
 			if (!isRegistered) {
 				res.redirect('/user/register');
 			}
-			if (isRegistered) {
-				res.render('creategroup.jade')
+		    if (isRegistered) {
+				res.render('creategroup.jade');
 			}
 		})
 	}
 	if ( req.method === 'POST' ) {
-		groups.createGroup(req.body.groupName, req.session._movesId, function(err, success) {
+		var groupName = req.body.groupName;
+		groups.createGroup(groupName, req.session._movesId, function(err, success) {
 			console.log('inside createGroup callback');
-			if (err) return console.log(err);
+			if (err) console.log(err);
 			if (success) {
-				user.joinGroup(req.session._movesId, req.body.groupName, function(err, success) {
+				user.joinGroup(req.session._movesId, groupName, function(err, success) {
 					if (err) return console.log(err);
 					if (success) {
 						console.log(success);
-						res.redirect('/groups');
+						res.redirect('/groups/'+groupName);
 					}
 				})
+			}
+			else {
+				res.redirect('/groups')
 			}
 		})
 	}
