@@ -32,19 +32,20 @@ exports.authenticate = function(req, res) {
     var url = moves.generateAuthUrl();
 
     moves.getAccessToken(req.query.code, function(err, body) {
+        console.log('body is: ');
         console.log(body);
-          if (err) return res.redirect('/');
+          if (err) res.redirect('/');
           // required for moves-api library
           moves.options.accessToken = body.access_token;
+          req.session._token = body.access_token;
 
           moves.getProfile(function(err, profile) {
             if (err) {
                 log.error(err, 'unable to get moves profile')
-                console.log(err);
+                console.log(err, 'unable to get moves profile: ');
                 res.redirect('/');
             }
             if (profile) {
-                    req.session._token = body.access_token;
                     req.session._movesId = profile.userId;
                     console.log('sessions set: ' + req.session._token, req.session._movesId);
 
@@ -66,7 +67,7 @@ exports.authenticate = function(req, res) {
                                     }
                                     if (success) {
                                         console.log('Registered user successfully \n');
-                                        res.redirect('/home');
+                                        return res.redirect('/home');
                                     }
                                     else {
                                         console.log('unable to createNewUser \n');
