@@ -10,7 +10,7 @@ exports.index = function(req, res) {
     var ua = req.header('user-agent');
     steppr.getTotalSteps(function(err, payload) {
         if (err) {
-            res.send(500);
+            res.render('desktop.jade');
         }
         if (payload) {
             if (req.session._token && req.session._movesId) {

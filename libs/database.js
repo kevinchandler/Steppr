@@ -15,7 +15,7 @@ module.exports = {
 				callback(err)
 			}
 			if (db) {
-				callback(null, db);
+			  callback(null, db);
 			}
 		})
 	}

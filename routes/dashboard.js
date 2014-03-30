@@ -33,7 +33,7 @@ exports.home = function(req, res) {
                     var totalUserStepsToday = data.steps;
 
                     steppr.getTotalSteps(function(err, payload) {
-                        if (err) return res.send(err);
+                        if (err) return err;
                         console.log('inside  steppr.getTotal callback');
 
                         if (payload) { // data retrieved from getTotalSteps callback
@@ -54,6 +54,9 @@ exports.home = function(req, res) {
                         }
                     })
                 })
+            }
+            else {
+                res.end();
             }
         })
     }

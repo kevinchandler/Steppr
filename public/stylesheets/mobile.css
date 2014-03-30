@@ -9,6 +9,10 @@ body {
   z-index: 0;
 }
 
+input {
+    color: #000;
+}
+
 #rect {
     position: absolute;
     top: 13%;

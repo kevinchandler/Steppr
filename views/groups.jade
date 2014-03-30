@@ -1,5 +1,7 @@
 extends layout
 
 block content
+  a(href='/groups/create') Create a group
   each val in locals.groups
     li #{val.name}
+      a(href='/groups/join/#{val.name}')  Join

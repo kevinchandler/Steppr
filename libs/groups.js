@@ -2,8 +2,8 @@ var request = require('request')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
-,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
+,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('logs/libs-groups-log.txt', {"flags": "a"}));
@@ -18,33 +18,39 @@ module.exports = {
 	// create
 
 	createGroup : function(groupName, groupCreator, callback) {
-		if (!name || !creator) {
-			callback('no name or creator, cannot create group')
+		if (!groupName || !groupCreator) {
+			console.log('no name or creator, cannot create group');
+			callback('no name or creator, cannot create group');
 		}
 		database.connect(function(err, db) {
 			if (err || !db) callback(err);
 
-			var groups = db.collection('groups');
-			groups.findOne({name: name}, function(err, group) {
+			db.collection('groups').findOne({ name: groupName }, function(err, group) {
 				if (!group) {
-					groups.insert({
+					db.collection('groups').insert({
 						name: groupName,
 						creator : groupCreator,
 						members : [groupCreator],
 						stepsToday : 0,
 						stepsTotal : 0,
+					}, function(err, success) {
+						if (err) {
+							callback(err);
+						}
+						if (success) {
+							callback(null, success);
+						}
 					})
 				}
-				else {
-					// need to do something here.
-					return;
+				else if (group) {
+					callback('Unable to create group: already exists')
 				}
 			})
 		})
 	},
 	// list groups in groups collection.
 	displayGroups : function(callback) {
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+		database.connect(function(err, db) {
 			if (err) callback( err );
 			var package = [];
 			// push each group object into the package array and send once there's no more groups
