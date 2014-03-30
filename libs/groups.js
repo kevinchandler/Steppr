@@ -63,7 +63,9 @@ module.exports = {
 				}
 				else {
 					package.push({
-						name: group.name
+						_id: group._id,
+						name: group.name,
+						creator : group.creator
 					})
 				}
 			})
