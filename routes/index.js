@@ -16,7 +16,7 @@ exports.index = function(req, res) {
             if (req.session._token && req.session._movesId) {
                 res.redirect('/home');
             }
-            else if (payload) {
+            else {
                 res.render('landing.jade', {
                     totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
                     usersToday : payload.usersToday,
