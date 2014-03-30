@@ -27,7 +27,7 @@ module.exports = {
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			if (err) callback(err);
 			if (!body || !response) {
-				callback('error: no body or response\n');
+				return callback('error: no body or response\n');
 				log.error('error: no body or response\n');
 			}
 
@@ -35,7 +35,7 @@ module.exports = {
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 					if (err) {
-						callback(err);
+						return callback(err);
 					}
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
@@ -51,11 +51,11 @@ module.exports = {
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
 							if (activityDate !== today) {
 								log.error('server is a date ahead? dates do not match.')
-								callback(null, 'server is a date ahead? dates do not match.')
+								return callback(null, 'server is a date ahead? dates do not match.')
 							}
 							if (!db) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
-								callback(err +' \n no db -- updateUser: payload.forEach')
+								return callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
@@ -65,7 +65,7 @@ module.exports = {
 								// updates db with # of steps from moves
 								var query = { user : movesId, date : activityDate };
 								db.collection('steps').findOne(query, function(err, doc) {
-									if (err) callback(err);
+									if (err) return callback(err);
 									if (!doc) {
 										log.info('Inserting into db: ', movesId, activityDate, steps, today)
 										console.log('No data for ' + today + ' found, inserting: ');
@@ -99,11 +99,11 @@ module.exports = {
 							}
 						})
 					})
-					callback(null, 'updateUser complete');
+					return callback(null, 'updateUser complete');
 				})
 			}
 			if (!payload) {
-				callback(null, true);
+				return callback(null, true);
 			}
 		})
 	},
@@ -144,10 +144,10 @@ module.exports = {
 					callback(err)
 				}
 				if (doc.username) {
-					callback( null, doc );
+					return callback( null, doc );
 				}
 				else {
-					callback( null, false );
+					return callback( null, false );
 				}
 			})
 		})

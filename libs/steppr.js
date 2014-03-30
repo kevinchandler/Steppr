@@ -26,7 +26,7 @@ module.exports = {
 					callback(null, doc);
 				}
 				else if (!doc) {
-					log.error('findUser: no doc found')
+					log.error('findUser complete: no doc found')
 					callback(null);
 				}
 			})
@@ -53,6 +53,7 @@ module.exports = {
 			}, function(err, success) {
 				if (err) {
 					log(err);
+					console.log(err, 'unable to create new user');
 					callback(err);
 				}
 				if (success) {
@@ -72,34 +73,34 @@ module.exports = {
 		}
 
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) return callback( err );
+			if (err) callback( err );
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
 				console.log('today is: ' + today);
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
-				if (!stepsToday) {
+				if (stepsToday) {
+					payload.usersToday += 1;
+					payload.totalStepsToday += stepsToday.steps
+				}
+				else if (!stepsToday) {
 					db.collection('steps').find({}).each(function(err, totalSteps) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!totalSteps) {
 							log.error('getTotalSteps complete: ', payload);
 							console.log(payload);
-							return callback( null, payload );
+							callback( null, payload );
 						}
 						else {
 							payload.totalSteps +=  totalSteps.steps;
 						}
 					})
 				}
-				if (stepsToday) {
-					payload.usersToday += 1;
-					payload.totalStepsToday += stepsToday.steps
-				}
 			})
 		})
 	},
 
-	// //updates all usesr steps for today
+	// //updates all users steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) callback( err );
@@ -121,7 +122,7 @@ module.exports = {
 				})
 			}
 			else {
-				callback(err)
+				callback('err, updateAllUsers')
 			}
 		})
 	}
