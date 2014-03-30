@@ -20,7 +20,7 @@ module.exports = {
 	//			 if not it will save to db & update stepsToday in the users collection
 		console.log('updateUser: ',  accessToken, movesId + '\n');
 		if (!accessToken || !movesId) {
-			log.debug(err, 'no accessToken || movesId', accessToken, movesId)
+			log.debug('no accessToken || movesId')
 			callback('err');
 		}
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
@@ -29,8 +29,8 @@ module.exports = {
 				callback('error: no body or response\n');
 				log.error('error: no body or response\n');
 			}
-			var payload = JSON.parse(body);
 
+			var payload = JSON.parse(body);
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 					if (err) {
@@ -98,8 +98,8 @@ module.exports = {
 							}
 						})
 					})
-					// we're done checking/updating db
-					return callback(null, 'updateUser complete');
+					// // we're done checking/updating db
+					// return callback(null, 'updateUser complete');
 				})
 			}
 		})
