@@ -95,12 +95,12 @@ module.exports = {
 						})
 					})
 					// we're done checking/updating db
-					callback(null, 'updateUser complete \n');
+					callback(null, payload);
 				})
 			}
 			else {
 				log.info('nothing to update. no payload in user.updateUser');
-				callback(null, 'nothing to update:');
+				callback(null, true);
 			}
 		})
 	},

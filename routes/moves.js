@@ -36,7 +36,9 @@ exports.authenticate = function(req, res) {
 
           moves.getProfile(function(err, profile) {
             if (err) {
-                res.send('unable to get moves profile info - 565');
+                log.error(err, 'unable to get moves profile')
+                console.log('unable to get moves profile: ');
+                res.redirect('/');
             }
             if (profile) {
                     req.session._token = body.access_token;
