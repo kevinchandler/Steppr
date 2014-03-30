@@ -40,7 +40,7 @@ exports.authenticate = function(req, res) {
           moves.getProfile(function(err, profile) {
             if (err) {
                 log.error(err, 'unable to get moves profile')
-                console.log('unable to get moves profile: ');
+                console.log(err);
                 res.redirect('/');
             }
             if (profile) {
@@ -66,7 +66,7 @@ exports.authenticate = function(req, res) {
                                     }
                                     if (success) {
                                         console.log('Registered user successfully \n');
-                                        return res.redirect('/home');
+                                        res.redirect('/home');
                                     }
                                     else {
                                         console.log('unable to createNewUser \n');

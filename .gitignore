@@ -5,3 +5,4 @@ node_modules
 public/app
 routes/test.js
 logs/
+log.txt
