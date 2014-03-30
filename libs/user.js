@@ -100,7 +100,7 @@ module.exports = {
 			}
 			else {
 				log.info('nothing to update. no payload in user.updateUser');
-				callback(null 'nothing to update:');
+				callback(null, 'nothing to update:');
 			}
 		})
 	},
