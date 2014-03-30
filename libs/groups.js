@@ -73,21 +73,36 @@ module.exports = {
 	viewGroup : function(groupName, callback) {
 		database.connect(function(err, db){
 			if (err) callback(err);
-			var package = [];
+			var package = {
+				groupName : groupName,
+				totalGroupSteps : 0,
+				totalGroupStepsToday : 0,
+				members : []
+			};
 			db.collection('groups').findOne({name: groupName}, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
 					callback(null, null);
 				}
 				else {
-					package.push({
-						name : group.name,
-						creator : group.creator,
-						members : group.members,
-						stepsToday : group.stepsToday,
-						stepsTotal : group.stepsTotal,
+					db.collection('users').find({ groups : groupName }).each(function(err, groupMember){
+						if (err) callback (err);
+						if (!groupMember) {
+							callback(null, package)
+						}
+						if (groupMember) {
+							package.members.push(groupMember);
+							package.totalGroupStepsToday += groupMember.stepsToday;
+						}
 					})
-					callback(null, package);
+					// package.push({
+					// 	name : group.name,
+					// 	creator : group.creator,
+					// 	members : group.members,
+					// 	stepsToday : group.stepsToday,
+					// 	stepsTotal : group.stepsTotal,
+					// })
+					// callback(null, package);
 				}
 			})
 		})

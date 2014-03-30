@@ -1,9 +1,9 @@
 extends layout
 
 block content
-  h1 #{group.name}
+  h1 #{group.groupName} has taken #{group.totalGroupStepsToday} steps today
   each member in locals.group.members
-    li #{member.username} - #{member.stepsToday}
+    li #{member.username} - #{member.stepsToday} steps
   br
   br
   br

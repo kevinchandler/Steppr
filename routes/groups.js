@@ -17,8 +17,9 @@ exports.index = function(req, res) {
 // individual group page
 exports.viewGroup = function(req, res) {
 	var groupName = req.params.groupName;
-	groups.viewGroup(groupName, function(err, group) {
-		res.render('viewGroup.jade', { group : group[0] });
+	groups.viewGroup(groupName, function(err, package) {
+		console.log(package);
+		res.render('viewGroup.jade', { group : package });
 	})
 
 }
@@ -56,7 +57,7 @@ exports.createGroup = function(req, res) {
 				})
 			}
 			else {
-				res.redirect('/groups')
+				res.redirect('/groups');
 			}
 		})
 	}
