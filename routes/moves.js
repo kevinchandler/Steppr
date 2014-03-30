@@ -1,5 +1,8 @@
 var MongoClient = require('mongodb').MongoClient
-,   steppr = require('../libs/steppr.js');
+,   steppr = require('../libs/steppr.js')
+,   fs = require('fs')
+,   Log = require('log')
+,   log = new Log('debug', fs.createWriteStream('log.txt'));
 
 
 // hit this route and it will authenticate with moves, then hit authenticate
