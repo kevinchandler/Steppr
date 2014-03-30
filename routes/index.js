@@ -16,15 +16,15 @@ exports.index = function(req, res) {
             if (req.session._token && req.session._movesId) {
                 res.redirect('/home');
             }
-            if(!/mobile/i.test(ua)) {
-                res.render('desktop.jade', {
+            else if (payload) {
+                res.render('landing.jade', {
                     totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
                 });
             }
-            else {
-                res.render('landing.jade', {
+            if(!/mobile/i.test(ua)) {
+                res.render('desktop.jade', {
                     totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
