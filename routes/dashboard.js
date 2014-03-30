@@ -37,8 +37,10 @@ exports.home = function(req, res) {
                         console.log('inside  steppr.getTotal callback');
 
                         if (payload) { // data retrieved from getTotalSteps callback
+                            console.log('APYLOADX.');
+                            console.log(payload);
                             var totalStepsToday = delimitNumbers(payload.totalStepsToday)
-                            ,   totalStepprSteps = delimitNumbers(payload.totalStepprSteps)
+                            ,   totalSteps = delimitNumbers(payload.totalSteps)
                             ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
                             ,   usersToday = delimitNumbers(payload.usersToday);
 
@@ -47,7 +49,7 @@ exports.home = function(req, res) {
                             return res.render('home.jade', {
                                 totalUserStepsToday : delimitNumbers(totalUserStepsToday), // done here bc userPercentage uses
                                 totalStepsToday : totalStepsToday,
-                                totalStepprSteps : totalStepprSteps,
+                                totalSteps : totalSteps,
                                 userPercentage : userPercentage,
                                 usersToday : usersToday,
                             })

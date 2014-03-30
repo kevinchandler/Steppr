@@ -17,16 +17,16 @@ exports.index = function(req, res) {
                 res.redirect('/home');
             }
             else {
-                console.log('rendering landing.jade', payload.totalStepprSteps, payload.usersToday, payload.totalStepsToday);
+                console.log('rendering landing.jade', payload.totalSteps, payload.usersToday, payload.totalStepsToday);
                 res.render('landing.jade', {
-                    totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
+                    totalSteps: delimitNumbers(payload.totalSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
                 });
             }
             if(!/mobile/i.test(ua)) {
                 res.render('desktop.jade', {
-                    totalStepprSteps: delimitNumbers(payload.totalStepprSteps),
+                    totalSteps: delimitNumbers(payload.totalSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
                 });

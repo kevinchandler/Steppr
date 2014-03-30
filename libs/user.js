@@ -99,13 +99,11 @@ module.exports = {
 							}
 						})
 					})
-					return;
-					// // we're done checking/updating db
-					// return callback(null, 'updateUser complete');
+					callback(null, 'updateUser complete');
 				})
 			}
 			if (!payload) {
-				return;
+				callback(null, true);
 			}
 		})
 	},

@@ -67,7 +67,7 @@ module.exports = {
 	getTotalSteps : function(callback) {
 		var payload = {
 			totalStepsToday : 0,
-			totalStepprSteps : 0,
+			totalSteps : 0,
 			usersToday : 0,
 		}
 
@@ -78,15 +78,16 @@ module.exports = {
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (!stepsToday) {
-					db.collection('steps').find({}).each(function(err, stepprSteps) {
+					db.collection('steps').find({}).each(function(err, totalSteps) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
-						if (!stepprSteps) {
+						if (!totalSteps) {
 							log.error('getTotalSteps complete: ', payload);
+							console.log(payload);
 							return callback( null, payload );
 						}
 						else {
-							payload.totalStepprSteps +=  stepprSteps.steps;
+							payload.totalSteps +=  totalSteps.steps;
 						}
 					})
 				}
