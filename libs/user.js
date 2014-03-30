@@ -47,14 +47,18 @@ module.exports = {
 							return callback(null, undefined);
 						}
 						moves_data.summary.forEach(function(activity) {
+							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
+							if (activityDate !== today) {
+								log.error('server is a date ahead? dates do not match.')
+								callback(null, 'server is a date ahead? dates do not match.')
+							}
 							if (!db) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
 								callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
-								var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
-								,   steps = activity.steps;
+								var steps = activity.steps;
 
 								// checks to see if there's already a document in the db with the date from moves,
 								// updates db with # of steps from moves
