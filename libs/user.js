@@ -137,7 +137,7 @@ module.exports = {
 					callback(err)
 				}
 				if (doc.username) {
-					callback( null, true );
+					callback( null, doc );
 				}
 				else {
 					callback( null, false );
