@@ -74,6 +74,7 @@ module.exports = {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
+				console.log('today is: ' + today);
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (!stepsToday) {
@@ -82,7 +83,7 @@ module.exports = {
 						// last doc is null again. this is how we know we're done.
 						if (!stepprSteps) {
 							log.error('getTotalSteps complete: ', payload);
-							callback( null, payload );
+							return callback( null, payload );
 						}
 						else {
 							payload.totalStepprSteps +=  stepprSteps.steps;
