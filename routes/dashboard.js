@@ -56,7 +56,9 @@ exports.home = function(req, res) {
                 })
             }
             else {
-                res.end();
+                res.render('home.jade');
+                console.log('no success dashboard.js');
+                log.error('success: dashboard.js')
             }
         })
     }
