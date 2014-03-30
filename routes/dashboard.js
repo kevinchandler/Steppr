@@ -52,14 +52,14 @@ exports.home = function(req, res) {
                                 usersToday : usersToday,
                             })
                         }
+                        else {
+                            res.render('home.jade');
+                            console.log('no success dashboard.js');
+                            log.error('success: dashboard.js')
+                        }
                     })
                 })
             // }
-            else {
-                res.render('home.jade');
-                console.log('no success dashboard.js');
-                log.error('success: dashboard.js')
-            }
         })
     }
 }
