@@ -98,6 +98,10 @@ module.exports = {
 					callback(null, 'updateUser complete \n');
 				})
 			}
+			else {
+				log.info('nothing to update. no payload in user.updateUser');
+				callback(null 'nothing to update:');
+			}
 		})
 	},
 	// returns users steps for today
