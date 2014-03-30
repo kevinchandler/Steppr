@@ -77,7 +77,7 @@ app.post('/user/register', user.register);
 app.get('/groups', groups.index);
 app.get('/groups/create', authenticate, groups.createGroup)
 app.post('/groups/create', authenticate, groups.createGroup);
-app.get('/groups/join/:name'); // need to complete this route
+app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 
 
 app.get('/test', test.index);

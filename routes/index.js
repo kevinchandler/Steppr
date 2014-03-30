@@ -16,16 +16,16 @@ exports.index = function(req, res) {
             if (req.session._token && req.session._movesId) {
                 res.redirect('/home');
             }
-            else {
-                console.log('rendering landing.jade', payload.totalSteps, payload.usersToday, payload.totalStepsToday);
-                res.render('landing.jade', {
+            if(!/mobile/i.test(ua)) {
+                res.render('desktop.jade', {
                     totalSteps: delimitNumbers(payload.totalSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
                 });
             }
-            if(!/mobile/i.test(ua)) {
-                res.render('desktop.jade', {
+            else {
+                console.log('rendering landing.jade', payload.totalSteps, payload.usersToday, payload.totalStepsToday);
+                res.render('landing.jade', {
                     totalSteps: delimitNumbers(payload.totalSteps),
                     usersToday : payload.usersToday,
                     totalStepsToday : delimitNumbers(payload.totalStepsToday),

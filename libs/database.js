@@ -4,7 +4,10 @@ var request = require('request')
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
-,   user = require('./user.js');
+,   user = require('./user.js')
+,   fs = require('fs')
+,   Log = require('log')
+,   log = new Log('debug', fs.createWriteStream('logs/libs-groups-log.txt', {"flags": "a"}));
 dotenv.load();
 
 

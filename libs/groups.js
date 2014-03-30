@@ -30,7 +30,7 @@ module.exports = {
 					db.collection('groups').insert({
 						name: groupName,
 						creator : groupCreator,
-						members : [groupCreator],
+						members : [],
 						stepsToday : 0,
 						stepsTotal : 0,
 					}, function(err, success) {
@@ -38,6 +38,7 @@ module.exports = {
 							callback(err);
 						}
 						if (success) {
+							// need to add group to user doc in users collection
 							callback(null, success);
 						}
 					})
@@ -57,15 +58,14 @@ module.exports = {
 			db.collection('groups').find().each(function(err, group) {
 				if (err) { return callback(err) };
 				if (!group) {
-					console.log('sending package');
-					console.log(package);
 					callback(null, package)
 				}
 				else {
 					package.push({
 						_id: group._id,
 						name: group.name,
-						creator : group.creator
+						creator : group.creator,
+						members: group.members,
 					})
 				}
 			})

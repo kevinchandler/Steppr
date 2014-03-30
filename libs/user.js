@@ -152,4 +152,37 @@ module.exports = {
 			})
 		})
 	},
+
+	joinGroup : function( userId, groupName, callback) {
+		console.log(groupName);
+		log.info('inside joinGroup callback: ', userId, groupName);
+		database.connect(function(err, db) {
+			if (err) callback(err);
+			db.collection('users').findOne({user: userId}, function(err, user) {
+				if (err) callback(err);
+				// users can only be in one group at a time.
+				if (user.groups.length > 0) {
+					console.log('user is already in a group');
+					callback(null, false);
+				}
+				if (user.groups.length === 0) {				
+					db.collection('groups').update({ name: groupName }, { $push: { members: userId }}, function(err, success) {
+						if (err) callback(err);
+						if (success) {
+							db.collection('users').update({ user : userId }, { $push: { groups: groupName }}, function(err, success) {
+								if (err) callback(err);
+								if (success) {
+									callback(null, success);
+								}
+								else {
+									return callback(null, false);
+								}
+							})
+						}
+					})
+				}
+			})
+			callback('user.joinGroup: no user found')
+		})
+	},
 }
