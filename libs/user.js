@@ -18,11 +18,12 @@ module.exports = {
 	//		 loops each of them and checks to see if that date is in the database
 	//			 if so it will update the number of steps if different than what moves tells us
 	//			 if not it will save to db & update stepsToday in the users collection
-		console.log('updateUser: ',  accessToken, movesId + '\n');
+
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
-			callback('err');
+			return callback('err');
 		}
+		console.log('updateUser: ', movesId + '\n');
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			if (err) callback(err);
 			if (!body || !response) {
@@ -98,9 +99,13 @@ module.exports = {
 							}
 						})
 					})
+					return;
 					// // we're done checking/updating db
 					// return callback(null, 'updateUser complete');
 				})
+			}
+			if (!payload) {
+				return;
 			}
 		})
 	},
