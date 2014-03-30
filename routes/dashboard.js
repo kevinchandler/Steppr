@@ -37,8 +37,6 @@ exports.home = function(req, res) {
                         console.log('inside  steppr.getTotal callback');
 
                         if (payload) { // data retrieved from getTotalSteps callback
-                            console.log('APYLOADX.');
-                            console.log(payload);
                             var totalStepsToday = delimitNumbers(payload.totalStepsToday)
                             ,   totalSteps = delimitNumbers(payload.totalSteps)
                             ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
