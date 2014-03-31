@@ -1,10 +1,14 @@
 extends layout
 
 block content
-  h1 #{group.groupName} has taken #{group.totalGroupStepsToday} steps today
+  .row
+    h4.col-xs-5 #{group.groupName}
+    h4.col-xs-7  #{group.totalGroupStepsToday} steps today
+  br
+  br
   each member in locals.group.members
-    li #{member.username} - #{member.stepsToday} steps
+    li.alert #{member.username} - #{member.stepsToday} steps
   br
   br
   br
-  a(href='/groups/join/#{group.name}')  Join #{group.name}
+  a(href='/groups/join/#{group.groupName}').alert.alert-success.col-xs-6.col-xs-offset-2  Join #{group.groupName}

@@ -18,8 +18,13 @@ exports.index = function(req, res) {
 exports.viewGroup = function(req, res) {
 	var groupName = req.params.groupName;
 	groups.viewGroup(groupName, function(err, package) {
-		console.log(package);
-		res.render('viewGroup.jade', { group : package });
+		if (package) {
+			res.render('viewGroup.jade', { group : package });
+		}
+		else {
+			res.redirect('/groups');
+		}
+
 	})
 
 }
@@ -64,19 +69,36 @@ exports.createGroup = function(req, res) {
 }
 
 
+// update group steps upon joining
+
 exports.joinGroup = function(req, res) {
 	var userId = req.session._movesId
 	,   groupName = req.params.groupName;
 
-	user.joinGroup(userId, groupName, function(err, success) {
-		if (err)  {
+	user.isRegistered(req.session._movesId, function(err, isRegistered) {
+		console.log(isRegistered);
+		if (err) {
+			console.log(err);
 			log.error(err);
-			log.error('error joining group');
 			res.redirect('back');
 		}
-		if (success) {
-			console.log(success);
-			res.redirect('/groups/:'+groupName);
+		if (isRegistered) {
+			user.joinGroup(userId, groupName, function(err, success) {
+				if (err)  {
+					log.error(err);
+					log.error('error joining group');
+					res.redirect('back');
+				}
+				if (success) {
+					console.log(success);
+				}
+			})
+		}
+		else if (!isRegistered){
+			res.redirect('/user/register');
+		}
+		else {
+			res.redirect('/groups')
 		}
 	})
 }

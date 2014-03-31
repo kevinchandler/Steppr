@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  h3 Create a group:
   form(action='/groups/create', method='POST')
     input(type='text', name='groupName', placeholder='Group Name')
     button(type='submit', class='btn btn-sm btn-primary') Create

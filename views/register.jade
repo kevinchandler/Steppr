@@ -3,7 +3,8 @@ extends layout
 block content
   img(id='rect', src='../images/gray_rect.png')
   img(class='center' src='../images/steppr_logo.png')
-  h4.alert(style='text-align: center;') You must register a username before creating a group
+  h4.alert(style='text-align: center;') User Information:
   form(action='/user/register', method='POST')
-    input(type='text', placeholder='Username', name='username', style='color: black;')    
-    button(type='submit', class='btn btn-sm btn-success')    Submit
+    input(type='text', placeholder='Username', name='username', style='color: black;')
+    br
+    button(type='submit', class='btn btn-sm btn-success alert')    Submit

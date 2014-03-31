@@ -73,7 +73,7 @@ module.exports = {
 		}
 
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) callback( err );
+			if (err || !db) callback( err );
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
 				console.log('today is: ' + today);
 				if (err) callback( err );
@@ -103,7 +103,7 @@ module.exports = {
 	// //updates all users steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) callback( err );
+			if (err) callback(err);
 			var userStepsToday;
 			if (db) {
 				db.collection('users').find({}).each(function(err, doc) {
@@ -122,8 +122,26 @@ module.exports = {
 				})
 			}
 			else {
-				callback('err, updateAllUsers')
+				callback('err, updateAllUsers');
 			}
 		})
-	}
+	},
+
+	// updateAllGroups : function(callback) {
+	// // groupStepsToday
+	// 	// each group in groups coll
+	// 		// each user in group
+	// 			// add users steps to groupStepsToday
+	// 	// totalGroupSteps
+	// 		// find group in steps coll
+	// 			// each doc, increase total
+	// 	// OR
+	// 		// totalGroupSteps [date]
+	//
+	//
+	// 	MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+	// 		if (err || !db) callback (err);
+	//
+	// 	})
+	// }
 }

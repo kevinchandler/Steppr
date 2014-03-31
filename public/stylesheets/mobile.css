@@ -19,14 +19,20 @@ input {
     left: -1%;
     z-index: -1;
 }
-/*#moves_logo {
-    width: 3em;
-    height: 3em;
-    position: absolute;
-    top: 90%;
-    left: 80%;
-}*/
-#totalStepsToday, #userPercentage, #totalUserSteps {
+li {
+    list-style-type: none;
+}
+li a {
+    color: #fff;
+    font-weight: bold;
+    size: 1.5em;
+    margin-left: 3em;
+}
+a.nav {
+    margin-left: 1em;
+    display: inline-block;
+}
+.totalStepsToday, .userPercentage, .totalUserSteps {
     text-align: center;
 }
 .center {

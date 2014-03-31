@@ -13,10 +13,6 @@ dotenv.load();
 
 module.exports = {
 
-	// need group name and creator
-	// check if group exists
-	// create
-
 	createGroup : function(groupName, groupCreator, callback) {
 		if (!groupName || !groupCreator) {
 			console.log('no name or creator, cannot create group');
@@ -49,10 +45,11 @@ module.exports = {
 			})
 		})
 	},
+
 	// list groups in groups collection.
 	viewAllGroups : function(callback) {
 		database.connect(function(err, db) {
-			if (err) callback(err);
+			if (err || !db) return callback(err);
 			var package = [];
 			// push each group object into the package array and send once there's no more groups
 			db.collection('groups').find().each(function(err, group) {
@@ -64,12 +61,13 @@ module.exports = {
 					package.push({
 						_id: group._id,
 						name: group.name,
+						stepsTotal : group.stepsTotal,
 					})
 				}
 			})
 		})
 	},
-
+	// view single group page
 	viewGroup : function(groupName, callback) {
 		database.connect(function(err, db){
 			if (err) callback(err);
@@ -82,7 +80,7 @@ module.exports = {
 			db.collection('groups').findOne({name: groupName}, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
-					callback(null, null);
+					callback('no group');
 				}
 				else {
 					db.collection('users').find({ groups : groupName }).each(function(err, groupMember){
@@ -95,16 +93,8 @@ module.exports = {
 							package.totalGroupStepsToday += groupMember.stepsToday;
 						}
 					})
-					// package.push({
-					// 	name : group.name,
-					// 	creator : group.creator,
-					// 	members : group.members,
-					// 	stepsToday : group.stepsToday,
-					// 	stepsTotal : group.stepsTotal,
-					// })
-					// callback(null, package);
 				}
 			})
 		})
-	}
+	},
 }

@@ -4,6 +4,7 @@ var request = require('request')
 ,   today = now.format("YYYY-MM-DD")
 ,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
+,   user = require('./user.js')
 ,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
@@ -21,13 +22,13 @@ module.exports = {
 
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
-			return callback('err');
+			callback('err');
 		}
 		console.log('updateUser: ', movesId + '\n');
 		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			if (err) callback(err);
 			if (!body || !response) {
-				return callback('error: no body or response\n');
+				callback('error: no body or response\n');
 				log.error('error: no body or response\n');
 			}
 
@@ -35,7 +36,7 @@ module.exports = {
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 					if (err) {
-						return callback(err);
+						callback(err);
 					}
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
@@ -45,17 +46,17 @@ module.exports = {
 						}
 						if (!moves_data || !moves_data.summary) {
 							log.info('no moves data summary');
-							return callback(null, undefined);
+							callback(null, undefined);
 						}
 						moves_data.summary.forEach(function(activity) {
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
 							if (activityDate !== today) {
 								log.error('server is a date ahead? dates do not match.')
-								return callback(null, 'server is a date ahead? dates do not match.')
+								callback(null, 'server is a date ahead? dates do not match.')
 							}
 							if (!db) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
-								return callback(err +' \n no db -- updateUser: payload.forEach')
+								callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
@@ -103,7 +104,7 @@ module.exports = {
 				})
 			}
 			if (!payload) {
-				return callback(null, true);
+			    callback(null, true);
 			}
 		})
 	},
@@ -115,10 +116,12 @@ module.exports = {
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
 					callback(err);
+					db.close();
 				}
 				else if (data) {
 					log.info('user.getSteps:', data);
 					callback( null, data );
+					db.close();
 				}
 			})
 		})
@@ -129,54 +132,103 @@ module.exports = {
 	isRegistered : function( movesId, callback ) {
 		if (!movesId) {
 			callback("error: no movesId to check if user is registered");
+			db.close();
 		}
 		database.connect(function( err, db ) {
 			if ( err ) {
 				log.error(err);
 				console.log('error: unable to connect to database');
 				callback( err );
+				db.close();
 			}
 			var users = db.collection('users')
 			,   query = { user: movesId };
 			users.findOne(query, function(err, doc) {
 				if (err || !doc) {
 					log.error(err);
-					callback(err)
+					callback(err);
+					db.close();
 				}
 				if (doc.username) {
 					callback( null, doc );
+					db.close();
 				}
 				else {
+					console.log('user is not registered');
 					callback( null, false );
+					db.close();
+				}
+			})
+		})
+	},
+
+
+	// // returns users groups or false
+	// isInGroup : function(userId, callback) {
+	// 	if (!userId) {
+	// 		log.error('user.isInGroup: No userId');
+	// 		return callback('user.isInGroup: No userId');
+	// 	}
+	// 	database.connect(function(err, db) {
+	// 		db.collection('users').findOne({user: userId}, function(err, user) {
+	// 			if (err || !user) return callback(err);
+	// 			var package = [];
+	// 			user.groups.forEach(function(group) {
+	// 				package.push(group)
+	// 			})
+	// 			if (package.length === 0) {
+	// 				callback(null, false)
+	// 			}
+	// 			else {
+	// 				callback(null, package);
+	// 			}
+	// 		})
+	// 	})
+	// },
+
+
+	// returns user document from users collection
+	getUser : function(userId, callback) {
+		database.connect(function(err, db) {
+			if (err || !db) callback(err);
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err || !doc) {
+					return callback(null, false)
+				}
+				else {
+					return callback(null, doc);
 				}
 			})
 		})
 	},
 
 	joinGroup : function( userId, groupName, callback) {
-		console.log(groupName);
+		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
 		database.connect(function(err, db) {
-			if (err) callback(err);
-			db.collection('users').findOne({user: userId}, function(err, user) {
-				if (err) callback(err);
-				// users can only be in one group at a time.
-				if (user.groups.length > 0) {
-					console.log('user is already in a group');
-					callback(null, false);
+			if (err || !db) callback(err);
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err || !doc) {
+					return callback(err || 'user.joinGroup: no doc\n', null)
 				}
-				if (user.groups.length === 0) {
-					newMember = {
+				if (doc.groups.length !== 0) {
+					return callback('User in group\n', false)
+				}
+				else {
+					var newMember = {
 						id : userId,
-						username : user.username
-					}
+						username : doc.username,
+					};
+					// put user in group
 					db.collection('groups').update({ name: groupName }, { $push: { members: newMember }}, function(err, success) {
-						if (err) callback(err);
+						if (err || !success) callback(err);
 						if (success) {
+							// add group to user
 							db.collection('users').update({ user : userId }, { $push: { groups: groupName }}, function(err, success) {
-								if (err) callback(err);
+								if (err || !success) callback(err);
 								if (success) {
-									callback(null, success);
+									console.log(success);
+									return callback(null, success);
 								}
 								else {
 									return callback(null, false);
@@ -186,7 +238,6 @@ module.exports = {
 					})
 				}
 			})
-			callback('user.joinGroup: no user found')
 		})
 	},
 }

@@ -16,22 +16,7 @@ dotenv.load();
 
 
 exports.index = function(req, res) {
-    console.log('finding grop');
-    user.findGroup({_id: "53379ebea1fff451fa02bbfc"}, function(err, group) {
-        if (err)  {
-            log.error(err);
-            log.error('error joining group');
-            res.redirect('back');
-        }
-        if (!group) {
-            // user is in a group already
-            console.log(group);
-        }
-        if (group) {
-            console.log(group);
-            // user joined successfully
-        }
-    })
+    db.close();
 }
 
 

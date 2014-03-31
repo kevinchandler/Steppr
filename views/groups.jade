@@ -1,9 +1,11 @@
 extends layout
 
 block content
+  br
+  br
   each group in locals.groups
-    li
+    li.lead
       a(href='/groups/#{group.name}') #{group.name}
   br
   br
-  a(href='/groups/create') Create a group
+  a(href='/groups/create').alert.alert-success Create a group

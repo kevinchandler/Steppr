@@ -28,9 +28,9 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meow' }));
-app.use(express.bodyParser());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -77,8 +77,8 @@ app.post('/user/register', user.register);
 app.get('/groups', groups.index);
 app.get('/groups/create', groups.createGroup);
 app.post('/groups/create', authenticate, groups.createGroup);
+app.get('/groups/join/:groupName', groups.joinGroup);
 app.get('/groups/:groupName', groups.viewGroup);
-app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 
 
 app.get('/test', test.index);
