@@ -104,7 +104,8 @@ module.exports = {
 							}
 						})
 					})
-					return callback(null, 'updateUser complete');
+					callback(null, 'updateUser complete');
+					return db.close()
 				})
 			}
 			if (!payload) {
