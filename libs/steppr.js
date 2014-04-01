@@ -31,8 +31,9 @@ module.exports = {
 				}
 			})
 		})
-	},
+	},	
 
+	// this is called after user authenticates with moves if user is not already in db
 	createNewUser : function(accessToken, refreshToken, movesId, callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
 			if (err) return callback( err );
@@ -73,56 +74,60 @@ module.exports = {
 		}
 
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err || !db) callback( err );
-			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
-				console.log('today is: ' + today);
-				if (err) callback( err );
-				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
-				if (stepsToday) {
-					payload.usersToday += 1;
-					payload.totalStepsToday += stepsToday.steps
-				}
-				else if (!stepsToday) {
-					db.collection('steps').find({}).each(function(err, totalSteps) {
-						if (err) callback( err );
-						// last doc is null again. this is how we know we're done.
-						if (!totalSteps) {
-							log.error('getTotalSteps complete: ', payload);
-							console.log(payload);
-							callback( null, payload );
-						}
-						else {
-							payload.totalSteps +=  totalSteps.steps;
-						}
-					})
-				}
-			})
+			if (err || !db) return callback( err );
+			else {
+				db.collection('steps').find({date: today}).each(function(err, stepsToday) {
+					console.log('today is: ' + today);
+					if (err) callback( err );
+					// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
+					if (stepsToday) {
+						payload.usersToday += 1;
+						payload.totalStepsToday += stepsToday.steps
+					}
+					else if (!stepsToday) {
+						db.collection('steps').find({}).each(function(err, totalSteps) {
+							if (err) callback( err );
+							// last doc is null again. this is how we know we're done.
+							if (!totalSteps) {
+								log.error('getTotalSteps complete: ', payload);
+								console.log(payload);
+								callback( null, payload );
+							}
+							else {
+								payload.totalSteps +=  totalSteps.steps;
+							}
+						})
+					}
+				})
+			}
 		})
 	},
 
 	// //updates all users steps for today
 	updateAllUsers : function(callback) {
 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) callback(err);
-			var userStepsToday;
-			if (db) {
-				db.collection('users').find({}).each(function(err, doc) {
-					if (err) { callback (err) }
-					if (doc) {
-						var movesId = doc.user
-						,   accessToken = doc.access_token;
-						log.info(movesId, accessToken)
-						user.updateUser(accessToken, movesId, function(err, success) {
-							if (err) log.error(err);
-						})
-					}
-					if (!doc) {
-						callback(null, 'updateAllUsers complete');
-					}
-				})
-			}
+			if (err || !db) return callback(err);
 			else {
-				callback('err, updateAllUsers');
+				var userStepsToday;
+				if (db) {
+					db.collection('users').find({}).each(function(err, doc) {
+						if (err) { callback (err) }
+						if (doc) {
+							var movesId = doc.user
+							,   accessToken = doc.access_token;
+							log.info(movesId, accessToken)
+							user.updateUser(accessToken, movesId, function(err, success) {
+								if (err) log.error(err);
+							})
+						}
+						if (!doc) {
+							callback(null, 'updateAllUsers complete');
+						}
+					})
+				}
+				else {
+					callback('err, updateAllUsers');
+				}
 			}
 		})
 	},

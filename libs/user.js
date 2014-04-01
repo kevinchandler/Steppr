@@ -32,31 +32,35 @@ module.exports = {
 				log.error('error: no body or response\n');
 			}
 
-			var payload = JSON.parse(body);
+			// parse expects a string as 1st arg. This prevents unnecessary errors thrown if the body ends up being something other than a string
+
+				var payload = JSON.parse(body.toString());
+
+
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-					if (err) {
-						callback(err);
+					if (err || !db) {
+						return callback(err || 'user.updateUser: no db');
 					}
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
-						if (!db) {
+						if (db === null) {
 							log.error('inside payload.forEach: no db connection\n');
-							callback(err +' \n no db -- updateUser: payload.forEach')
+							return callback(err +' \n no db -- updateUser: payload.forEach')
 						}
 						if (!moves_data || !moves_data.summary) {
 							log.info('no moves data summary');
-							callback(null, undefined);
+							return callback('no moves data');
 						}
 						moves_data.summary.forEach(function(activity) {
+							if (db === null) {
+								log.error('inside moves_data.summary.forEach: no db connection\n');
+								return callback(err +' \n no db -- updateUser: payload.forEach')
+							}
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
 							if (activityDate !== today) {
 								log.error('server is a date ahead? dates do not match.')
 								callback(null, 'server is a date ahead? dates do not match.')
-							}
-							if (!db) {
-								log.error('inside moves_data.summary.forEach: no db connection\n');
-								callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
@@ -111,7 +115,7 @@ module.exports = {
 	// returns users steps for today
 	getSteps : function( movesId, callback ) {
 		database.connect(function( err, db ) {
-			if ( err ) callback( err );
+			if ( err  || !db ) return callback( err || 'user.getSteps: no db connection' );
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {

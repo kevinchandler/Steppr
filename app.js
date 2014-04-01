@@ -90,8 +90,6 @@ app.get('/logs', function(req, res) {
 })
 
 
-
-
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
         if (err) console.log(err);

@@ -67,7 +67,7 @@ exports.authenticate = function(req, res) {
                                     }
                                     if (success) {
                                         console.log('Registered user successfully \n');
-                                        return res.redirect('/home');
+                                        res.redirect('/home');
                                     }
                                     else {
                                         console.log('unable to createNewUser \n');
