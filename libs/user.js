@@ -161,7 +161,7 @@ module.exports = {
 	},
 
 
-	// // returns users groups or false
+	// // returns groups that user is in or false for none
 	// isInGroup : function(userId, callback) {
 	// 	if (!userId) {
 	// 		log.error('user.isInGroup: No userId');
@@ -234,6 +234,41 @@ module.exports = {
 							})
 						}
 					})
+				}
+			})
+		})
+	},
+
+	leaveGroup : function(userId, groupName, callback) {
+		console.log('inside leaveGroup callback:', userId, groupName);
+		log.info('inside leaveGroup callback: ', userId, groupName);
+		database.connect(function(err, db) {
+			if (err || !db) callback(err);
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err || !doc) {
+					return callback(err || 'user.leaveGroup: no doc\n', null)
+				}
+				else {
+					var index = doc.groups.indexOf(groupName);
+					if (index > -1) {
+						// doc.groups.splice(index, 1);
+						db.collection('users').update({user : userId}, { $pull: { groups: groupName }}, function(err, success) {
+							if (err || !success) {
+								return callback(err || 'leaveGroup - failed\n');
+							}
+							if (success) {
+								log.info(success);
+								return callback(null, userId + ' successfully left group ' + groupName);
+							}
+							else {
+								return callback(userId + ' unable to leave group ' + groupName);
+							}
+						})
+					}
+					else {
+						log.error('leaveGroup callback: It looks like the user is not a member of that group')
+						return callback('leaveGroup callback: It looks like the user is not a member of that group\n');
+					}
 				}
 			})
 		})
