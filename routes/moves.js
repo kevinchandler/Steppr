@@ -34,7 +34,11 @@ exports.authenticate = function(req, res) {
     moves.getAccessToken(req.query.code, function(err, body) {
         console.log('body is: ');
         console.log(body);
-          if (err) res.redirect('/');
+          if (err || !body.access_token) {
+              log.error(err || 'moves.js: no access token. User did not authorize. ')
+              console.log(err || 'moves.js: no access token. User did not authorize. ');
+              return res.redirect('/');
+          }
           // required for moves-api library
           moves.options.accessToken = body.access_token;
           req.session._token = body.access_token;
