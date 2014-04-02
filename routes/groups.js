@@ -72,6 +72,9 @@ exports.createGroup = function(req, res) {
 // update group steps upon joining
 
 exports.joinGroup = function(req, res) {
+	if (!req.params,groupName) {
+		return;
+	}
 	var userId = req.session._movesId
 	,   groupName = req.params.groupName;
 
@@ -91,6 +94,7 @@ exports.joinGroup = function(req, res) {
 				}
 				if (success) {
 					console.log(success);
+					return res.redirect('back')
 				}
 			})
 		}
