@@ -16,12 +16,7 @@ dotenv.load();
 
 
 exports.index = function(req, res) {
-    user.leaveGroup(14104144053355464, "Kevin is cool", function(err, success) {
-        if (err) console.log(err);
-        else {
-            console.log(success);
-        }
-    })
+    
 }
 
 

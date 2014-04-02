@@ -78,6 +78,7 @@ app.get('/groups', groups.index);
 app.get('/groups/create', groups.createGroup);
 app.post('/groups/create', authenticate, groups.createGroup);
 app.get('/groups/join/:groupName', groups.joinGroup);
+app.get('/groups/leave/:groupName', groups.leaveGroup);
 app.get('/groups/:groupName', groups.viewGroup);
 
 

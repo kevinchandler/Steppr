@@ -73,36 +73,59 @@ exports.createGroup = function(req, res) {
 
 exports.joinGroup = function(req, res) {
 	if (!req.params,groupName) {
-		return;
+		return res.redirect('back');
 	}
-	var userId = req.session._movesId
-	,   groupName = req.params.groupName;
+	else {
+		var userId = req.session._movesId
+		,   groupName = req.params.groupName;
 
-	user.isRegistered(req.session._movesId, function(err, isRegistered) {
-		console.log(isRegistered);
-		if (err) {
-			console.log(err);
-			log.error(err);
-			res.redirect('back');
-		}
-		if (isRegistered) {
-			user.joinGroup(userId, groupName, function(err, success) {
-				if (err)  {
-					log.error(err);
-					log.error('error joining group');
-					res.redirect('back');
-				}
-				if (success) {
-					console.log(success);
-					return res.redirect('back')
-				}
-			})
-		}
-		else if (!isRegistered){
-			res.redirect('/user/register');
-		}
-		else {
-			res.redirect('/groups')
-		}
-	})
+		user.isRegistered(req.session._movesId, function(err, isRegistered) {
+			console.log(isRegistered);
+			if (err) {
+				console.log(err);
+				log.error(err);
+				res.redirect('back');
+			}
+			if (isRegistered) {
+				user.joinGroup(userId, groupName, function(err, success) {
+					if (err)  {
+						log.error(err);
+						log.error('error joining group');
+						return res.redirect('back');
+					}
+					if (success) {
+						console.log(success);
+						return res.redirect('back')
+					}
+				})
+			}
+			else if (!isRegistered){
+				res.redirect('/user/register');
+			}
+			else {
+				res.redirect('/groups')
+			}
+		})
+	}
+}
+
+exports.leaveGroup = function(req, res) {
+	if (!req.params.groupName) {
+		return res.redirect('back');
+	}
+	else {
+		var userId = req.session._movesId
+		,   groupName = req.params.groupName;
+
+		user.leaveGroup(req.session._movesId, groupName, function(err, success) {
+			if (err) {
+				console.log(err);
+				return res.redirect('back');
+			}
+			if (success) {
+				console.log(success);
+				return res.redirect('/groups');
+			}
+		})
+	}
 }
