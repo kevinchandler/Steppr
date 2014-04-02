@@ -24,7 +24,7 @@ module.exports = {
 			log.debug('no accessToken || movesId')
 			return callback('err');
 		}
-		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=31&access_token='+accessToken, function(err, response, body) {
+		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=10&access_token='+accessToken, function(err, response, body) {
 			console.log('updateUser: ', movesId + '\n');
 			if (err) callback(err);
 			if (!body || !response) {
@@ -86,10 +86,12 @@ module.exports = {
 										})
 									}
 									// update users doc w/ # of steps today
+									// possibly not working correctly due to incorrect else-if
 									if (doc && activityDate === today) {
 										db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 											if (err) callback(err);
 											else if (success) {
+												// come back to this. add fn rather than repeat code
 												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 													if (err) callback(err);
 													if (success) {
@@ -99,12 +101,22 @@ module.exports = {
 											}
 										})
 									}
+
+									// get users join date and don't update anything prior
+									else {
+										console.log('new fn hit bro');
+										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
+											if (err) callback(err);
+											if (success) {
+												log.info('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
+											}
+										})
+									}
 								})
 							}
 						})
 					})
 					callback(null, 'updateUser complete');
-					return db.close()
 				})
 			}
 			if (!payload) {
@@ -120,12 +132,10 @@ module.exports = {
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
 					callback(err);
-					db.close();
 				}
 				else if (data) {
 					log.info('user.getSteps:', data);
 					callback( null, data );
-					db.close();
 				}
 			})
 		})
@@ -136,14 +146,12 @@ module.exports = {
 	isRegistered : function( movesId, callback ) {
 		if (!movesId) {
 			callback("error: no movesId to check if user is registered");
-			db.close();
 		}
 		database.connect(function( err, db ) {
 			if ( err ) {
 				log.error(err);
 				console.log('error: unable to connect to database');
 				callback( err );
-				db.close();
 			}
 			var users = db.collection('users')
 			,   query = { user: movesId };
@@ -151,16 +159,13 @@ module.exports = {
 				if (err || !doc) {
 					log.error(err);
 					callback(err);
-					db.close();
 				}
 				if (doc.username) {
 					callback( null, doc );
-					db.close();
 				}
 				else {
 					console.log('user is not registered');
 					callback( null, false );
-					db.close();
 				}
 			})
 		})
