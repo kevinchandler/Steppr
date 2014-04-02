@@ -31,7 +31,7 @@ module.exports = {
 				}
 			})
 		})
-	},	
+	},
 
 	// this is called after user authenticates with moves if user is not already in db
 	createNewUser : function(accessToken, refreshToken, movesId, callback) {
@@ -40,14 +40,15 @@ module.exports = {
 			var  placeholder = '';
 			db.collection('users').insert({
 				user: movesId,
-				username: placeholder,
-				email: placeholder,
+				username: '',
+				email: '',
+				created: today,
 				stepsToday : 0,
 				stepsTotal : 0,
 				points: {
 					total: 0
 				},
-				badges: ['Alpha Tester'],
+				badges: ['Beta Tester'],
 				groups: [],
 				access_token : accessToken,
 				refresh_token : refreshToken,
