@@ -26,11 +26,13 @@ exports.register = function(req, res) {
         }
         else {
             database.connect(function(err, db) {
-                var users = db.collection('users');
-                ///db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-
-                if (db) {
-                    users.update({ user : user }, { $set: { "username" : username }}, function(err, success) {
+                if (err || !db) {
+                    log.error(err || 'err connecting to db.');
+                    console.log(err || 'err connecting to db.');
+                    return res.redirect('back')
+                }
+                else {
+                    db.collection('users').update({ user : user }, { $set: { "username" : username }}, function(err, success) {
                         if (err) { log.error(err); return res.redirect('back'); }
                         if (success) {
                             log.info( success, 'username set: ' + username, user );
