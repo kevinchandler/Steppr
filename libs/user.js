@@ -24,7 +24,7 @@ module.exports = {
 			log.debug('no accessToken || movesId')
 			return callback('err');
 		}
-		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=10&access_token='+accessToken, function(err, response, body) {
+		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 			console.log('updateUser: ', movesId + '\n');
 			if (err) callback(err);
 			if (!body || !response) {
@@ -89,6 +89,7 @@ module.exports = {
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) callback(err);
 											if (success) {
+												console.log(success);
 												console.log('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
 												log.info('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
 
