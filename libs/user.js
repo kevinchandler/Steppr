@@ -22,10 +22,10 @@ module.exports = {
 
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
-			callback('err');
+			return callback('err');
 		}
-		console.log('updateUser: ', movesId + '\n');
-		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
+		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=31&access_token='+accessToken, function(err, response, body) {
+			console.log('updateUser: ', movesId + '\n');
 			if (err) callback(err);
 			if (!body || !response) {
 				callback('error: no body or response\n');
@@ -34,8 +34,7 @@ module.exports = {
 
 			// parse expects a string as 1st arg. This prevents unnecessary errors thrown if the body ends up being something other than a string
 
-				var payload = JSON.parse(body.toString());
-
+			var payload = JSON.parse(body.toString());
 
 			if (payload) { // parsed data from request
 				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
@@ -57,11 +56,11 @@ module.exports = {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
 								return callback(err +' \n no db -- updateUser: payload.forEach')
 							}
-							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD")
-							if (activityDate !== today) {
-								log.error('server is a date ahead? dates do not match.')
-								callback(null, 'server is a date ahead? dates do not match.')
-							}
+							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD");
+							// if (activityDate !== today) {
+							// 	log.error('server is a date ahead? dates do not match.')
+							// 	callback(null, 'server is a date ahead? dates do not match.')
+							// }
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
 								var steps = activity.steps;

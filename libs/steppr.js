@@ -56,7 +56,7 @@ module.exports = {
 				if (err) {
 					log(err);
 					console.log(err, 'unable to create new user');
-					callback(err);
+					return callback(err);
 				}
 				if (success) {
 					log.info('createNewUser: ', success);
