@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  br
   img(id='rect', src='../images/gray_rect.png')
   img(class='center' src='../images/steppr_logo.png')
   div#name
@@ -8,5 +9,5 @@ block content
     h4.alert(style='text-align: center;') #{totalSteps} steps taken on Steppr
   p#totalStepsToday.alert  #{usersToday} people have taken   #{totalStepsToday} steps today
   div#take_your_first
-    a(href='/moves') Take your first
+    a(href='/moves') Let's go
       i(class='fa fa-arrow-right')
