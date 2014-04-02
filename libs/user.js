@@ -85,30 +85,18 @@ module.exports = {
 											console.log( 'Data entered into db: ' + movesId, activityDate, steps );
 										})
 									}
-									// update users doc w/ # of steps today
-									// possibly not working correctly due to incorrect else-if
-									if (doc && activityDate === today) {
-										db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-											if (err) callback(err);
-											else if (success) {
-												// come back to this. add fn rather than repeat code
-												db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
-													if (err) callback(err);
-													if (success) {
-														log.info('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
-													}
-												})
-											}
-										})
-									}
-
-									// get users join date and don't update anything prior
 									else {
-										console.log('new fn hit bro');
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) callback(err);
 											if (success) {
+												console.log('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
 												log.info('Steps Collection: ' + doc.user, doc.steps, + steps + ': ' + doc.date + '\n');
+
+												if (activityDate === today) {
+													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+														if (err) callback(err);
+													})
+												}
 											}
 										})
 									}
