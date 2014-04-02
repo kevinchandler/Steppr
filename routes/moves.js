@@ -47,7 +47,7 @@ exports.authenticate = function(req, res) {
             if (err) {
                 log.error(err, 'unable to get moves profile')
                 console.log(err, 'unable to get moves profile: ');
-                res.redirect('/');
+                return res.redirect('/');
             }
             if (profile) {
                     req.session._movesId = profile.userId;
@@ -61,21 +61,21 @@ exports.authenticate = function(req, res) {
                         steppr.findUser(profile.userId, function(err, doc) {
                             if (err) { return err; }
                             if (doc) {
-                                res.redirect('/home');
+                                return res.redirect('/home');
                             }
                             if (!doc) {
                                 steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                                     if (err) {
                                         console.log(err + ' error: unable to create user');
-                                        res.redirect('/');
+                                        return res.redirect('/');
                                     }
                                     if (success) {
                                         console.log('Registered user successfully \n');
-                                        res.redirect('/home');
+                                        return res.redirect('/home');
                                     }
                                     else {
                                         console.log('unable to createNewUser \n');
-                                        res.redirect('/');
+                                        return res.redirect('/');
                                     }
                                 })
                             }
