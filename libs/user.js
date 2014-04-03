@@ -30,6 +30,7 @@ module.exports = {
 			if (!body || !response) {
 				callback('error: no body or response\n');
 				log.error('error: no body or response\n');
+				return;
 			}
 
 			// parse expects a string as 1st arg. This prevents unnecessary errors thrown if the body ends up being something other than a string
@@ -51,6 +52,7 @@ module.exports = {
 							log.info('no moves data summary');
 							return callback('no moves data');
 						}
+
 						moves_data.summary.forEach(function(activity) {
 							if (db === null) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
@@ -105,7 +107,7 @@ module.exports = {
 					callback(null, 'updateUser complete');
 				})
 			}
-			if (!payload) {
+			else {
 			    callback(null, true);
 			}
 			callback(null);
