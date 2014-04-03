@@ -108,6 +108,7 @@ module.exports = {
 			if (!payload) {
 			    callback(null, true);
 			}
+			callback(null);
 		})
 	},
 	// returns users steps for today
