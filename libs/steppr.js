@@ -11,9 +11,6 @@ var request = require('request')
 
 dotenv.load();
 
-
-
-
 module.exports = {
 
 	findUser : function(userId, callback) {

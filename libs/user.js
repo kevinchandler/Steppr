@@ -57,10 +57,6 @@ module.exports = {
 								return callback(err +' \n no db -- updateUser: payload.forEach')
 							}
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD");
-							// if (activityDate !== today) {
-							// 	log.error('server is a date ahead? dates do not match.')
-							// 	callback(null, 'server is a date ahead? dates do not match.')
-							// }
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
 								var steps = activity.steps;
@@ -89,7 +85,6 @@ module.exports = {
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) callback(err);
 											if (success) {
-												console.log(success);
 												if (doc.steps !== steps) {
 													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
 													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');

@@ -77,8 +77,8 @@ app.post('/user/register', user.register);
 app.get('/groups', groups.index);
 app.get('/groups/create', groups.createGroup);
 app.post('/groups/create', authenticate, groups.createGroup);
-app.get('/groups/join/:groupName', groups.joinGroup);
-app.get('/groups/leave/:groupName', groups.leaveGroup);
+app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
+app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:groupName', groups.viewGroup);
 
 
@@ -99,7 +99,7 @@ function updateAllUsers() {
 }
 
 //will run updateAllUsers() every so often // what the minutes variable is set to
-var minutes = .5, the_interval = minutes * 60 * 1000;
+var minutes = 5, the_interval = minutes * 60 * 1000;
 setInterval(function() {
     console.log('Updating: \n');
   updateAllUsers();
