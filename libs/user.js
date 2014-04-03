@@ -96,7 +96,7 @@ module.exports = {
 													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 														if (err) callback(err);
 														else {
-															callback('007');
+															callback('err 007', success);
 														}
 													})
 												}
