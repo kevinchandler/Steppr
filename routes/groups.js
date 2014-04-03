@@ -26,7 +26,6 @@ exports.viewGroup = function(req, res) {
 		}
 
 	})
-
 }
 
 exports.createGroup = function(req, res) {

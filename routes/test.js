@@ -7,17 +7,30 @@ var request = require('request')
 ,   user = require('../libs/user.js')
 ,   database = require('../libs/database.js')
 ,   steppr = require('../libs/steppr.js');
-
 dotenv.load();
 
-
-
-
-
-
-exports.index = function(req, res) {
-    
-}
+// 
+// var db;
+// MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+// 	if (err || !db) callback (err);
+//     else {
+//         db = db;
+//     }
+// })
+// exports.index = function(req, res) {{
+// 	var group = {
+// 		this.name : groupName,
+// 		this.creator : creator,
+// 	}
+// 	var k = createGroup("kevin ", "god");
+//
+// var kevin = createGroup("Kevin", "god");
+// console.log(kevin);
+//
+//
+//
+//
+// }
 
 
 exports.notification = function(req, res) {

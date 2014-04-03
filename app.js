@@ -82,7 +82,7 @@ app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:groupName', groups.viewGroup);
 
 
-app.get('/test', test.index);
+// app.get('/test', test.index);
 
 app.post('/notification', test.notification); // moves posts data every so often
 

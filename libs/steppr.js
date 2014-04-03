@@ -129,22 +129,56 @@ module.exports = {
 			}
 		})
 	},
-
-	// updateAllGroups : function(callback) {
-	// // groupStepsToday
-	// 	// each group in groups coll
-	// 		// each user in group
-	// 			// add users steps to groupStepsToday
-	// 	// totalGroupSteps
-	// 		// find group in steps coll
-	// 			// each doc, increase total
-	// 	// OR
-	// 		// totalGroupSteps [date]
-	//
-	//
-	// 	MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-	// 		if (err || !db) callback (err);
-	//
-	// 	})
-	// }
 }
+// 	updateAllGroups : function(callback) {
+// 	// // groupStepsToday
+// 	// 	// each group in groups coll
+// 	// 		// each user in group
+// 	// 			// add users steps to groupStepsToday
+// 	// 	// totalGroupSteps
+// 	// 		// find group in steps coll
+// 	// 			// each doc, increase total
+// 	// 	// OR
+// 	// 		// totalGroupSteps [date]
+// 	//
+//
+//
+// 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
+// 			if (err || !db) callback (err);
+// 			else {
+// 				db.collection('steps').find()
+// 			}
+//
+// 		})
+// 	}
+// }
+//
+//
+
+
+
+
+
+// loop through steps coll
+	// filter by people group with > 0
+		// open groups collection filtered by the groups name (making this .. see below groupSteps)
+			//loop each user in the group
+				// if group.user.id(!== (steps collection)
+					// update
+			//
+		//
+	//
+//
+
+	//
+	//
+	//
+	//
+	//
+	// group : {
+	// 	name :
+	// 	user : {
+	// 		id
+	// 		steps
+	// 	}
+	// }
