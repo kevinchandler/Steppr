@@ -9,7 +9,7 @@ Create or join an organization. Compete for the most steps daily, weekly, monthl
 A working idea in progress. Currently only supports moves-app for iOS/Android
 
 
-[Demo](http://step.ngrok.com) (Currently only a mobile UI)
+[Demo](http://stppr.ngrok.com) 
 
 If using [ngrok](https://ngrok.com/) you can run Steppr by "node app.js Steppr" That will start Steppr on an ngrok tunnel http://steppr.ngrok.com
 Alternatively leave the NGROK variables alone. Except for NGROK_URL which is Steppr's main URL. ie. http://steppr.herokuapp.com and you can run Steppr by "node app.js"
@@ -25,7 +25,7 @@ You must have the following environment variables set:
 
 NGROK_URL = '' // the url and port of Steppr if you don't use ngrok
 NGROK_TOKEN = ''
-NGROK_SUBDOMAIN = '' // not needed this will be set once you start Steppr using "node app.js steppr" would give your domain http://steppr.ngrok.com
+NGROK_SUBDOMAIN = '' // not needed this will be set once you start Steppr using "node app.js steppr" would give your domain http://stppr.ngrok.com
 MOVES_REDIRECT_URL = ''
 CLIENT_ID = ''
 CLIENT_SECRET = ''
@@ -37,6 +37,7 @@ How to use:
 $ git clone
 $ cd Steppr
 $ npm install
+rename .env.example to .env and set the values 
 mkdir logs
 One of the following depending on ngrok usage:
   $ node app.js *ngroksubdomain*
