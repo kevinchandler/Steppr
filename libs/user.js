@@ -90,9 +90,10 @@ module.exports = {
 											if (err) callback(err);
 											if (success) {
 												console.log(success);
-												console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-												log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-
+												if (doc.steps !== steps) {
+													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
+													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
+												}
 												if (activityDate === today) {
 													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 														if (err) callback(err);

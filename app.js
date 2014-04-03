@@ -99,7 +99,7 @@ function updateAllUsers() {
 }
 
 //will run updateAllUsers() every so often // what the minutes variable is set to
-var minutes = 5, the_interval = minutes * 60 * 1000;
+var minutes = .5, the_interval = minutes * 60 * 1000;
 setInterval(function() {
     console.log('Updating: \n');
   updateAllUsers();
