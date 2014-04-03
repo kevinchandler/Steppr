@@ -95,8 +95,19 @@ module.exports = {
 												if (activityDate === today) {
 													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
 														if (err) callback(err);
+														else {
+															callback('007');
+														}
 													})
 												}
+												else {
+													console.log('1');
+													callback(null, true);
+												}
+											}
+											else {
+												console.log('2');
+												callback(null, true)
 											}
 										})
 									}
@@ -104,12 +115,15 @@ module.exports = {
 							}
 						})
 					})
+					console.log('99');
 					callback(null, 'updateUser complete');
 				})
 			}
 			else {
+				console.log('102');
 			    callback(null, true);
 			}
+			console.log('10202');
 			callback(null);
 		})
 	},
