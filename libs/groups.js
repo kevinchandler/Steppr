@@ -1,9 +1,9 @@
 var request = require('request')
+,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
-,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('logs/libs-groups-log.txt', {"flags": "a"}));
@@ -18,9 +18,8 @@ module.exports = {
 			console.log('no name or creator, cannot create group');
 			callback('no name or creator, cannot create group');
 		}
-		database.connect(function(err, db) {
-			if (err || !db) callback(err);
-
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('groups').findOne({ name: groupName }, function(err, group) {
 				if (!group) {
 					db.collection('groups').insert({
@@ -48,8 +47,8 @@ module.exports = {
 
 	// list groups in groups collection.
 	viewAllGroups : function(callback) {
-		database.connect(function(err, db) {
-			if (err || !db) return callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = [];
 			// push each group object into the package array and send once there's no more groups
 			db.collection('groups').find().each(function(err, group) {
@@ -69,8 +68,8 @@ module.exports = {
 	},
 	// view single group page
 	viewGroup : function(groupName, callback) {
-		database.connect(function(err, db){
-			if (err) callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
 				groupName : groupName,
 				totalGroupSteps : 0,

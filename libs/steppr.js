@@ -1,8 +1,8 @@
 var request = require('request')
+,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
-,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -14,8 +14,8 @@ dotenv.load();
 module.exports = {
 
 	findUser : function(userId, callback) {
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) return callback( err );
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err) return callback(err);
 				if (doc) {
@@ -32,8 +32,8 @@ module.exports = {
 
 	// this is called after user authenticates with moves if user is not already in db
 	createNewUser : function(accessToken, refreshToken, movesId, callback) {
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err) return callback( err );
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			var  placeholder = '';
 			db.collection('users').insert({
 				user: movesId,
@@ -71,61 +71,57 @@ module.exports = {
 			usersToday : 0,
 		}
 
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err || !db) return callback( err );
-			else {
-				db.collection('steps').find({date: today}).each(function(err, stepsToday) {
-					console.log('today is: ' + today);
-					if (err) callback( err );
-					// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
-					if (stepsToday) {
-						payload.usersToday += 1;
-						payload.totalStepsToday += stepsToday.steps
-					}
-					else if (!stepsToday) {
-						db.collection('steps').find({}).each(function(err, totalSteps) {
-							if (err) callback( err );
-							// last doc is null again. this is how we know we're done.
-							if (!totalSteps) {
-								log.error('getTotalSteps complete: ', payload);
-								console.log(payload);
-								callback( null, payload );
-							}
-							else {
-								payload.totalSteps +=  totalSteps.steps;
-							}
-						})
-					}
-				})
-			}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
+				console.log('today is: ' + today);
+				if (err) callback( err );
+				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
+				if (stepsToday) {
+					payload.usersToday += 1;
+					payload.totalStepsToday += stepsToday.steps
+				}
+				else if (!stepsToday) {
+					db.collection('steps').find({}).each(function(err, totalSteps) {
+						if (err) callback( err );
+						// last doc is null again. this is how we know we're done.
+						if (!totalSteps) {
+							log.error('getTotalSteps complete: ', payload);
+							console.log(payload);
+							callback( null, payload );
+						}
+						else {
+							payload.totalSteps +=  totalSteps.steps;
+						}
+					})
+				}
+			})
 		})
 	},
 
 	// //updates all users steps for today
 	updateAllUsers : function(callback) {
-		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-			if (err || !db) return callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			var userStepsToday;
+			if (db) {
+				db.collection('users').find({}).each(function(err, doc) {
+					if (err) { callback (err) }
+					if (doc) {
+						var movesId = doc.user
+						,   accessToken = doc.access_token;
+						log.info(movesId, accessToken)
+						user.updateUser(accessToken, movesId, function(err, success) {
+							if (err) log.error(err);
+						})
+					}
+					if (!doc) {
+						callback(null, 'updateAllUsers complete');
+					}
+				})
+			}
 			else {
-				var userStepsToday;
-				if (db) {
-					db.collection('users').find({}).each(function(err, doc) {
-						if (err) { callback (err) }
-						if (doc) {
-							var movesId = doc.user
-							,   accessToken = doc.access_token;
-							log.info(movesId, accessToken)
-							user.updateUser(accessToken, movesId, function(err, success) {
-								if (err) log.error(err);
-							})
-						}
-						if (!doc) {
-							callback(null, 'updateAllUsers complete');
-						}
-					})
-				}
-				else {
-					callback('err, updateAllUsers');
-				}
+				callback('err, updateAllUsers');
 			}
 		})
 	},

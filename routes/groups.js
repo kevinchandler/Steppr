@@ -24,7 +24,6 @@ exports.viewGroup = function(req, res) {
 		else {
 			res.redirect('/groups');
 		}
-
 	})
 }
 

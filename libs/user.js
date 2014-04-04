@@ -1,11 +1,10 @@
 var request = require('request')
+,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
-,   MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
-,   database = require('./database.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('logs/libs-user-log.txt', {"flags": "a"}));
@@ -38,10 +37,8 @@ module.exports = {
 			var payload = JSON.parse(body.toString());
 
 			if (payload) { // parsed data from request
-				MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-					if (err || !db) {
-						return callback(err || 'user.updateUser: no db');
-					}
+				connection(function(db) {
+					if (!db) return callback(new Error + ' unable to connect to db');
 					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
 						if (db === null) {
@@ -129,8 +126,8 @@ module.exports = {
 	},
 	// returns users steps for today
 	getSteps : function( movesId, callback ) {
-		database.connect(function( err, db ) {
-			if ( err  || !db ) return callback( err || 'user.getSteps: no db connection' );
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
@@ -150,12 +147,8 @@ module.exports = {
 		if (!movesId) {
 			callback("error: no movesId to check if user is registered");
 		}
-		database.connect(function( err, db ) {
-			if ( err ) {
-				log.error(err);
-				console.log('error: unable to connect to database');
-				callback( err );
-			}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			var users = db.collection('users')
 			,   query = { user: movesId };
 			users.findOne(query, function(err, doc) {
@@ -201,8 +194,8 @@ module.exports = {
 
 	// returns user document from users collection
 	getUser : function(userId, callback) {
-		database.connect(function(err, db) {
-			if (err || !db) callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err || !doc) {
 					return callback(null, false)
@@ -217,8 +210,8 @@ module.exports = {
 	joinGroup : function( userId, groupName, callback) {
 		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
-		database.connect(function(err, db) {
-			if (err || !db) callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err || !doc) {
 					return callback(err || 'user.joinGroup: no doc\n', null)
@@ -256,8 +249,8 @@ module.exports = {
 	leaveGroup : function(userId, groupName, callback) {
 		console.log('inside leaveGroup callback:', userId, groupName);
 		log.info('inside leaveGroup callback: ', userId, groupName);
-		database.connect(function(err, db) {
-			if (err || !db) callback(err);
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err || !doc) {
 					return callback(err || 'user.leaveGroup: no doc\n', null)

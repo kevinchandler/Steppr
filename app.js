@@ -5,6 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes')
+,	 connection = require('./libs/mongo_connection.js')
 ,   moves = require('./routes/moves.js')
 ,   dashboard = require('./routes/dashboard.js')
 ,   user = require('./routes/user.js')
@@ -106,6 +107,10 @@ setInterval(function() {
 }, the_interval);
 
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+
+connection(function(db) {
+  if (!db) return callback(new Error + ' unable to connect to db');
+  http.createServer(app).listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+  });
+})

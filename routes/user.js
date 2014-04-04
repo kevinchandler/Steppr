@@ -1,8 +1,8 @@
 var request = require('request')
+,	 connection = require('../libs/mongo_connection.js')
 ,   moment = require('moment')
 ,   now = moment()
 ,   today = now.format("YYYY-MM-DD")
-,   database = require('../libs/database.js')
 ,   dotenv = require('dotenv')
 ,   fs = require('fs')
 ,   Log = require('log')
@@ -13,35 +13,31 @@ dotenv.load();
 
 // register user info with moves id, their email, create db schema
 exports.register = function(req, res) {
-    if (req.method === 'GET') {
-        res.render('register.jade');
-    }
-    if (req.method === 'POST') {
-        var user = req.session._movesId
-        ,   username = req.body.username;
+  if (req.method === 'GET') {
+      res.render('register.jade');
+  }
+  if (req.method === 'POST') {
+    var user = req.session._movesId
+    ,   username = req.body.username;
 
-        if (!user || !username) {
-            log.error('user registration lacks user or username')
-            return res.redirect('back');
-        }
-        else {
-            database.connect(function(err, db) {
-                if (err || !db) {
-                    log.error(err || 'err connecting to db.');
-                    console.log(err || 'err connecting to db.');
-                    return res.redirect('back')
-                }
-                else {
-                    db.collection('users').update({ user : user }, { $set: { "username" : username }}, function(err, success) {
-                        if (err) { log.error(err); return res.redirect('back'); }
-                        if (success) {
-                            log.info( success, 'username set: ' + username, user );
-                            console.log('username successfully set: ', user, username );
-                            res.redirect('/groups');
-                        }
-                    })
-                }
-            })
-        }
+    if (!user || !username) {
+        log.error('user registration lacks user or username')
+        return res.redirect('back');
     }
+    else {
+      connection(function(db) {
+        if (!db) return callback(new Error + ' unable to connect to db');
+        else {
+          db.collection('users').update({ user : user }, { $set: { "username" : username }}, function(err, success) {
+            if (err) { log.error(err); return res.redirect('back'); }
+            if (success) {
+                log.info( success, 'username set: ' + username, user );
+                console.log('username successfully set: ', user, username );
+                res.redirect('/groups');
+            }
+          })
+        }
+      })
+    }
+  }
 }
