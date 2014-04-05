@@ -13,6 +13,7 @@ dotenv.load();
 
 // register user info with moves id, their email, create db schema
 exports.register = function(req, res) {
+  var db = req.db;
   if (req.method === 'GET') {
       res.render('register.jade');
   }

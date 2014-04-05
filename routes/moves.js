@@ -1,5 +1,5 @@
-var MongoClient = require('mongodb').MongoClient
-,   steppr = require('../libs/steppr.js')
+var steppr = require('../libs/steppr.js')
+,	 connection = require('../libs/mongo_connection.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('log.txt'));
@@ -28,60 +28,58 @@ exports.authenticate = function(req, res) {
       "refreshToken":""
   });
 
-    // Redirect your user to this url
-    var url = moves.generateAuthUrl();
+  // Redirect your user to this url
+  var url = moves.generateAuthUrl();
 
-    moves.getAccessToken(req.query.code, function(err, body) {
-        console.log('body is: ');
-        console.log(body);
-          if (err || !body.access_token) {
-              log.error(err || 'moves.js: no access token. User did not authorize. ')
-              console.log(err || 'moves.js: no access token. User did not authorize. ');
-              return res.redirect('/');
-          }
-          // required for moves-api library
-          moves.options.accessToken = body.access_token;
-          req.session._token = body.access_token;
+  moves.getAccessToken(req.query.code, function(err, body) {
+      console.log('body is: ');
+      console.log(body);
+      if (err || !body.access_token) {
+          log.error(err || 'moves.js: no access token. User did not authorize. ')
+          console.log(err || 'moves.js: no access token. User did not authorize. ');
+          return res.redirect('/');
+      }
+      // required for moves-api library
+      moves.options.accessToken = body.access_token;
+      req.session._token = body.access_token;
 
-          moves.getProfile(function(err, profile) {
-            if (err) {
-                log.error(err, 'unable to get moves profile')
-                console.log(err, 'unable to get moves profile: ');
-                return res.redirect('/');
-            }
-            if (profile) {
-                    req.session._movesId = profile.userId;
-                    console.log('sessions set: ' + req.session._token, req.session._movesId);
+      moves.getProfile(function(err, profile) {
+        if (err) {
+            log.error(err, 'unable to get moves profile')
+            console.log(err, 'unable to get moves profile: ');
+            return res.redirect('/');
+        }
+        if (profile) {
+          req.session._movesId = profile.userId;
+          console.log('sessions set: ' + req.session._token, req.session._movesId);
 
-                    // checks db to see if there's a user
-                    MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-                        if (err) {
-                          return err;
-                        }
-                        steppr.findUser(profile.userId, function(err, doc) {
-                            if (err) { return err; }
-                            if (doc) {
-                                return res.redirect('/home');
-                            }
-                            if (!doc) {
-                                steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
-                                    if (err) {
-                                        console.log(err + ' error: unable to create user');
-                                        return res.redirect('/');
-                                    }
-                                    if (success) {
-                                        console.log('Registered user successfully \n');
-                                        return res.redirect('/home');
-                                    }
-                                    else {
-                                        console.log('unable to createNewUser \n');
-                                        return res.redirect('/');
-                                    }
-                                })
-                            }
-                        })
-                    })
-                }
-            })
-        })
-    }
+          // checks db to see if there's a user
+          connection(function(db) {
+            if (!db) return callback(new Error + ' unable to connect to db');
+              steppr.findUser(profile.userId, function(err, doc) {
+                  if (err) { return err; }
+                  if (doc) {
+                      return res.redirect('/home');
+                  }
+                  if (!doc) {
+                      steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                          if (err) {
+                              console.log(err + ' error: unable to create user');
+                              return res.redirect('/');
+                          }
+                          if (success) {
+                              console.log('Registered user successfully \n');
+                              return res.redirect('/home');
+                          }
+                          else {
+                              console.log('unable to createNewUser \n');
+                              return res.redirect('/');
+                          }
+                      })
+                  }
+              })
+          })
+        }
+    })
+  })
+}

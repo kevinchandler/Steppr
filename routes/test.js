@@ -12,3 +12,11 @@ exports.notification = function(req, res) {
     console.log(req.body);
     res.end();
 }
+
+exports.index = function(req, res) {
+  var db = req.db;
+  req.users.find().toArray(function(err, results) {
+    console.log(results);
+  })
+  db.close();
+}

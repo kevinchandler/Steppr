@@ -12,13 +12,24 @@ var routes = require('./routes')
 ,   groups = require('./routes/groups.js')
 ,   test = require('./routes/test.js')
 ,   steppr = require('./libs/steppr.js')
-,   USER = require('./libs/user.js');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
 var app = express();
 var dotenv = require('dotenv');
 dotenv.load();
+
+app.use(function(req, res, next){
+  connection(function(db) {
+    if (!db) return new Error;
+    req.db = db;
+    req.users = db.collection('users');
+    req.steps = db.collection('steps');
+    req.groups = db.collection('groups');
+    next();
+  });
+});
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -39,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
 
 if (process.argv[2])  {
     process.env.NGROK_SUBDOMAIN = process.argv[2];
@@ -83,7 +95,7 @@ app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:groupName', groups.viewGroup);
 
 
-// app.get('/test', test.index);
+app.get('/test', test.index);
 
 app.post('/notification', test.notification); // moves posts data every so often
 
@@ -105,8 +117,6 @@ setInterval(function() {
     console.log('Updating: \n');
   updateAllUsers();
 }, the_interval);
-
-
 
 connection(function(db) {
   if (!db) return callback(new Error + ' unable to connect to db');

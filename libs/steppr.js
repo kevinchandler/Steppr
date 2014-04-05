@@ -74,7 +74,6 @@ module.exports = {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
-				console.log('today is: ' + today);
 				if (err) callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (stepsToday) {
