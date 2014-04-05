@@ -11,7 +11,7 @@ A working idea in progress. Currently only supports moves-app for iOS/Android
 
 [Demo](http://stppr.ngrok.com) 
 
-If using [ngrok](https://ngrok.com/) you can run Steppr by "node app.js Steppr" That will start Steppr on an ngrok tunnel http://steppr.ngrok.com
+If using [ngrok](https://ngrok.com/) you can run Steppr by "node app.js Steppr" That will start Steppr on an ngrok tunnel http://stppr.ngrok.com
 Alternatively leave the NGROK variables alone. Except for NGROK_URL which is Steppr's main URL. ie. http://stppr.ngrok.com and you can run Steppr by "node app.js"
 
 You must have the following environment variables set:
