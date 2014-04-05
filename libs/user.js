@@ -112,15 +112,12 @@ module.exports = {
 							}
 						})
 					})
-					console.log('99');
 					callback(null, 'updateUser complete');
 				})
 			}
 			else {
-				console.log('102');
-			    callback(null, true);
+		    callback(null, true);
 			}
-			console.log('10202');
 			callback(null);
 		})
 	},
@@ -249,7 +246,7 @@ module.exports = {
 	leaveGroup : function(userId, groupName, callback) {
 		console.log('inside leaveGroup callback:', userId, groupName);
 		log.info('inside leaveGroup callback: ', userId, groupName);
-		// connection(function(db) {
+		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err || !doc) {
@@ -278,6 +275,6 @@ module.exports = {
 					}
 				}
 			})
-		// })
+		})
 	},
 }
