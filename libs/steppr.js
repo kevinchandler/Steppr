@@ -11,6 +11,12 @@ var request = require('request')
 
 dotenv.load();
 
+function delimitNumbers(str, callback) {
+	return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
+			return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
+	});
+}
+
 module.exports = {
 
 	findUser : function(userId, callback) {
@@ -63,14 +69,13 @@ module.exports = {
 		})
 	},
 
-	// checks steps collection for today's date and returns the sum of each documents steps
-	getTotalSteps : function(callback) {
+	// returns totalStepsToday, totalSteps, usersToday
+	stats : function(callback) {
 		var payload = {
 			totalStepsToday : 0,
 			totalSteps : 0,
 			usersToday : 0,
 		}
-
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
@@ -85,8 +90,10 @@ module.exports = {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!totalSteps) {
-							log.error('getTotalSteps complete: ', payload);
-							console.log(payload);
+							payload.totalStepsToday = delimitNumbers(payload.totalStepsToday);
+							payload.totalSteps = delimitNumbers(payload.totalSteps);
+							payload.usersToday = delimitNumbers(payload.usersToday);
+							log.info('stats complete: ', payload);
 							callback( null, payload );
 						}
 						else {

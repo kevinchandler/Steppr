@@ -59,7 +59,7 @@ exports.authenticate = function(req, res) {
               steppr.findUser(profile.userId, function(err, doc) {
                   if (err) { return err; }
                   if (doc) {
-                      return res.redirect('/home');
+                      return res.redirect('#/home');
                   }
                   if (!doc) {
                       steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
@@ -69,7 +69,7 @@ exports.authenticate = function(req, res) {
                           }
                           if (success) {
                               console.log('Registered user successfully \n');
-                              return res.redirect('/home');
+                              return res.redirect('#/home');
                           }
                           else {
                               console.log('unable to createNewUser \n');

@@ -5,6 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes')
+,   api = require('./api/api.js')
 ,	 connection = require('./libs/mongo_connection.js')
 ,   moves = require('./routes/moves.js')
 ,   dashboard = require('./routes/dashboard.js')
@@ -44,7 +45,7 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meow' }));
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/app')));
 
 // development only
 if ('development' == app.get('env')) {
@@ -77,7 +78,7 @@ function authenticate(req, res, next) {
 }
 
 
-app.get('/', routes.index);
+// app.get('/', routes.index);
 
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
@@ -92,16 +93,21 @@ app.get('/groups/create', groups.createGroup);
 app.post('/groups/create', authenticate, groups.createGroup);
 app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
-app.get('/groups/:groupName', groups.viewGroup);
-
+app.get('/groups/:group', groups.viewGroup);
 
 app.get('/test', test.index);
-
 app.post('/notification', test.notification); // moves posts data every so often
 
-app.get('/logs', function(req, res) {
-      res.sendfile('log.txt');
-})
+
+
+// API
+
+app.get('/api/v0/stats', api.stats);
+app.get('/api/v0/user'); // need to build this
+app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
+app.get('/api/v0/groups', api.viewAllGroups);
+app.get('/api/v0/groups/:group', api.viewGroup);
+
 
 
 function updateAllUsers() {

@@ -45,7 +45,7 @@ module.exports = {
 		})
 	},
 
-	// list groups in groups collection.
+	// returns: _id, name, stepsTotal
 	viewAllGroups : function(callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -53,6 +53,7 @@ module.exports = {
 			// push each group object into the package array and send once there's no more groups
 			db.collection('groups').find().each(function(err, group) {
 				if (err) { return callback(err) };
+				// no more groups, send package.
 				if (!group) {
 					callback(null, package)
 				}
@@ -66,23 +67,24 @@ module.exports = {
 			})
 		})
 	},
-	// view single group page
-	viewGroup : function(groupName, callback) {
+
+	// returns: group, totalGroupSteps, totalGroupStepsToday, members[]
+	viewGroup : function(group, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
-				groupName : groupName,
+				group : group,
 				totalGroupSteps : 0,
 				totalGroupStepsToday : 0,
 				members : []
 			};
-			db.collection('groups').findOne({name: groupName}, function(err, group) {
+			db.collection('groups').findOne({name: group}, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
 					callback('no group');
 				}
 				else {
-					db.collection('users').find({ groups : groupName }).each(function(err, groupMember){
+					db.collection('users').find({ groups : group }).each(function(err, groupMember){
 						if (err) callback (err);
 						if (!groupMember) {
 							callback(null, package)

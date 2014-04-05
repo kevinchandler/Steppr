@@ -122,7 +122,8 @@ module.exports = {
 		})
 	},
 	// returns users steps for today
-	getSteps : function( movesId, callback ) {
+	userStepsToday : function( movesId, callback ) {
+		if (!movesId) { return callback('getUserSteps - no movesId ')}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var query = { user : movesId, date : today };

@@ -24,18 +24,18 @@ exports.home = function(req, res) {
                 log.error(err);
             }
             if (success) {
-                user.getSteps(req.session._movesId, function( err, data ){
+                user.userStepsToday(req.session._movesId, function( err, data ){
                     if (err || !data) {
                         console.log('error connecting to db in user.steps');
                         log.error('error connecting to db in user.steps');
                         return;
                     }
                     var totalUserStepsToday = data.steps;
-                    steppr.getTotalSteps(function(err, payload) {
+                    steppr.stats(function(err, payload) {
                         if (err) return err;
                         console.log('inside  steppr.getTotal callback');
 
-                        if (payload) { // data retrieved from getTotalSteps callback
+                        if (payload) { // data retrieved from stats callback
                             var totalStepsToday = delimitNumbers(payload.totalStepsToday)
                             ,   totalSteps = delimitNumbers(payload.totalSteps)
                             ,   userPercentage = ((totalUserStepsToday / payload.totalStepsToday) * 100).toFixed(1)
