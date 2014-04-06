@@ -76,6 +76,13 @@ var app = angular.module('stepprUiApp');
         })
         .then(function(response) {
           $scope.group = response.data;
+          $scope.numOfMembers = response.data.members.length;
+          if ($scope.numOfMembers === 1) {
+            $scope.message = "Member";
+          }
+          else {
+            $scope.message = "Members";
+          }
         })
 
 
