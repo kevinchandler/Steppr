@@ -79,7 +79,7 @@ function authenticate(req, res, next) {
 
 
 // app.get('/', routes.index);
-
+app.get('/login', moves.index);
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
@@ -95,7 +95,9 @@ app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:group', groups.viewGroup);
 
-app.get('/test', test.index);
+app.get('/test', function(req, res) {
+  console.log(req.session);
+});
 app.post('/notification', test.notification); // moves posts data every so often
 
 
@@ -103,12 +105,13 @@ app.post('/notification', test.notification); // moves posts data every so often
 // API
 
 app.get('/api/v0/stats', api.stats);
-app.get('/api/v0/user'); // need to build this
+app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
 app.get('/api/v0/groups/:group', api.viewGroup);
 
-
+app.post('/api/v0/users/register', api.registerUser);
+app.post('/api/v0/groups/join/:group', api.joinGroup);
 
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {

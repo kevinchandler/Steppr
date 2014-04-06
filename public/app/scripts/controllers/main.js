@@ -11,28 +11,49 @@ var app = angular.module('stepprUiApp');
       .then(function(response) {
         $scope.stats = response.data;
       })
-      $scope.message = 'Steppr, the social pedometer';
     })
-    //
-    app.controller('DashboardCtrl', function ($scope, $http) {
+
+    app.controller('DashboardCtrl', function ($scope, $route, $http) {
+      var username = 'Kevin';
         $http({
-            url: '/api/v0/user',
-            method: "GET",}
+            url: '/api/v0/users/'+username,
+            method: "GET",
         })
         .then(function(response) {
-        },
-        function(response) { // optional
-            $scope.user = response.data;
+          $scope.user = response.data;
         })
     })
 
-    //
-    // app.controller('RegisterCtrl', function ($scope) {
-    //   // post to db
-    //   $scope.register = function() {
-    //       console.log( $scope.email, $scope.username, $scope.zipcode);
-    //   }
-    // });
+    app.controller('UserCtrl', function ($scope, $http, $route, $location) {
+      var username = $route.current.params.username;
+        $http({
+            url: '/api/v0/users/'+username,
+            method: "GET",
+        })
+        .then(function(response) {
+          if (response.data === 'null') {
+            return $location.path('#/');
+          }
+          $scope.user = response.data;
+        })
+    })
+
+    app.controller('RegisterCtrl', function($scope, $http, $location) {
+      $scope.register = function() {
+        var username = $scope.username;
+        $http({
+          url: '/api/v0/users/register',
+          method: 'POST',
+          data: {
+            username : username
+          }
+        })
+        .then(function(response) {
+          return $location.path('#/home');
+        })
+      }
+    })
+
     // view of all groups
     app.controller('GroupsCtrl', function($scope, $http) {
       // returns totalStepsToday, totalSteps, usersToday
@@ -48,12 +69,24 @@ var app = angular.module('stepprUiApp');
     // view of a single group
     app.controller('GroupCtrl', function($scope, $http, $route) {
       var groupName = $route.current.params.group;
-      // returns totalStepsToday, totalSteps, usersToday
-      $http({
-        url: '/api/v0/groups/'+groupName,
-        method: 'GET'
-      })
-      .then(function(response) {
-        $scope.group = response.data;
-      })
+        // returns totalStepsToday, totalSteps, usersToday
+        $http({
+          url: '/api/v0/groups/'+groupName,
+          method: 'GET'
+        })
+        .then(function(response) {
+          $scope.group = response.data;
+        })
+
+
+      $scope.joinGroup = function() {
+        $http({
+          url: '/api/v0/groups/join/'+groupName,
+          method: 'POST',
+        })
+        .then(function(response) {
+          console.log(response);
+        })
+      }
+
     })

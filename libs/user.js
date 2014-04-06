@@ -13,6 +13,45 @@ dotenv.load();
 
 module.exports = {
 
+	registerUser : function(userId, username, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').update({ user : userId }, { $set: { "username" : username }}, function(err, success) {
+				if (err) { log.error(err); return res.redirect('back'); }
+				if (success) {
+					log.info( success, 'username set: ' + username, user );
+					console.log('username successfully set: ', userId,  username );
+					callback(null, success);
+				}
+				else {
+					callback('registerUser: could not register user');
+				}
+			})
+		})
+	},
+
+	viewUser : function(username, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').findOne({username: username}, function(err, data) {
+				if (err) return callback(err);
+				if (data !== null) {
+					var package = {};
+					package.username = data.username;
+					package.stepsTotal = data.stepsTotal;
+					package.stepsToday = data.stepsToday;
+					package.groups = data.groups;
+					package.badges = data.badges;
+					package.points = data.points;
+					callback(null, package);
+				}
+				else {
+					callback(null, null);
+				}
+			})
+		})
+	},
+
 	updateUser : function (accessToken, movesId, callback) {
 	//	 gets each day of moves activity for pastDays in the request query
 	//		 loops each of them and checks to see if that date is in the database

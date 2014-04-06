@@ -1,6 +1,7 @@
 var steppr = require('../libs/steppr.js')
 ,   user = require('../libs/user.js')
-,   groups = require('../libs/groups.js');
+,   groups = require('../libs/groups.js')
+,   connection = require('../libs/mongo_connection.js');
 
 
 
@@ -35,4 +36,39 @@ exports.viewGroup = function(req, res) {
     if (err) return err;
     res.json(data);
   })
+}
+
+exports.viewUser = function(req, res) {
+  var username = req.params.username;
+  user.viewUser(username, function(err, data) {
+    if (err) return err;
+    res.json(data);
+  })
+}
+
+exports.registerUser = function(req, res) {
+  var username = req.body.username
+  ,   userId = req.session._movesId;
+
+  user.registerUser(userId, username, function(err, success) {
+    if (err) return err;
+    if (success) {
+      res.send(200)
+    }
+    else {
+      return;
+    }
+  })
+}
+
+exports.joinGroup = function(req, res) {
+  if (!req.session._movesId || !req.params.group) {
+    return callback('joinGroup: missing data required to join group');
+  }
+  var userId = req.session._movesId
+  ,   groupName = req.params.group;
+  user.joinGroup(userId, groupName, function(err, data) {
+    if (err) return err;
+    res.json(data);
+  });
 }

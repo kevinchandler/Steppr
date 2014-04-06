@@ -68,7 +68,7 @@ module.exports = {
 		})
 	},
 
-	// returns: group, totalGroupSteps, totalGroupStepsToday, members[]
+	// returns: group, totalGroupSteps, totalGroupStepsToday, members[username: , id: ]
 	viewGroup : function(group, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -81,19 +81,17 @@ module.exports = {
 			db.collection('groups').findOne({name: group}, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
-					callback('no group');
+					return callback('no group');
+				}
+				if (!group.members) {
+					return callback('no group members');
 				}
 				else {
-					db.collection('users').find({ groups : group }).each(function(err, groupMember){
-						if (err) callback (err);
-						if (!groupMember) {
-							callback(null, package)
-						}
-						if (groupMember) {
-							package.members.push(groupMember);
-							package.totalGroupStepsToday += groupMember.stepsToday;
-						}
+					var groupMembers = [];
+					group.members.forEach(function(member) {
+						package.members.push(member);
 					})
+					callback(null, package)
 				}
 			})
 		})

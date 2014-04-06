@@ -16,6 +16,18 @@ angular.module('stepprUiApp', [
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardCtrl'
       })
+
+      
+      .when('/users', {
+        templateUrl: 'views/users.html',
+        controller: 'UsersCtrl'
+      })
+      .when('/users/:username', {
+        templateUrl: 'views/user.html',
+        controller: 'UserCtrl'
+      })
+
+
       .when('/groups', {
         templateUrl: 'views/groups.html',
         controller: 'GroupsCtrl'
@@ -24,6 +36,8 @@ angular.module('stepprUiApp', [
         templateUrl: 'views/group.html',
         controller: 'GroupCtrl'
       })
+
+
       .when('/register', {
         templateUrl: 'views/register.html',
         controller: 'RegisterCtrl'
