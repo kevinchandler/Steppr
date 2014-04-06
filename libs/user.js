@@ -262,31 +262,6 @@ module.exports = {
 		})
 	},
 
-
-	// // returns groups that user is in or false for none
-	// isInGroup : function(userId, callback) {
-	// 	if (!userId) {
-	// 		log.error('user.isInGroup: No userId');
-	// 		return callback('user.isInGroup: No userId');
-	// 	}
-	// 	database.connect(function(err, db) {
-	// 		db.collection('users').findOne({user: userId}, function(err, user) {
-	// 			if (err || !user) return callback(err);
-	// 			var package = [];
-	// 			user.groups.forEach(function(group) {
-	// 				package.push(group)
-	// 			})
-	// 			if (package.length === 0) {
-	// 				callback(null, false)
-	// 			}
-	// 			else {
-	// 				callback(null, package);
-	// 			}
-	// 		})
-	// 	})
-	// },
-
-
 	// returns user document from users collection
 	getUser : function(userId, callback) {
 		connection(function(db) {
@@ -315,7 +290,7 @@ module.exports = {
 					return callback(err || 'user.joinGroup: no doc\n', null)
 				}
 				if (doc.groups.length !== 0) {
-					return callback('User in group\n', false)
+					return callback('User in group \n')
 				}
 				else {
 					var newMember = {
