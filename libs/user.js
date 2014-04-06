@@ -88,6 +88,25 @@ module.exports = {
 		})
 	},
 
+	// returns user document. Uses userId rather than username, as viewUser uses username.
+	// this is for the user to get data about themself
+	getUser : function(userId, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err || !doc) {
+					console.log('error or no doc');
+					return callback(err || 'no doc')
+				}
+				else {
+					console.log(doc);
+					return callback(null, doc);
+				}
+			})
+		})
+	},
+
+	// remove this later.
 	findUser : function(userId, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -106,28 +125,24 @@ module.exports = {
 	},
 
 
+  //	 gets each day of moves activity for pastDays in the request query
+  //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
 		var now = moment()
-		,   today = now.format("YYYY-MM-DD");
-	//	 gets each day of moves activity for pastDays in the request query
-	//		 loops each of them and checks to see if that date is in the database
-	//			 if so it will update the number of steps if different than what moves tells us
-	//			 if not it will save to db & update stepsToday in the users collection
+		,   today = now.format("YYYY-MM-DD")
+		,	 pastDays = 1;
 
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
-			return callback('err');
+			return callback('updateUser : missing accessToken or movesId');
 		}
-		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
-			console.log('updateUser: ', movesId + '\n');
+		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays='+pastDays+'&access_token='+accessToken, function(err, response, body) {
+			console.log('updateUser: ', movesId);
 			if (err) callback(err);
 			if (!body || !response) {
-				callback('error: no body or response\n');
-				log.error('error: no body or response\n');
-				return;
+				log.error('error: no body or response');
+				return callback('error: no body or response');
 			}
-
-			// parse expects a string as 1st arg. This prevents unnecessary errors thrown if the body ends up being something other than a string
 
 			var payload = JSON.parse(body.toString());
 
@@ -144,7 +159,6 @@ module.exports = {
 							log.info('no moves data summary');
 							return callback('no moves data');
 						}
-
 						moves_data.summary.forEach(function(activity) {
 							if (db === null) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
@@ -177,19 +191,15 @@ module.exports = {
 									}
 									else {
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
-											if (err) callback(err);
+											if (err) return callback(err);
 											if (success) {
 												if (doc.steps !== steps) {
 													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
 													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-
 												}
 												if (activityDate === today) {
 													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-														if (err) callback(err);
-														else {
-															callback('err 007', success);
-														}
+														if (err) return callback(err);
 													})
 												}
 												else {
@@ -216,8 +226,9 @@ module.exports = {
 			callback(null);
 		})
 	},
+
 	// returns users steps for today
-	userStepsToday : function( movesId, callback ) {
+	userStepsToday : function(movesId, callback ) {
 		var now = moment()
 		,   today = now.format("YYYY-MM-DD");
 		if (!movesId) { return callback('getUserSteps - no movesId ')}
@@ -257,21 +268,6 @@ module.exports = {
 				else {
 					console.log('user is not registered');
 					callback( null, false );
-				}
-			})
-		})
-	},
-
-	// returns user document from users collection
-	getUser : function(userId, callback) {
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').findOne({user: userId}, function(err, doc) {
-				if (err || !doc) {
-					return callback(null, false)
-				}
-				else {
-					return callback(null, doc);
 				}
 			})
 		})

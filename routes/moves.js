@@ -59,7 +59,7 @@ exports.authenticate = function(req, res) {
               user.findUser(profile.userId, function(err, doc) {
                   if (err) { return err; }
                   if (doc) {
-                      return res.redirect('#/');
+                      return res.redirect('#/home');
                   }
                   if (!doc) {
                       user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {

@@ -14,13 +14,22 @@ var app = angular.module('stepprUiApp');
     })
 
     app.controller('DashboardCtrl', function ($scope, $route, $http) {
-      var username = 'Kevin';
+        // get user from db
         $http({
-            url: '/api/v0/users/'+username,
-            method: "GET",
+            url: '/api/v0/users/me',
+            method: 'GET',
         })
-        .then(function(response) {
-          $scope.user = response.data;
+        .then(function(user) {
+          $scope.user = user.data;
+
+          // then update the user
+          $http({
+            url: '/api/v0/users/me/update',
+            method: 'GET',
+          })
+          .then(function(response) {
+            
+          })
         })
     })
 

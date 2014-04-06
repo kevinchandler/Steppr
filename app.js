@@ -102,6 +102,8 @@ app.post('/notification', test.notification); // moves posts data every so often
 
 // API
 app.get('/api/v0/stats', api.stats);
+app.get('/api/v0/users/me', api.getSelf);
+app.get('/api/v0/users/me/update', api.updateUser);
 app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);

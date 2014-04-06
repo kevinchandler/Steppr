@@ -13,8 +13,6 @@ dotenv.load();
 
 module.exports = {
 
-	
-
 	// returns: _id, name, stepsTotal
 	viewAllGroups : function(callback) {
 		connection(function(db) {

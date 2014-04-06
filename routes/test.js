@@ -14,20 +14,7 @@ exports.notification = function(req, res) {
 }
 
 exports.index = function(req, res) {
-  var db = req.db;
-
-  db.collection('groups').update({name:"Hackers"},{$pull:{
-    members: {
-      id:14104144053355464,
-      username: 'Kevin',
-    }
-  }},
-  function(err, success) {
-    if (err || !success) {
-      console.log('failed');
-    }
-    else {
-      console.log('success');
-    }
-  })
+user.getUser(14104144053355464, function(err, success) {
+  console.log(success);
+})
 }

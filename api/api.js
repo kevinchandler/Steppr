@@ -20,6 +20,33 @@ exports.viewUser = function(req, res) {
   })
 }
 
+exports.getSelf = function(req, res) {
+  var userId = req.session._movesId;
+  user.getUser(userId, function(err, data) {
+    if (err) return res.json(err);
+    if (data) {
+      res.json(data);
+    }
+    else {
+      return res.end();
+    }
+  })
+}
+
+exports.updateUser = function(req, res) {
+  var accessToken = req.session._token
+  ,   userId = req.session._movesId;
+  user.updateUser(accessToken, userId, function(err, data) {
+    if (err) return res.json(err);
+    if (data) {
+      res.json(data);
+    }
+    else {
+      return res.end();
+    }
+  })
+}
+
 exports.registerUser = function(req, res) {
   var username = req.body.username
   ,   userId = req.session._movesId;
@@ -30,7 +57,7 @@ exports.registerUser = function(req, res) {
       res.send(200);
     }
     else {
-      return;
+      return res.end();
     }
   })
 }
@@ -101,5 +128,4 @@ exports.createGroup = function(req, res) {
     if (err) return res.json(err);
     res.json(data);
   })
-
 }
