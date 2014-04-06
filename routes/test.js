@@ -15,8 +15,19 @@ exports.notification = function(req, res) {
 
 exports.index = function(req, res) {
   var db = req.db;
-  req.users.find().toArray(function(err, results) {
-    console.log(results);
+
+  db.collection('groups').update({name:"Hackers"},{$pull:{
+    members: {
+      id:14104144053355464,
+      username: 'Kevin',
+    }
+  }},
+  function(err, success) {
+    if (err || !success) {
+      console.log('failed');
+    }
+    else {
+      console.log('success');
+    }
   })
-  db.close();
 }

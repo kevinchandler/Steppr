@@ -3,12 +3,10 @@
 var app = angular.module('stepprUiApp');
     // landing page
     app.controller('LandingCtrl', function($scope, $http) {
-      var now = moment();
-      console.log(now._d);
       // returns totalStepsToday, totalSteps, usersToday
       $http({
         url: '/api/v0/stats',
-        method: 'GET'
+        method: 'GET',
       })
       .then(function(response) {
         $scope.stats = response.data;
@@ -97,7 +95,6 @@ var app = angular.module('stepprUiApp');
           method: 'POST',
         })
         .then(function(response) {
-          console.log(response);
           window.location.reload();
         })
       }
@@ -108,7 +105,7 @@ var app = angular.module('stepprUiApp');
           method: 'POST',
         })
         .then(function(response) {
-          console.log(response);
+          window.location.reload();
         })
       }
     })

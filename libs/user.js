@@ -1,8 +1,8 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-,   now = moment()
-,   today = now.format("YYYY-MM-DD")
+// ,   now = moment()
+// ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -15,6 +15,8 @@ module.exports = {
 
 	// this is called after user authenticates with moves if user is not already in db
 	createNewUser : function(accessToken, refreshToken, movesId, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var  placeholder = '';
@@ -105,6 +107,8 @@ module.exports = {
 
 
 	updateUser : function (accessToken, movesId, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
 	//	 gets each day of moves activity for pastDays in the request query
 	//		 loops each of them and checks to see if that date is in the database
 	//			 if so it will update the number of steps if different than what moves tells us
@@ -214,6 +218,8 @@ module.exports = {
 	},
 	// returns users steps for today
 	userStepsToday : function( movesId, callback ) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
 		if (!movesId) { return callback('getUserSteps - no movesId ')}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -297,6 +303,9 @@ module.exports = {
 	},
 
 	joinGroup : function( userId, groupName, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+
 		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
 		connection(function(db) {
@@ -355,11 +364,16 @@ module.exports = {
 							}
 							if (success) {
 								log.info(success);
-								db.collection('groups').update({name : groupName}, { $pull: { members: userId }}, function(err, success) {
+								db.collection('groups').update({ name: groupName }, { $pull: {
+									members: { id: userId }
+								}},
+								function(err, success) {
 									if (err || !success) {
-										return callback(err || 'leaveGroup - removing user from group failed\n');
+										return callback('leaveGroup: failed' + err || 'not successful');
 									}
-									return callback(null, userId + ' successfully left group ' + groupName);
+									else {
+										return callback(null, success);
+									}
 								})
 							}
 							else {
@@ -377,6 +391,8 @@ module.exports = {
 	},
 
 	createGroup : function(groupCreator, groupName, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
 		if (!groupName || !groupCreator) {
 			console.log('no name or creator, cannot create group');
 			callback('no name or creator, cannot create group');
@@ -388,6 +404,7 @@ module.exports = {
 					db.collection('groups').insert({
 						name: groupName,
 						creator : groupCreator,
+						created : today,
 						members : [],
 						stepsToday : 0,
 						stepsTotal : 0,

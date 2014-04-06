@@ -27,7 +27,7 @@ exports.registerUser = function(req, res) {
   user.registerUser(userId, username, function(err, success) {
     if (err) return err;
     if (success) {
-      res.send(200)
+      res.send(200);
     }
     else {
       return;

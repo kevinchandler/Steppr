@@ -1,8 +1,8 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-,   now = moment()
-,   today = now.format("YYYY-MM-DD")
+// ,   now = moment()
+// ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -22,6 +22,8 @@ module.exports = {
 
 	// returns totalStepsToday, totalSteps, usersToday
 	stats : function(callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
 		var payload = {
 			totalStepsToday : 0,
 			totalSteps : 0,

@@ -95,9 +95,7 @@ app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:group', groups.viewGroup);
 
-app.get('/test', function(req, res) {
-  console.log(req.session);
-});
+app.get('/test', test.index);
 app.post('/notification', test.notification); // moves posts data every so often
 
 
