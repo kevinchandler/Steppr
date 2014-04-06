@@ -1,4 +1,4 @@
-var steppr = require('../libs/steppr.js')
+var user = require('../libs/user.js')
 ,	 connection = require('../libs/mongo_connection.js')
 ,   fs = require('fs')
 ,   Log = require('log')

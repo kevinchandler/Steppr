@@ -9,7 +9,7 @@ var routes = require('./routes')
 ,	 connection = require('./libs/mongo_connection.js')
 ,   moves = require('./routes/moves.js')
 ,   dashboard = require('./routes/dashboard.js')
-,   user = require('./routes/user.js')
+,   user = require('./libs/user.js')
 ,   groups = require('./routes/groups.js')
 ,   test = require('./routes/test.js')
 ,   steppr = require('./libs/steppr.js')
@@ -84,13 +84,13 @@ app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', authenticate, dashboard.home);
-
-app.get('/user/register', user.register);
-app.post('/user/register', user.register);
+//
+// app.get('/user/register', user.register);
+// app.post('/user/register', user.register);
 
 app.get('/groups', groups.index);
-app.get('/groups/create', groups.createGroup);
-app.post('/groups/create', authenticate, groups.createGroup);
+app.get('/groups/create', user.createGroup);
+app.post('/groups/create', authenticate, user.createGroup);
 app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
 app.get('/groups/:group', groups.viewGroup);
@@ -103,7 +103,6 @@ app.post('/notification', test.notification); // moves posts data every so often
 
 
 // API
-
 app.get('/api/v0/stats', api.stats);
 app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
@@ -112,6 +111,8 @@ app.get('/api/v0/groups/:group', api.viewGroup);
 
 app.post('/api/v0/users/register', api.registerUser);
 app.post('/api/v0/groups/join/:group', api.joinGroup);
+app.post('/api/v0/groups/leave/:group', api.leaveGroup);
+app.post('/api/v0/groups/create/:group', api.createGroup);
 
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {

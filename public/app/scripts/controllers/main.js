@@ -3,6 +3,8 @@
 var app = angular.module('stepprUiApp');
     // landing page
     app.controller('LandingCtrl', function($scope, $http) {
+      var now = moment();
+      console.log(now._d);
       // returns totalStepsToday, totalSteps, usersToday
       $http({
         url: '/api/v0/stats',
@@ -35,6 +37,10 @@ var app = angular.module('stepprUiApp');
             return $location.path('#/');
           }
           $scope.user = response.data;
+          $scope.userStepsToday = response.data.stepsToday;
+          $scope.userStepsTotal = response.data.stepsTotal;
+          $scope.userGroups = response.data.groups;
+          $scope.userBadges = response.data.badges
         })
     })
 
@@ -85,7 +91,6 @@ var app = angular.module('stepprUiApp');
           }
         })
 
-
       $scope.joinGroup = function() {
         $http({
           url: '/api/v0/groups/join/'+groupName,
@@ -93,7 +98,32 @@ var app = angular.module('stepprUiApp');
         })
         .then(function(response) {
           console.log(response);
+          window.location.reload();
         })
       }
 
+      $scope.leaveGroup = function() {
+        $http({
+          url: '/api/v0/groups/leave/'+groupName,
+          method: 'POST',
+        })
+        .then(function(response) {
+          console.log(response);
+        })
+      }
+    })
+
+    app.controller('CreateGroupCtrl', function($scope, $http, $location) {
+      $scope.createGroup = function() {
+        var groupName = $scope.groupName;
+        console.log(groupName);
+        $http({
+          url: '/api/v0/groups/create/'+groupName,
+          method: 'POST',
+        })
+        .then(function(response) {
+          console.log(response);
+          return $location.path('#/groups/'+groupName);
+        })
+      }
     })

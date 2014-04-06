@@ -47,7 +47,7 @@ exports.createGroup = function(req, res) {
 	}
 	if ( req.method === 'POST' ) {
 		var groupName = req.body.groupName;
-		groups.createGroup(groupName, req.session._movesId, function(err, success) {
+		user.createGroup(req.session._movesId, groupName, function(err, success) {
 			console.log('inside createGroup callback');
 			if (err) console.log(err);
 			if (success) {

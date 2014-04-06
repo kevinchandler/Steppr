@@ -312,7 +312,7 @@ module.exports = {
 					var newMember = {
 						id : userId,
 						username : doc.username,
-						joined : today, 
+						joined : today,
 					};
 					// put user in group
 					db.collection('groups').update({ name: groupName }, { $push: { members: newMember }}, function(err, success) {
@@ -348,14 +348,19 @@ module.exports = {
 				else {
 					var index = doc.groups.indexOf(groupName);
 					if (index > -1) {
-						// doc.groups.splice(index, 1);
+						doc.groups.splice(index, 1);
 						db.collection('users').update({user : userId}, { $pull: { groups: groupName }}, function(err, success) {
 							if (err || !success) {
-								return callback(err || 'leaveGroup - failed\n');
+								return callback(err || 'leaveGroup - removing group from user failed\n');
 							}
 							if (success) {
 								log.info(success);
-								return callback(null, userId + ' successfully left group ' + groupName);
+								db.collection('groups').update({name : groupName}, { $pull: { members: userId }}, function(err, success) {
+									if (err || !success) {
+										return callback(err || 'leaveGroup - removing user from group failed\n');
+									}
+									return callback(null, userId + ' successfully left group ' + groupName);
+								})
 							}
 							else {
 								return callback(userId + ' unable to leave group ' + groupName);
@@ -366,6 +371,43 @@ module.exports = {
 						log.error('leaveGroup callback: It looks like the user is not a member of that group')
 						return callback('leaveGroup callback: It looks like the user is not a member of that group\n');
 					}
+				}
+			})
+		})
+	},
+
+	createGroup : function(groupCreator, groupName, callback) {
+		if (!groupName || !groupCreator) {
+			console.log('no name or creator, cannot create group');
+			callback('no name or creator, cannot create group');
+		}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('groups').findOne({ name: groupName }, function(err, group) {
+				if (!group) {
+					db.collection('groups').insert({
+						name: groupName,
+						creator : groupCreator,
+						members : [],
+						stepsToday : 0,
+						stepsTotal : 0,
+					}, function(err, success) {
+						if (err) {
+							return callback(err);
+						}
+						if (success) {
+							// automatically join group --broken
+							// user.joinGroup(groupCreator, groupName, function(err, success) {
+							// 	if (err) return callback(err);
+							// 	if (success) {
+									return callback(null, success);
+								// }
+							// })
+						}
+					})
+				}
+				else if (group) {
+					callback('Unable to create group: already exists');
 				}
 			})
 		})

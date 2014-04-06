@@ -13,37 +13,7 @@ dotenv.load();
 
 module.exports = {
 
-	createGroup : function(groupName, groupCreator, callback) {
-		if (!groupName || !groupCreator) {
-			console.log('no name or creator, cannot create group');
-			callback('no name or creator, cannot create group');
-		}
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('groups').findOne({ name: groupName }, function(err, group) {
-				if (!group) {
-					db.collection('groups').insert({
-						name: groupName,
-						creator : groupCreator,
-						members : [],
-						stepsToday : 0,
-						stepsTotal : 0,
-					}, function(err, success) {
-						if (err) {
-							callback(err);
-						}
-						if (success) {
-							// need to add group to user doc in users collection
-							callback(null, success);
-						}
-					})
-				}
-				else if (group) {
-					callback('Unable to create group: already exists');
-				}
-			})
-		})
-	},
+	
 
 	// returns: _id, name, stepsTotal
 	viewAllGroups : function(callback) {

@@ -4,7 +4,8 @@ angular.module('stepprUiApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ngRoute'
+  'ngRoute',
+  'angularMoment',
 ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -17,7 +18,7 @@ angular.module('stepprUiApp', [
         controller: 'DashboardCtrl'
       })
 
-      
+
       .when('/users', {
         templateUrl: 'views/users.html',
         controller: 'UsersCtrl'
@@ -32,10 +33,15 @@ angular.module('stepprUiApp', [
         templateUrl: 'views/groups.html',
         controller: 'GroupsCtrl'
       })
+      .when('/groups/create', {
+        templateUrl: 'views/creategroup.html',
+        controller: 'CreateGroupCtrl'
+      })
       .when('/groups/:group', {
         templateUrl: 'views/group.html',
         controller: 'GroupCtrl'
       })
+
 
 
       .when('/register', {

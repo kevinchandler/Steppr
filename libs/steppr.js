@@ -19,7 +19,7 @@ function delimitNumbers(str, callback) {
 
 module.exports = {
 
-	
+
 	// returns totalStepsToday, totalSteps, usersToday
 	stats : function(callback) {
 		var payload = {
