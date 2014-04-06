@@ -56,13 +56,13 @@ exports.authenticate = function(req, res) {
           // checks db to see if there's a user
           connection(function(db) {
             if (!db) return callback(new Error + ' unable to connect to db');
-              steppr.findUser(profile.userId, function(err, doc) {
+              user.findUser(profile.userId, function(err, doc) {
                   if (err) { return err; }
                   if (doc) {
                       return res.redirect('#/home');
                   }
                   if (!doc) {
-                      steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                      user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                           if (err) {
                               console.log(err + ' error: unable to create user');
                               return res.redirect('/');

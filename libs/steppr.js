@@ -19,56 +19,7 @@ function delimitNumbers(str, callback) {
 
 module.exports = {
 
-	findUser : function(userId, callback) {
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').findOne({user: userId}, function(err, doc) {
-				if (err) return callback(err);
-				if (doc) {
-					log.info('findUser complete: ', doc);
-					callback(null, doc);
-				}
-				else if (!doc) {
-					log.error('findUser complete: no doc found')
-					callback(null);
-				}
-			})
-		})
-	},
-
-	// this is called after user authenticates with moves if user is not already in db
-	createNewUser : function(accessToken, refreshToken, movesId, callback) {
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			var  placeholder = '';
-			db.collection('users').insert({
-				user: movesId,
-				username: '',
-				email: '',
-				created: today,
-				stepsToday : 0,
-				stepsTotal : 0,
-				points: {
-					total: 0
-				},
-				badges: ['Beta Tester'],
-				groups: [],
-				access_token : accessToken,
-				refresh_token : refreshToken,
-			}, function(err, success) {
-				if (err) {
-					log(err);
-					console.log(err, 'unable to create new user');
-					return callback(err);
-				}
-				if (success) {
-					log.info('createNewUser: ', success);
-					callback(null, success);
-				}
-			})
-		})
-	},
-
+	
 	// returns totalStepsToday, totalSteps, usersToday
 	stats : function(callback) {
 		var payload = {

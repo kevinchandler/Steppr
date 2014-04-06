@@ -6,14 +6,11 @@ function delimitNumbers(str, callback) {
     });
 }
 
-
-
-
 exports.index = function(req, res) {
     var ua = req.header('user-agent');
     steppr.stats(function(err, payload) {
         if (err) {
-            console.log(err);            
+            console.log(err);
             res.render('desktop.jade');
         }
         if (payload) {
