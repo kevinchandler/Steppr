@@ -237,11 +237,11 @@ module.exports = {
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					callback(err);
+					return callback(err);
 				}
 				else if (data) {
 					log.info('user.getSteps:', data);
-					callback( null, data );
+					return callback( null, data.steps );
 				}
 			})
 		})

@@ -63,28 +63,52 @@ module.exports = {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var userStepsToday;
-			if (db) {
-				db.collection('users').find({}).each(function(err, doc) {
-					if (err) { callback (err) }
-					if (doc) {
-						var movesId = doc.user
-						,   accessToken = doc.access_token;
-						log.info(movesId, accessToken)
-						user.updateUser(accessToken, movesId, function(err, success) {
-							if (err) log.error(err);
-						})
-					}
-					if (!doc) {
-						callback(null, 'updateAllUsers complete');
-					}
-				})
-			}
-			else {
-				callback('err, updateAllUsers');
-			}
+			db.collection('users').find({}).each(function(err, doc) {
+				if (err) { callback (err) }
+				if (doc) {
+					var movesId = doc.user
+					,   accessToken = doc.access_token;
+					log.info(movesId, accessToken)
+					user.updateUser(accessToken, movesId, function(err, success) {
+						if (err) log.error(err);
+					})
+				}
+				if (!doc) {
+					callback(null, 'updateAllUsers complete');
+				}
+			})
 		})
 	},
+
+	// updateAllGroups : function(callback) {
+	// 	connection(function( db ) {
+	// 		if ( !db ) return callback( new Error + ' unable to connect to db' );
+	// 		db.collection('groups').find({}).each(function(err, doc) {
+	// 			if ( err || !doc ) return callback(err || 'no doc');
+	// 			doc.members.forEach(function(member) {
+	// 				var members = [];
+	// 				if ( !member ) {
+	// 					var stepsToday;
+	// 					if (members.length > 0) {
+	// 						members.forEach(function(member) {
+	// 							user.userStepsToday(member.id, function(err, success) {
+	// 								console.log(err);
+	// 							})
+	// 						})
+	// 					}
+	// 					else {
+	// 						// no members in group
+	// 					}
+	// 				}
+	// 				else {
+	// 					members.push(member.id);
+	// 				}
+	// 			})
+	// 		})
+	// 	})
+	// },
 }
+
 // 	updateAllGroups : function(callback) {
 // 	// // groupStepsToday
 // 	// 	// each group in groups coll

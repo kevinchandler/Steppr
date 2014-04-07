@@ -1,8 +1,9 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-,   now = moment()
-,   today = now.format("YYYY-MM-DD")
+// ,   now = moment()
+// ,   today = now.format("YYYY-MM-DD")
+,	 user = require('./user')
 ,   dotenv = require('dotenv')
 ,   fs = require('fs')
 ,   Log = require('log')
@@ -65,3 +66,25 @@ module.exports = {
 		})
 	},
 }
+
+//       BROKEN
+// 	updateGroup : function( groupName, callback ) {
+// 		connection(function(db) {
+// 			if (!db) return callback(new Error + ' unable to connect to db');
+// 			var members = [];
+// 			var stepsToday = 0;
+// 		  db.collection('groups').findOne({ name : groupName }, function(err, group) {
+// 				if (err || !group) return callback(err || 'updateGroup: no group found');
+// 				members.push(group.members.)
+// 					group.members.forEach(function(member) {
+// 						user.userStepsToday(member.id, function(err, data) {
+// 							if (err) return callback(err);
+// 							stepsToday += data;
+// 						})
+// 					})
+// 				// console.log(stepsToday);
+// 				// callback(null, stepsToday)
+// 			})
+// 		})
+// 	},
+// }
