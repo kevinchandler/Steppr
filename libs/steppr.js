@@ -1,8 +1,6 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-// ,   now = moment()
-// ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -18,8 +16,6 @@ function delimitNumbers(str, callback) {
 }
 
 module.exports = {
-
-
 	// returns totalStepsToday, totalSteps, usersToday
 	stats : function(callback) {
 		var now = moment()
@@ -32,13 +28,13 @@ module.exports = {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
-				if (err) callback( err );
+				if (err) return callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (stepsToday) {
 					payload.usersToday += 1;
 					payload.totalStepsToday += stepsToday.steps
 				}
-				else if (!stepsToday) {
+				if (!stepsToday) {
 					db.collection('steps').find({}).each(function(err, totalSteps) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.

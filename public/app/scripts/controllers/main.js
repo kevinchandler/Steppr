@@ -28,7 +28,7 @@ var app = angular.module('stepprUiApp');
             method: 'GET',
           })
           .then(function(response) {
-            
+
           })
         })
     })
@@ -75,6 +75,7 @@ var app = angular.module('stepprUiApp');
         method: 'GET'
       })
       .then(function(response) {
+        console.log(response.data);
         $scope.groups = response.data;
       })
     })
