@@ -42,9 +42,9 @@ module.exports = {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
-				group : group,
-				totalGroupSteps : 0,
-				totalGroupStepsToday : 0,
+				name : group,
+				stepsTotal : 0,
+				stepsToday : 0,
 				members : []
 			};
 			db.collection('groups').findOne({name: group}, function(err, group) {
@@ -56,6 +56,8 @@ module.exports = {
 					return callback('no group members');
 				}
 				else {
+					package.stepsTotal += group.stepsToday;
+					package.stepsToday += group.stepsToday;
 					var groupMembers = [];
 					group.members.forEach(function(member) {
 						package.members.push(member);

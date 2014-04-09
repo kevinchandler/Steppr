@@ -90,6 +90,7 @@ var app = angular.module('stepprUiApp');
         })
         .then(function(response) {
           $scope.group = response.data;
+          console.log(response.data);
           $scope.numOfMembers = response.data.members.length;
           if ($scope.numOfMembers === 1) {
             $scope.message = "Member";
