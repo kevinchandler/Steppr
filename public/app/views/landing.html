@@ -1,0 +1,41 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li class="active"><a ng-href="#">Home</a></li>
+    <li><a ng-href="#/groups">Groups</a></li>
+    <li><a ng-href="/login">Login</a></li>
+  </ul>
+  <h3 class="text-muted">Steppr</h3>
+</div>
+<div ng-controller='LandingCtrl'>
+  <br />
+</div>
+<div class='col-md-12 col-sm-12 col-xs-12'>
+    <div class='leaderboard'>
+      <table class='table'>
+        <tr class='success'>
+          <td>
+            Total steps:
+          </td>
+          <td>
+            {{stats.totalSteps}}
+          </td>
+        </tr>
+        <tr class='info'>
+          <td>
+            Total steps today:
+          </td>
+          <td>
+            {{stats.totalStepsToday}}
+          </td>
+        </tr>
+        <tr class='success'>
+          <td>
+            Users today:
+          </td>
+          <td>
+            {{stats.usersToday}}
+          </td>
+        </tr>
+      </table>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li><a ng-href="#">Home</a></li>
+    <li><a ng-href="#/groups">Groups</a></li>
+    <li><a ng-href="/login">Login</a></li>
+  </ul>
+  <h3 class="text-muted">Steppr</h3>
+</div>
+<div ng-controller='UserCtrl'>
+  <h3>{{user.username}}</h3>
+  {{userStepsToday}} steps taken today
+  <h3>Groups:</h3>
+    <li ng-repeat='group in userGroups'>
+      <a ng-href='#/groups/{{group}}'>{{group}}</a>
+    </li>
+  <h3>Badges:</h3>
+  <li ng-repeat='badges in userBadges'>
+    {{badges}}
+  </li>
+</div>

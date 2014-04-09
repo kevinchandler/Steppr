@@ -1,0 +1,25 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li class="active"><a ng-href="#/home">Home</a></li>
+    <li><a ng-href="#/groups">Groups</a></li>
+    <li><a ng-href="#/logout">Logout</a></li>
+  </ul>
+  <h3 class="text-muted">Steppr</h3>
+</div>
+<div ng-controller='DashboardCtrl'>
+  <div class='col-md-12'>
+    <div class='col-md-6'>
+      Welcome, {{user.username}}.
+      {{user.stepsToday}} steps today
+      <br />
+      <h3>Groups:</h3>
+      <li ng-repeat='group in user.groups'>
+        <a ng-href='#/groups/{{group}}'>{{group}}</a>
+      </li>
+      <h3>Badges:</h3>
+      <li ng-repeat='badge in user.badges'>
+        {{badge}}
+      </li>
+    </div>
+  </div>
+</div>
