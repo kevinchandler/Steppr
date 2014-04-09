@@ -15,11 +15,11 @@ exports.index = function(req, res) {
 
 
 // individual group page
-exports.viewGroup = function(req, res) {
+exports.showGroup = function(req, res) {
 	var groupName = req.params.groupName;
-	groups.viewGroup(groupName, function(err, package) {
+	groups.showGroup(groupName, function(err, package) {
 		if (package) {
-			res.render('viewGroup.jade', { group : package });
+			res.render('showGroup.jade', { group : package });
 		}
 		else {
 			res.redirect('/groups');

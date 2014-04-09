@@ -3,6 +3,7 @@ var request = require('request')
 ,   moment = require('moment')
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
+,	 groups = require('./groups.js')
 ,   fs = require('fs')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('logs/libs-steppr-log.txt', {"flags": "a"}));
@@ -54,7 +55,7 @@ module.exports = {
 		})
 	},
 
-	// //updates all users steps for today
+	// //updates all users steps for today: user.updateUser()
 	updateAllUsers : function(callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -76,84 +77,20 @@ module.exports = {
 		})
 	},
 
-	// updateAllGroups : function(callback) {
-	// 	connection(function( db ) {
-	// 		if ( !db ) return callback( new Error + ' unable to connect to db' );
-	// 		db.collection('groups').find({}).each(function(err, doc) {
-	// 			if ( err || !doc ) return callback(err || 'no doc');
-	// 			doc.members.forEach(function(member) {
-	// 				var members = [];
-	// 				if ( !member ) {
-	// 					var stepsToday;
-	// 					if (members.length > 0) {
-	// 						members.forEach(function(member) {
-	// 							user.userStepsToday(member.id, function(err, success) {
-	// 								console.log(err);
-	// 							})
-	// 						})
-	// 					}
-	// 					else {
-	// 						// no members in group
-	// 					}
-	// 				}
-	// 				else {
-	// 					members.push(member.id);
-	// 				}
-	// 			})
-	// 		})
-	// 	})
-	// },
+	// updates all groups steps for today: groups.updateGroup()
+	updateAllGroups : function(callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('groups').find().each(function(err, group) {
+				if (group) {
+					groups.updateGroup(group.name, function(err, success) {
+						if (err) callback(err);
+					})
+				}
+				else {
+					callback(null, 'updateAllGroups complete')
+				}
+			})
+		})
+	}
 }
-
-// 	updateAllGroups : function(callback) {
-// 	// // groupStepsToday
-// 	// 	// each group in groups coll
-// 	// 		// each user in group
-// 	// 			// add users steps to groupStepsToday
-// 	// 	// totalGroupSteps
-// 	// 		// find group in steps coll
-// 	// 			// each doc, increase total
-// 	// 	// OR
-// 	// 		// totalGroupSteps [date]
-// 	//
-//
-//
-// 		MongoClient.connect(process.env.MONGODB_URL, function(err, db) {
-// 			if (err || !db) callback (err);
-// 			else {
-// 				db.collection('steps').find()
-// 			}
-//
-// 		})
-// 	}
-// }
-//
-//
-
-
-
-
-
-// loop through steps coll
-	// filter by people group with > 0
-		// open groups collection filtered by the groups name (making this .. see below groupSteps)
-			//loop each user in the group
-				// if group.user.id(!== (steps collection)
-					// update
-			//
-		//
-	//
-//
-
-	//
-	//
-	//
-	//
-	//
-	// group : {
-	// 	name :
-	// 	user : {
-	// 		id
-	// 		steps
-	// 	}
-	// }

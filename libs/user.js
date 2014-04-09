@@ -149,7 +149,7 @@ module.exports = {
 			if (payload) { // parsed data from request
 				connection(function(db) {
 					if (!db) return callback(new Error + ' unable to connect to db');
-					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
+					// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
 						if (db === null) {
 							log.error('inside payload.forEach: no db connection\n');
@@ -190,6 +190,7 @@ module.exports = {
 										})
 									}
 									else {
+										// doc found for this date, update it
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) return callback(err);
 											if (success) {
@@ -294,7 +295,7 @@ module.exports = {
 						username : doc.username,
 						joined : today,
 					};
-					// put user in group
+					// add user to group
 					db.collection('groups').update({ name: groupName }, { $push: { members: newMember }}, function(err, success) {
 						if (err || !success) callback(err);
 						if (success) {

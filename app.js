@@ -93,7 +93,7 @@ app.get('/groups/create', user.createGroup);
 app.post('/groups/create', authenticate, user.createGroup);
 app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
-app.get('/groups/:group', groups.viewGroup);
+app.get('/groups/:group', groups.showGroup);
 
 app.get('/test', test.index);
 app.post('/notification', test.notification); // moves posts data every so often
@@ -107,7 +107,7 @@ app.get('/api/v0/users/me/update', api.updateUser);
 app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
-app.get('/api/v0/groups/:group', api.viewGroup);
+app.get('/api/v0/groups/:group', api.showGroup);
 
 app.post('/api/v0/users/register', api.registerUser);
 app.post('/api/v0/groups/join/:group', api.joinGroup);
@@ -121,11 +121,18 @@ function updateAllUsers() {
     })
 }
 
+function updateAllGroups() {
+  steppr.updateAllGroups(function(err, success) {
+    if (err) console.log(err);
+    console.log(success);
+  })
+}
+
 //will run updateAllUsers() every so often // what the minutes variable is set to
 var minutes = 5, the_interval = minutes * 60 * 1000;
 setInterval(function() {
-    console.log('Updating: \n');
   updateAllUsers();
+  updateAllGroups();
 }, the_interval);
 
 connection(function(db) {

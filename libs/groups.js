@@ -38,7 +38,7 @@ module.exports = {
 	},
 
 	// returns: group, totalGroupSteps, totalGroupStepsToday, members[username: , id: ]
-	viewGroup : function(group, callback) {
+	showGroup : function(group, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
@@ -65,45 +65,34 @@ module.exports = {
 			})
 		})
 	},
+
+	updateGroup : function(groupName, callback) {
+		connection(function(db) {
+			var package = {
+				steps : 0
+			};
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').find({ groups: groupName }).each(function(err, user) {
+				if (err) return callback('updateGroup: failed to find each user');
+				if (user)  {
+					package.steps += user.stepsToday;
+				}
+				if (!user)  {
+					// mongo reached the end; check if groups steps today = package.steps & update if not then send package
+					db.collection('groups').findOne({ name : groupName }, function(err, group) {
+						if (err) return callback('updateGroup: failed to find group');
+						if (package.steps !== group.stepsToday) {
+							db.collection('groups').update({ name : groupName }, { $set : { 'stepsToday' : package.steps }}, function(err, success) {
+								if (err || !success) return callback(err || 'updateGroup: failed to update groups stepsToday');
+								callback(null, success);
+							})
+						}
+						else {
+							callback(null, true);
+						}
+					})
+				}
+			})
+		})
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//       BROKEN
-// 	updateGroup : function( groupName, callback ) {
-// 		connection(function(db) {
-// 			if (!db) return callback(new Error + ' unable to connect to db');
-// 			var members = [];
-// 			var stepsToday = 0;
-// 		  db.collection('groups').findOne({ name : groupName }, function(err, group) {
-// 				if (err || !group) return callback(err || 'updateGroup: no group found');
-// 				members.push(group.members.)
-// 					group.members.forEach(function(member) {
-// 						user.userStepsToday(member.id, function(err, data) {
-// 							if (err) return callback(err);
-// 							stepsToday += data;
-// 						})
-// 					})
-// 				// console.log(stepsToday);
-// 				// callback(null, stepsToday)
-// 			})
-// 		})
-// 	},
-// }

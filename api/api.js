@@ -77,9 +77,9 @@ exports.viewAllGroups = function(req, res) {
    })
 }
 
-exports.viewGroup = function(req, res) {
+exports.showGroup = function(req, res) {
   groupName = req.params.group;
-  groups.viewGroup(groupName, function(err, data) {
+  groups.showGroup(groupName, function(err, data) {
     if (err) return res.json(err);
     res.json(data);
   })
