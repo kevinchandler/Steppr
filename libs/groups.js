@@ -1,8 +1,9 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-,   now = moment()
-,   today = now.format("YYYY-MM-DD")
+// ,   now = moment()
+// ,   today = now.format("YYYY-MM-DD")
+,	 user = require('./user')
 ,   dotenv = require('dotenv')
 ,   fs = require('fs')
 ,   Log = require('log')
@@ -13,39 +14,7 @@ dotenv.load();
 
 module.exports = {
 
-	createGroup : function(groupName, groupCreator, callback) {
-		if (!groupName || !groupCreator) {
-			console.log('no name or creator, cannot create group');
-			callback('no name or creator, cannot create group');
-		}
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('groups').findOne({ name: groupName }, function(err, group) {
-				if (!group) {
-					db.collection('groups').insert({
-						name: groupName,
-						creator : groupCreator,
-						members : [],
-						stepsToday : 0,
-						stepsTotal : 0,
-					}, function(err, success) {
-						if (err) {
-							callback(err);
-						}
-						if (success) {
-							// need to add group to user doc in users collection
-							callback(null, success);
-						}
-					})
-				}
-				else if (group) {
-					callback('Unable to create group: already exists');
-				}
-			})
-		})
-	},
-
-	// list groups in groups collection.
+	// returns: _id, name, stepsTotal
 	viewAllGroups : function(callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -53,6 +22,7 @@ module.exports = {
 			// push each group object into the package array and send once there's no more groups
 			db.collection('groups').find().each(function(err, group) {
 				if (err) { return callback(err) };
+				// no more groups, send package.
 				if (!group) {
 					callback(null, package)
 				}
@@ -66,34 +36,65 @@ module.exports = {
 			})
 		})
 	},
-	// view single group page
-	viewGroup : function(groupName, callback) {
+
+	// returns: group, totalGroupSteps, totalGroupStepsToday, members[username: , id: ]
+	showGroup : function(group, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
-				groupName : groupName,
-				totalGroupSteps : 0,
-				totalGroupStepsToday : 0,
+				name : group,
+				stepsTotal : 0,
+				stepsToday : 0,
 				members : []
 			};
-			db.collection('groups').findOne({name: groupName}, function(err, group) {
+			db.collection('groups').findOne({name: group}, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
-					callback('no group');
+					return callback('no group');
+				}
+				if (!group.members) {
+					return callback('no group members');
 				}
 				else {
-					db.collection('users').find({ groups : groupName }).each(function(err, groupMember){
-						if (err) callback (err);
-						if (!groupMember) {
-							callback(null, package)
+					package.stepsTotal += group.stepsToday;
+					package.stepsToday += group.stepsToday;
+					var groupMembers = [];
+					group.members.forEach(function(member) {
+						package.members.push(member);
+					})
+					callback(null, package)
+				}
+			})
+		})
+	},
+
+	updateGroup : function(groupName, callback) {
+		connection(function(db) {
+			var package = {
+				steps : 0
+			};
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').find({ groups: groupName }).each(function(err, user) {
+				if (err) return callback('updateGroup: failed to find each user');
+				if (user)  {
+					package.steps += user.stepsToday;
+				}
+				if (!user)  {
+					// mongo reached the end; check if groups steps today = package.steps & update if not then send package
+					db.collection('groups').findOne({ name : groupName }, function(err, group) {
+						if (err) return callback('updateGroup: failed to find group');
+						if (package.steps !== group.stepsToday) {
+							db.collection('groups').update({ name : groupName }, { $set : { 'stepsToday' : package.steps }}, function(err, success) {
+								if (err || !success) return callback(err || 'updateGroup: failed to update groups stepsToday');
+								callback(null, success);
+							})
 						}
-						if (groupMember) {
-							package.members.push(groupMember);
-							package.totalGroupStepsToday += groupMember.stepsToday;
+						else {
+							callback(null, true);
 						}
 					})
 				}
 			})
 		})
-	},
+	}
 }

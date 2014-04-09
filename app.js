@@ -5,10 +5,11 @@
 
 var express = require('express');
 var routes = require('./routes')
+,   api = require('./api/api.js')
 ,	 connection = require('./libs/mongo_connection.js')
 ,   moves = require('./routes/moves.js')
 ,   dashboard = require('./routes/dashboard.js')
-,   user = require('./routes/user.js')
+,   user = require('./libs/user.js')
 ,   groups = require('./routes/groups.js')
 ,   test = require('./routes/test.js')
 ,   steppr = require('./libs/steppr.js')
@@ -44,7 +45,7 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meow' }));
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/app')));
 
 // development only
 if ('development' == app.get('env')) {
@@ -77,32 +78,41 @@ function authenticate(req, res, next) {
 }
 
 
-app.get('/', routes.index);
-
+// app.get('/', routes.index);
+app.get('/login', moves.index);
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', authenticate, dashboard.home);
-
-app.get('/user/register', user.register);
-app.post('/user/register', user.register);
+//
+// app.get('/user/register', user.register);
+// app.post('/user/register', user.register);
 
 app.get('/groups', groups.index);
-app.get('/groups/create', groups.createGroup);
-app.post('/groups/create', authenticate, groups.createGroup);
+app.get('/groups/create', user.createGroup);
+app.post('/groups/create', authenticate, user.createGroup);
 app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
 app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
-app.get('/groups/:groupName', groups.viewGroup);
-
+app.get('/groups/:group', groups.showGroup);
 
 app.get('/test', test.index);
-
 app.post('/notification', test.notification); // moves posts data every so often
 
-app.get('/logs', function(req, res) {
-      res.sendfile('log.txt');
-})
 
+
+// API
+app.get('/api/v0/stats', api.stats);
+app.get('/api/v0/users/me', api.getSelf);
+app.get('/api/v0/users/me/update', api.updateUser);
+app.get('/api/v0/users/:username', api.viewUser);
+app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
+app.get('/api/v0/groups', api.viewAllGroups);
+app.get('/api/v0/groups/:group', api.showGroup);
+
+app.post('/api/v0/users/register', api.registerUser);
+app.post('/api/v0/groups/join/:group', api.joinGroup);
+app.post('/api/v0/groups/leave/:group', api.leaveGroup);
+app.post('/api/v0/groups/create/:group', api.createGroup);
 
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
@@ -111,11 +121,18 @@ function updateAllUsers() {
     })
 }
 
+function updateAllGroups() {
+  steppr.updateAllGroups(function(err, success) {
+    if (err) console.log(err);
+    console.log(success);
+  })
+}
+
 //will run updateAllUsers() every so often // what the minutes variable is set to
 var minutes = 5, the_interval = minutes * 60 * 1000;
 setInterval(function() {
-    console.log('Updating: \n');
   updateAllUsers();
+  updateAllGroups();
 }, the_interval);
 
 connection(function(db) {

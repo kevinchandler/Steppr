@@ -15,11 +15,11 @@ exports.index = function(req, res) {
 
 
 // individual group page
-exports.viewGroup = function(req, res) {
+exports.showGroup = function(req, res) {
 	var groupName = req.params.groupName;
-	groups.viewGroup(groupName, function(err, package) {
+	groups.showGroup(groupName, function(err, package) {
 		if (package) {
-			res.render('viewGroup.jade', { group : package });
+			res.render('showGroup.jade', { group : package });
 		}
 		else {
 			res.redirect('/groups');
@@ -47,7 +47,7 @@ exports.createGroup = function(req, res) {
 	}
 	if ( req.method === 'POST' ) {
 		var groupName = req.body.groupName;
-		groups.createGroup(groupName, req.session._movesId, function(err, success) {
+		user.createGroup(req.session._movesId, groupName, function(err, success) {
 			console.log('inside createGroup callback');
 			if (err) console.log(err);
 			if (success) {

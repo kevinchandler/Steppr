@@ -1,8 +1,8 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-,   now = moment()
-,   today = now.format("YYYY-MM-DD")
+// ,   now = moment()
+// ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -13,33 +13,143 @@ dotenv.load();
 
 module.exports = {
 
+	// this is called after user authenticates with moves if user is not already in db
+	createNewUser : function(accessToken, refreshToken, movesId, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			var  placeholder = '';
+			db.collection('users').insert({
+				user: movesId,
+				username: '',
+				email: '',
+				birthday: today,
+				stepsToday : 0,
+				stepsTotal : 0,
+				points: {
+					total: 0
+				},
+				badges: ['Beta Tester'],
+				groups: [],
+				access_token : accessToken,
+				refresh_token : refreshToken,
+			}, function(err, success) {
+				if (err) {
+					log(err);
+					console.log(err, 'unable to create new user');
+					return callback(err);
+				}
+				if (success) {
+					log.info('createNewUser: ', success);
+					callback(null, success);
+				}
+			})
+		})
+	},
+
+	// sets/changes username to a user that's already been created
+	registerUser : function(userId, username, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').update({ user : userId }, { $set: { "username" : username }}, function(err, success) {
+				if (err) { log.error(err); return res.redirect('back'); }
+				if (success) {
+					log.info( success, 'username set: ' + username, user );
+					console.log('username successfully set: ', userId,  username );
+					callback(null, success);
+				}
+				else {
+					callback('registerUser: could not register user');
+				}
+			})
+		})
+	},
+
+	viewUser : function(username, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').findOne({username: username}, function(err, data) {
+				if (err) return callback(err);
+				if (data !== null) {
+					var package = {};
+					package.username = data.username;
+					package.stepsTotal = data.stepsTotal;
+					package.stepsToday = data.stepsToday;
+					package.groups = data.groups;
+					package.badges = data.badges;
+					package.points = data.points;
+					callback(null, package);
+				}
+				else {
+					callback(null, null);
+				}
+			})
+		})
+	},
+
+	// returns user document. Uses userId rather than username, as viewUser uses username.
+	// this is for the user to get data about themself
+	getUser : function(userId, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err || !doc) {
+					console.log('error or no doc');
+					return callback(err || 'no doc')
+				}
+				else {
+					console.log(doc);
+					return callback(null, doc);
+				}
+			})
+		})
+	},
+
+	// remove this later.
+	findUser : function(userId, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').findOne({user: userId}, function(err, doc) {
+				if (err) return callback(err);
+				if (doc) {
+					log.info('findUser complete: ', doc);
+					callback(null, doc);
+				}
+				else if (!doc) {
+					log.error('findUser complete: no doc found')
+					callback(null);
+				}
+			})
+		})
+	},
+
+
+  //	 gets each day of moves activity for pastDays in the request query
+  //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
-	//	 gets each day of moves activity for pastDays in the request query
-	//		 loops each of them and checks to see if that date is in the database
-	//			 if so it will update the number of steps if different than what moves tells us
-	//			 if not it will save to db & update stepsToday in the users collection
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD")
+		,	 pastDays = 1;
 
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
-			return callback('err');
+			return callback('updateUser : missing accessToken or movesId');
 		}
-		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
-			console.log('updateUser: ', movesId + '\n');
+		request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays='+pastDays+'&access_token='+accessToken, function(err, response, body) {
+			console.log('updateUser: ', movesId);
 			if (err) callback(err);
 			if (!body || !response) {
-				callback('error: no body or response\n');
-				log.error('error: no body or response\n');
-				return;
+				log.error('error: no body or response');
+				return callback('error: no body or response');
 			}
-
-			// parse expects a string as 1st arg. This prevents unnecessary errors thrown if the body ends up being something other than a string
 
 			var payload = JSON.parse(body.toString());
 
 			if (payload) { // parsed data from request
 				connection(function(db) {
 					if (!db) return callback(new Error + ' unable to connect to db');
-					// each of the days retrieved from moves api, check to see if it's in the db, if so, make sure the # of steps match, update if not.
+					// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
 						if (db === null) {
 							log.error('inside payload.forEach: no db connection\n');
@@ -49,7 +159,6 @@ module.exports = {
 							log.info('no moves data summary');
 							return callback('no moves data');
 						}
-
 						moves_data.summary.forEach(function(activity) {
 							if (db === null) {
 								log.error('inside moves_data.summary.forEach: no db connection\n');
@@ -81,20 +190,17 @@ module.exports = {
 										})
 									}
 									else {
+										// doc found for this date, update it
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
-											if (err) callback(err);
+											if (err) return callback(err);
 											if (success) {
 												if (doc.steps !== steps) {
 													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
 													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-
 												}
 												if (activityDate === today) {
 													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
-														if (err) callback(err);
-														else {
-															callback('err 007', success);
-														}
+														if (err) return callback(err);
 													})
 												}
 												else {
@@ -112,30 +218,31 @@ module.exports = {
 							}
 						})
 					})
-					console.log('99');
 					callback(null, 'updateUser complete');
 				})
 			}
 			else {
-				console.log('102');
-			    callback(null, true);
+		    callback(null, true);
 			}
-			console.log('10202');
 			callback(null);
 		})
 	},
+
 	// returns users steps for today
-	getSteps : function( movesId, callback ) {
+	userStepsToday : function(movesId, callback ) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+		if (!movesId) { return callback('getUserSteps - no movesId ')}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var query = { user : movesId, date : today };
 			db.collection('steps').findOne(query, function(err, data) {
 				if (err) {
-					callback(err);
+					return callback(err);
 				}
 				else if (data) {
 					log.info('user.getSteps:', data);
-					callback( null, data );
+					return callback( null, data.steps );
 				}
 			})
 		})
@@ -167,47 +274,10 @@ module.exports = {
 		})
 	},
 
-
-	// // returns groups that user is in or false for none
-	// isInGroup : function(userId, callback) {
-	// 	if (!userId) {
-	// 		log.error('user.isInGroup: No userId');
-	// 		return callback('user.isInGroup: No userId');
-	// 	}
-	// 	database.connect(function(err, db) {
-	// 		db.collection('users').findOne({user: userId}, function(err, user) {
-	// 			if (err || !user) return callback(err);
-	// 			var package = [];
-	// 			user.groups.forEach(function(group) {
-	// 				package.push(group)
-	// 			})
-	// 			if (package.length === 0) {
-	// 				callback(null, false)
-	// 			}
-	// 			else {
-	// 				callback(null, package);
-	// 			}
-	// 		})
-	// 	})
-	// },
-
-
-	// returns user document from users collection
-	getUser : function(userId, callback) {
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').findOne({user: userId}, function(err, doc) {
-				if (err || !doc) {
-					return callback(null, false)
-				}
-				else {
-					return callback(null, doc);
-				}
-			})
-		})
-	},
-
 	joinGroup : function( userId, groupName, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+
 		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
 		connection(function(db) {
@@ -217,14 +287,15 @@ module.exports = {
 					return callback(err || 'user.joinGroup: no doc\n', null)
 				}
 				if (doc.groups.length !== 0) {
-					return callback('User in group\n', false)
+					return callback('User in group \n')
 				}
 				else {
 					var newMember = {
 						id : userId,
 						username : doc.username,
+						joined : today,
 					};
-					// put user in group
+					// add user to group
 					db.collection('groups').update({ name: groupName }, { $push: { members: newMember }}, function(err, success) {
 						if (err || !success) callback(err);
 						if (success) {
@@ -249,7 +320,7 @@ module.exports = {
 	leaveGroup : function(userId, groupName, callback) {
 		console.log('inside leaveGroup callback:', userId, groupName);
 		log.info('inside leaveGroup callback: ', userId, groupName);
-		// connection(function(db) {
+		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').findOne({user: userId}, function(err, doc) {
 				if (err || !doc) {
@@ -258,14 +329,24 @@ module.exports = {
 				else {
 					var index = doc.groups.indexOf(groupName);
 					if (index > -1) {
-						// doc.groups.splice(index, 1);
+						doc.groups.splice(index, 1);
 						db.collection('users').update({user : userId}, { $pull: { groups: groupName }}, function(err, success) {
 							if (err || !success) {
-								return callback(err || 'leaveGroup - failed\n');
+								return callback(err || 'leaveGroup - removing group from user failed\n');
 							}
 							if (success) {
 								log.info(success);
-								return callback(null, userId + ' successfully left group ' + groupName);
+								db.collection('groups').update({ name: groupName }, { $pull: {
+									members: { id: userId }
+								}},
+								function(err, success) {
+									if (err || !success) {
+										return callback('leaveGroup: failed' + err || 'not successful');
+									}
+									else {
+										return callback(null, success);
+									}
+								})
 							}
 							else {
 								return callback(userId + ' unable to leave group ' + groupName);
@@ -278,6 +359,46 @@ module.exports = {
 					}
 				}
 			})
-		// })
+		})
+	},
+
+	createGroup : function(groupCreator, groupName, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+		if (!groupName || !groupCreator) {
+			console.log('no name or creator, cannot create group');
+			callback('no name or creator, cannot create group');
+		}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('groups').findOne({ name: groupName }, function(err, group) {
+				if (!group) {
+					db.collection('groups').insert({
+						name: groupName,
+						creator : groupCreator,
+						created : today,
+						members : [],
+						stepsToday : 0,
+						stepsTotal : 0,
+					}, function(err, success) {
+						if (err) {
+							return callback(err);
+						}
+						if (success) {
+							// automatically join group --broken
+							// user.joinGroup(groupCreator, groupName, function(err, success) {
+							// 	if (err) return callback(err);
+							// 	if (success) {
+									return callback(null, success);
+								// }
+							// })
+						}
+					})
+				}
+				else if (group) {
+					callback('Unable to create group: already exists');
+				}
+			})
+		})
 	},
 }

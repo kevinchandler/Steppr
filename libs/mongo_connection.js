@@ -2,9 +2,10 @@ var MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv');
 dotenv.load();
 
-var db;
+var db; 
 
 module.exports = function(callback) {
+
 	if (db) {
 		return callback(db);
 	}
@@ -16,6 +17,25 @@ module.exports = function(callback) {
 		})
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-var steppr = require('../libs/steppr.js')
+var user = require('../libs/user.js')
 ,	 connection = require('../libs/mongo_connection.js')
 ,   fs = require('fs')
 ,   Log = require('log')
@@ -56,20 +56,20 @@ exports.authenticate = function(req, res) {
           // checks db to see if there's a user
           connection(function(db) {
             if (!db) return callback(new Error + ' unable to connect to db');
-              steppr.findUser(profile.userId, function(err, doc) {
+              user.findUser(profile.userId, function(err, doc) {
                   if (err) { return err; }
                   if (doc) {
-                      return res.redirect('/home');
+                      return res.redirect('#/home');
                   }
                   if (!doc) {
-                      steppr.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
+                      user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                           if (err) {
                               console.log(err + ' error: unable to create user');
                               return res.redirect('/');
                           }
                           if (success) {
-                              console.log('Registered user successfully \n');
-                              return res.redirect('/home');
+                              console.log('Created new user: \n');
+                              return res.redirect('#/register');
                           }
                           else {
                               console.log('unable to createNewUser \n');
