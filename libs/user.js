@@ -283,7 +283,7 @@ module.exports = {
 					return callback(err || 'user.joinGroup: no doc\n', null)
 				}
 				if (doc.groups.length !== 0) {
-					return callback('User in group \n')
+					return callback('User in group \n');
 				}
 				else {
 					var newMember = {

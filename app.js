@@ -84,7 +84,9 @@ app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', authenticate, dashboard.home);
-//
+app.get('/logout', function(req, res) {
+  req.session.destroy();
+})
 // app.get('/user/register', user.register);
 // app.post('/user/register', user.register);
 
@@ -104,7 +106,7 @@ app.post('/notification', test.notification); // moves posts data every so often
 app.get('/api/v0/stats', api.stats);
 app.get('/api/v0/users/me', api.getSelf);
 app.get('/api/v0/users/me/update', api.updateUser);
-app.get('/api/v0/users/:username', api.viewUser);
+app.get('/api/v0/users/:username', authenticate, api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
 app.get('/api/v0/groups/:group', api.showGroup);
@@ -129,7 +131,7 @@ function updateAllGroups() {
 }
 
 //will run updateAllUsers() every so often // what the minutes variable is set to
-var minutes = .05, the_interval = minutes * 60 * 1000;
+var minutes = 1, the_interval = minutes * 60 * 1000;
 setInterval(function() {
   updateAllUsers();
   updateAllGroups();
