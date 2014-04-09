@@ -203,14 +203,10 @@ module.exports = {
 														if (err) return callback(err);
 													})
 												}
-												else {
-													console.log('1');
-													callback(null, true);
-												}
 											}
 											else {
 												console.log('2');
-												callback(null, true)
+												return callback(null, true)
 											}
 										})
 									}

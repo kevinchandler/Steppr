@@ -22,25 +22,25 @@ module.exports = {
 		var now = moment()
 		,   today = now.format("YYYY-MM-DD");
 		var payload = {
-			totalStepsToday : 0,
+			stepsToday : 0,
 			totalSteps : 0,
 			usersToday : 0,
 		}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('steps').find({date: today}).each(function(err, stepsToday) {
+			db.collection('steps').find({ date: today }).each(function(err, stepsToday) {
 				if (err) return callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (stepsToday) {
 					payload.usersToday += 1;
-					payload.totalStepsToday += stepsToday.steps
+					payload.stepsToday += stepsToday.steps
 				}
 				if (!stepsToday) {
 					db.collection('steps').find({}).each(function(err, totalSteps) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
 						if (!totalSteps) {
-							payload.totalStepsToday = delimitNumbers(payload.totalStepsToday);
+							payload.stepsToday = delimitNumbers(payload.stepsToday);
 							payload.totalSteps = delimitNumbers(payload.totalSteps);
 							payload.usersToday = delimitNumbers(payload.usersToday);
 							log.info('stats complete: ', payload);

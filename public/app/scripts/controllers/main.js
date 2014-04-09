@@ -9,6 +9,7 @@ var app = angular.module('stepprUiApp');
         method: 'GET',
       })
       .then(function(response) {
+        console.log(response.data);
         $scope.stats = response.data;
       })
     })
