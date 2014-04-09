@@ -85,7 +85,8 @@ app.get('/moves/auth', moves.authenticate);
 
 app.get('/home', authenticate, dashboard.home);
 app.get('/logout', function(req, res) {
-  req.session.destroy();
+  req.session.destroy;
+  res.redirect('/')
 })
 // app.get('/user/register', user.register);
 // app.post('/user/register', user.register);
@@ -131,7 +132,7 @@ function updateAllGroups() {
 }
 
 //will run updateAllUsers() every so often // what the minutes variable is set to
-var minutes = 1, the_interval = minutes * 60 * 1000;
+var minutes = 5, the_interval = minutes * 60 * 1000;
 setInterval(function() {
   updateAllUsers();
   updateAllGroups();

@@ -63,7 +63,7 @@ var app = angular.module('stepprUiApp');
           }
         })
         .then(function(response) {
-          return $location.path('#/home');
+          window.location = '/#/users/'+$scope.username;
         })
       }
     })
