@@ -36,10 +36,10 @@ module.exports = {
 					payload.stepsToday += stepsToday.steps
 				}
 				if (!stepsToday) {
-					db.collection('steps').find({}).each(function(err, totalSteps) {
+					db.collection('steps').find({}).each(function(err, stepsTotal) {
 						if (err) callback( err );
 						// last doc is null again. this is how we know we're done.
-						if (!totalSteps) {
+						if (!stepsTotal) {
 							payload.stepsToday = delimitNumbers(payload.stepsToday);
 							payload.stepsTotal = delimitNumbers(payload.stepsTotal);
 							payload.usersToday = delimitNumbers(payload.usersToday);
