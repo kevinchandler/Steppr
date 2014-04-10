@@ -15,6 +15,15 @@ var app = angular.module('stepprUiApp');
     })
 
     app.controller('DashboardCtrl', function ($scope, $route, $http) {
+        $http({
+          url: '/api/v0/stats',
+          method: 'GET',
+        })
+        .then(function(response) {
+          console.log(response.data);
+          $scope.stats = response.data;
+        })
+
         // get user from db
         $http({
             url: '/api/v0/users/me',

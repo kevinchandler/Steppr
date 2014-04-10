@@ -23,7 +23,7 @@ module.exports = {
 		,   today = now.format("YYYY-MM-DD");
 		var payload = {
 			stepsToday : 0,
-			totalSteps : 0,
+			stepsTotal : 0,
 			usersToday : 0,
 		}
 		connection(function(db) {

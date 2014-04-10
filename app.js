@@ -69,27 +69,24 @@ if (process.argv[2])  {
 }
 
 function authenticate(req, res, next) {
-    if (req.session._token && req.session._movesId) {
-        next();
+    if (!req.session._token && req.session._movesId) {
+      return res.redirect('/');
     }
     else {
-        res.redirect('/');
+      next();
     }
 }
 
 
-// app.get('/', routes.index);
 app.get('/login', moves.index);
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
-app.get('/home', authenticate, dashboard.home);
 app.get('/logout', function(req, res) {
   req.session.destroy;
   res.redirect('/')
 })
-// app.get('/user/register', user.register);
-// app.post('/user/register', user.register);
+
 
 app.get('/groups', groups.index);
 app.get('/groups/create', user.createGroup);
@@ -107,7 +104,7 @@ app.post('/notification', test.notification); // moves posts data every so often
 app.get('/api/v0/stats', api.stats);
 app.get('/api/v0/users/me', api.getSelf);
 app.get('/api/v0/users/me/update', api.updateUser);
-app.get('/api/v0/users/:username', authenticate, api.viewUser);
+app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
 app.get('/api/v0/groups/:group', api.showGroup);
