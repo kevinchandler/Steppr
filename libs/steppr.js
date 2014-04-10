@@ -41,13 +41,13 @@ module.exports = {
 						// last doc is null again. this is how we know we're done.
 						if (!totalSteps) {
 							payload.stepsToday = delimitNumbers(payload.stepsToday);
-							payload.totalSteps = delimitNumbers(payload.totalSteps);
+							payload.stepsTotal = delimitNumbers(payload.stepsTotal);
 							payload.usersToday = delimitNumbers(payload.usersToday);
 							log.info('stats complete: ', payload);
 							callback( null, payload );
 						}
 						else {
-							payload.totalSteps +=  totalSteps.steps;
+							payload.stepsTotal +=  stepsTotal.steps;
 						}
 					})
 				}
