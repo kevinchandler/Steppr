@@ -35,4 +35,37 @@
       </li>
     </div>
   </div> -->
+
+
+
+
+
+
+  <table class='table'>
+    <h3 class='lead'> Groups <span class='pull-right'><a ng-href='#/groups/create'>Create group</a></span></h3>
+    <tr>
+      <td>
+        Today
+      </td>
+      <td>
+        Total
+      </td>
+      <td>
+        Members
+      </td>
+    </tr>
+    <tr>
+    <td>
+      {{group.stepsToday}}
+    </td>
+    <td>
+      {{group.stepsTotal}}
+    </li>
+    </td>
+      <td>
+        <li ng-repeat='member in group.members'>
+          <a ng-href='#/users/{{member.username}}'>{{member.username}}</a>
+      </td>
+  </tr>
+  </table>
 </div>

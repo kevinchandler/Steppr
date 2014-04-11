@@ -93,9 +93,9 @@ app.get('/logout', function(req, res) {
 
 app.get('/groups', groups.index);
 app.get('/groups/create', user.createGroup);
-app.post('/groups/create', authenticate, user.createGroup);
-app.get('/groups/join/:groupName', authenticate, groups.joinGroup);
-app.get('/groups/leave/:groupName', authenticate, groups.leaveGroup);
+app.post('/groups/create', user.createGroup);
+app.get('/groups/join/:groupName', groups.joinGroup);
+app.get('/groups/leave/:groupName', groups.leaveGroup);
 app.get('/groups/:group', groups.showGroup);
 
 app.get('/test', test.index);

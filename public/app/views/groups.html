@@ -34,16 +34,15 @@
         Steps total
       </td>
     </tr>
-    <tr>
+    <tr ng-repeat='group in groups'>
       <td>
-        <li ng-repeat='group in groups'>
-          <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a> {{group.stepsToday}}
+          <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a>
     </td>
     <td>
       {{group.stepsToday}}
     </td>
     <td>
-      over 9000
+      {{group.stepsTotal}}
     </li>
     </td>
   </tr>
