@@ -1,11 +1,14 @@
-<h3 class="text-muted">Steppr</h3>
+<h3 class="title">
+  Steppr.
+  <span class='slogan'>the social pedometer </span>
+</h3>
 <div ng-controller='LandingCtrl'>
   <br />
 </div>
-<div class='col-md-12 col-sm-12 col-xs-12'>
-    <div class='leaderboard'>
+<div class='col-md-12 col-sm-12 col-xs-12 leaderboard'>
       <table class='table'>
-        <tr class='success'>
+        <h3 class='lead'> Stats </h3>
+        <tr>
           <td>
             Total steps:
           </td>
@@ -13,7 +16,7 @@
             {{stats.stepsTotal}}
           </td>
         </tr>
-        <tr class='info'>
+        <tr>
           <td>
             Total steps today:
           </td>
@@ -21,7 +24,7 @@
             {{stats.stepsToday}}
           </td>
         </tr>
-        <tr class='success'>
+        <tr>
           <td>
             Users today:
           </td>
@@ -30,8 +33,32 @@
           </td>
         </tr>
       </table>
+      <hr>
+  </div>
+    <div class='col-md-8 col-xs-12 col-sm-12'>
+      <div id='about'>
+        <h3 class='lead'> What is Steppr? </h3>
+        <p class='text-muted'>
+          In hopes of bringing social interaction between you and your friends, and the charitable organizations you love
+          and support, Steppr will let users challenge their friends, and "donate" their steps to a charity of their choosing.
+        </p>
+        <hr>
+        <h3 class='lead'> What platforms will be supported? </h3>
+          <p class='text-muted'>
+            Steppr is still in early development. Only <a ng-href='http://moves-app.com/'>Moves</a> is supported at this time.
+            Steppr is <a ng-href='https://github.com/kevinchandler/Steppr'>completely open source</a> and plans to support other major activity trackers
+            are a high priority.
+          </p>
     </div>
-    <div class='col-md-4 col-md-offset-8 col-xs-5 col-xs-offset-7 text-muted'>
-      <a ng-href='/moves'>Join the fun</a>
-    </div>
+  </div>
+  <div class='col-md-4 col-xs-12 col-sm-12 buttons'>
+    <span id='loginButton'>
+      <a ng-href='/login'><button type="button" class="btn btn-danger btn-circle btn-xl">Let's go <i class="glyphicon glyphicon-chevron-right"></i></button></a>
+    </span>
+    <span id='desktopText'>
+      <p class='alert alert-warning'>
+        Come back on your phone to join the fun!
+      </p>
+    </span>
+  </div>
 </div>

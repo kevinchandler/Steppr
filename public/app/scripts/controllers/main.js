@@ -3,6 +3,14 @@
 var app = angular.module('stepprUiApp');
     // landing page
     app.controller('LandingCtrl', function($scope, $http) {
+
+      // if user on desktop, show #desktopText rather than loginButton
+      if(typeof window.orientation === 'undefined'){
+        $('#loginButton').hide();
+        $('#desktopText').show();
+       }
+
+
       // returns totalStepsToday, totalSteps, usersToday
       $http({
         url: '/api/v0/stats',
