@@ -1,20 +1,67 @@
-<div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li><a ng-href="#/home">Home</a></li>
-    <li><a ng-href="#/groups">Groups</a></li>
-    <li><a ng-href="/logout">Logout</a></li>
-  </ul>
-  <h3 class="text-muted">Steppr</h3>
-</div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/home">Steppr</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="#/home">Home</a></li>
+        <li><a href="#/groups">Groups</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
 <div ng-controller='UserCtrl'>
-  <h3>{{user.username}}</h3>
-  {{userStepsToday}} steps taken today
-  <h3>Groups:</h3>
-    <li ng-repeat='group in userGroups'>
-      <a ng-href='#/groups/{{group}}'>{{group}}</a>
-    </li>
-  <h3>Badges:</h3>
-  <li ng-repeat='badges in userBadges'>
-    {{badges}}
-  </li>
+  <table class='table'>
+    <h3 class='lead'> {{user.username}}'s Stats </h3>
+    <tr>
+      <td>
+        Total steps
+      </td>
+      <td>
+        over 9000
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Today
+      </td>
+      <td>
+        {{userStepsToday}}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Groups
+      </td>
+      <td>
+        <li ng-repeat='group in userGroups'>
+          <a ng-href='#/groups/{{group}}'>{{group}}</a>
+        </li>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Badges
+      </td>
+      <td>
+        <li ng-repeat='badges in userBadges'>
+          {{badges}}
+        </li>
+      </td>
+    </tr>
+  </table>
+  <div id='challengeUser'>
+    <a ng-click='challenge()'>Challenge {{user.username}}</a>
+  </div>
 </div>

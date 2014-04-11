@@ -6,8 +6,15 @@ body {
 /*  background-size: fill;*/
 /*  color: #000;*/
 }
+
+ul.nav-stats li {
+  list-style-type: none;
+}
 table {
   font-size: 1.3em;
+}
+table li {
+  list-style-type: none;
 }
 h3.lead {
   font-size: 1.3em;

@@ -1,26 +1,51 @@
-<div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li><a ng-href="#/home">Home</a></li>
-    <li class='active'><a ng-href="#/groups">Groups</a></li>
-    <li><a ng-href="#/logout">Logout</a></li>
-  </ul>
-  <h3 class="text-muted">Steppr</h3>
-</div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/home">Steppr</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="#/home">Home</a></li>
+        <li class='active'><a href="#/groups">Groups</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 <div ng-controller='GroupsCtrl'>
-  <div class='col-md-12'>
-    <div class='col-md-6'>
-      <h3>Groups:</h3>
-      <table class='table'>
-        <tr>
-          <td>
-            <li ng-repeat='group in groups'>
-            <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a>
-        </td>
-      </tr>
-      </li>
-    </div>
-    <div class='col-md-6'>
-      <a ng-href='#/groups/create'>Create group</a>
-    </div>
-  </div>
+  <table class='table'>
+    <h3 class='lead'> Groups <span class='pull-right'><a ng-href='#/groups/create'>Create group</a></span></h3>
+    <tr>
+      <td>
+        Name
+      </td>
+      <td>
+        Steps today
+      </td>
+      <td>
+        Steps total
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <li ng-repeat='group in groups'>
+          <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a> {{group.stepsToday}}
+    </td>
+    <td>
+      {{group.stepsToday}}
+    </td>
+    <td>
+      over 9000
+    </li>
+    </td>
+  </tr>
+  </table>
 </div>

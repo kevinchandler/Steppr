@@ -31,6 +31,7 @@ module.exports = {
 						_id: group._id,
 						name: group.name,
 						stepsTotal : group.stepsTotal,
+						stepsToday : group.stepsToday
 					})
 				}
 			})
