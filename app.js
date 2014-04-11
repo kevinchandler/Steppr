@@ -70,7 +70,7 @@ if (process.argv[2])  {
 
 function authenticate(req, res, next) {
     if (!req.session._token && req.session._movesId) {
-      return res.redirect('/');
+      return res.redirect('/#');
     }
     else {
       next();
@@ -78,12 +78,15 @@ function authenticate(req, res, next) {
 }
 
 
-app.get('/login', moves.index);
+app.get('/login', routes.login);
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
 
 app.get('/logout', function(req, res) {
-  req.session.destroy;
+  console.log(req.session);
+  req.session._token = null;
+  req.session.movesId = null;
+  console.log(req.session);
   res.redirect('/')
 })
 
