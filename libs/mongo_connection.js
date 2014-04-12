@@ -2,10 +2,9 @@ var MongoClient = require('mongodb').MongoClient
 ,   dotenv = require('dotenv');
 dotenv.load();
 
-var db; 
+var db;
 
 module.exports = function(callback) {
-
 	if (db) {
 		return callback(db);
 	}
@@ -17,40 +16,3 @@ module.exports = function(callback) {
 		})
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Jacob's mongo constructor
-//
-// function Mongo ( ) {
-// 	// establish connection
-// 	this.db = null; //connection
-//
-// }
-//
-// Mongo.prototype.getSteps = function ( ) {
-// 	this.db
-// }
-//
-// module.exports = Mongo;

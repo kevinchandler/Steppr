@@ -1,8 +1,11 @@
 'use strict';
 
 var app = angular.module('stepprUiApp');
+
     // landing page
     app.controller('LandingCtrl', function($scope, $http) {
+      var  now = moment()
+      ,   today = now.format("YYYY-MM-DD");
 
       // if user on desktop, show #desktopText rather than loginButton
       if(typeof window.orientation === 'undefined'){
@@ -10,11 +13,13 @@ var app = angular.module('stepprUiApp');
         $('#desktopText').show();
        }
 
-
       // returns totalStepsToday, totalSteps, usersToday
       $http({
         url: '/api/v0/stats',
-        method: 'GET',
+        method: 'POST',
+        data : {
+          date : today
+        }
       })
       .then(function(response) {
         console.log(response.data);
@@ -23,9 +28,15 @@ var app = angular.module('stepprUiApp');
     })
 
     app.controller('DashboardCtrl', function ($scope, $route, $http) {
+      var  now = moment()
+      ,   today = now.format("YYYY-MM-DD");
+
         $http({
           url: '/api/v0/stats',
-          method: 'GET',
+          method: 'POST',
+          data : {
+            date : today
+          }
         })
         .then(function(response) {
           console.log(response.data);
@@ -43,10 +54,12 @@ var app = angular.module('stepprUiApp');
           // then update the user
           $http({
             url: '/api/v0/users/me/update',
-            method: 'GET',
+            method: 'POST',
+            data : {
+              date : today
+            }
           })
           .then(function(response) {
-
           })
         })
     })
@@ -140,12 +153,17 @@ var app = angular.module('stepprUiApp');
     })
 
     app.controller('CreateGroupCtrl', function($scope, $http, $location) {
+      var  now = moment()
+      ,   today = now.format("YYYY-MM-DD");
       $scope.createGroup = function() {
         var groupName = $scope.groupName;
         console.log(groupName);
         $http({
           url: '/api/v0/groups/create/'+groupName,
           method: 'POST',
+          data : {
+            date : today
+          }
         })
         .then(function(response) {
           console.log(response);

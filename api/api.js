@@ -4,9 +4,10 @@ var steppr = require('../libs/steppr.js')
 ,   connection = require('../libs/mongo_connection.js');
 
 exports.stats = function(req, res) {
-  steppr.stats(function(err, data) {
+  var today = req.body.date;
+  steppr.stats(today, function(err, data) {
     if (err) return res.json(err);
-    res.json(data)
+    return res.json(data);
   })
 }
 
@@ -14,19 +15,16 @@ exports.viewUser = function(req, res) {
   var username = req.params.username;
   user.viewUser(username, function(err, data) {
     if (err) return res.json(err);
-    res.json(data);
+    return res.json(data);
   })
 }
 
 exports.getSelf = function(req, res) {
   var userId = req.session._movesId;
-  user.getUser(userId, function(err, data) {
+  user.getSelf(userId, function(err, data) {
     if (err) return res.json(err);
     if (data) {
-      res.json(data);
-    }
-    else {
-      return res.end();
+      return res.json(data);
     }
   })
 }
@@ -37,10 +35,7 @@ exports.updateUser = function(req, res) {
   user.updateUser(accessToken, userId, function(err, data) {
     if (err) return res.json(err);
     if (data) {
-      res.json(data);
-    }
-    else {
-      return res.end();
+      return res.json(data);
     }
   })
 }
@@ -52,18 +47,16 @@ exports.registerUser = function(req, res) {
   user.registerUser(userId, username, function(err, success) {
     if (err) return res.json(err);
     if (success) {
-      res.send(200);
-    }
-    else {
-      return res.end();
+      return res.send(200);
     }
   })
 }
 
 exports.userStepsToday = function(req, res) {
+  var today = req.body.date;
   if (!req.session._movesId) { return res.end(); }
   var movesId = req.session._movesId;
-  user.getUserSteps(movesId, function(err, data) {
+  user.getUserSteps(movesId, today, function(err, data) {
     if (err) return res.json(err);
     res.json(data);
   })
@@ -87,12 +80,13 @@ exports.showGroup = function(req, res) {
 
 
 exports.joinGroup = function(req, res) {
+  var today = req.body.date;
   var userId = req.session._movesId
   ,   groupName = req.params.group;
   if (!req.session._movesId || !req.params.group) {
     return callback('joinGroup: missing data required to join group');
   }
-  user.joinGroup(userId, groupName, function(err, data) {
+  user.joinGroup(userId, groupName, today,  function(err, data) {
     if (err) return res.json(err);
     res.json(data);
   });
@@ -108,11 +102,12 @@ exports.leaveGroup = function(req, res) {
 
   user.leaveGroup(userId, groupName, function(err, data) {
     if (err) return res.json(err);
-    res.json(data);
+    return res.json(data);
   });
 }
 
 exports.createGroup = function(req, res) {
+  var today = req.body.date;
   if (!req.session._movesId || !req.params.group) {
     return res.send('leaveGroup: missing data required to leave group');
   }
@@ -120,8 +115,8 @@ exports.createGroup = function(req, res) {
   var userId = req.session._movesId
   ,   groupName = req.params.group;
 
-  user.createGroup(userId, groupName, function(err, data) {
+  user.createGroup(userId, groupName, today, function(err, data) {
     if (err) return res.json(err);
-    res.json(data);
+    return res.json(data);
   })
 }

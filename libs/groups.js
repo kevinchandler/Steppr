@@ -1,8 +1,6 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-// ,   now = moment()
-// ,   today = now.format("YYYY-MM-DD")
 ,	 user = require('./user')
 ,   dotenv = require('dotenv')
 ,   fs = require('fs')
@@ -48,7 +46,7 @@ module.exports = {
 				stepsToday : 0,
 				members : []
 			};
-			db.collection('groups').findOne({name: group}, function(err, group) {
+			db.collection('groups').findOne({ name: group }, function(err, group) {
 				if (err) return callback(err);
 				if (!group) {
 					return callback('no group');
@@ -70,6 +68,9 @@ module.exports = {
 	},
 
 	updateGroup : function(groupName, callback) {
+		var now = moment()
+		,   today = now.format("YYYY-MM-DD");
+
 		connection(function(db) {
 			var package = {
 				steps : 0

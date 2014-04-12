@@ -24,9 +24,9 @@ app.use(function(req, res, next){
   connection(function(db) {
     if (!db) return new Error;
     req.db = db;
-    req.users = db.collection('users');
-    req.steps = db.collection('steps');
-    req.groups = db.collection('groups');
+    // req.users = db.collection('users');
+    // req.steps = db.collection('steps');
+    // req.groups = db.collection('groups');
     next();
   });
 });
@@ -52,7 +52,6 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-
 if (process.argv[2])  {
     process.env.NGROK_SUBDOMAIN = process.argv[2];
     process.env.NGROK_URL = "http://"+process.argv[2]+".ngrok.com"
@@ -77,7 +76,6 @@ function authenticate(req, res, next) {
     }
 }
 
-
 app.get('/login', routes.login);
 app.get('/moves', moves.index);
 app.get('/moves/auth', moves.authenticate);
@@ -98,15 +96,15 @@ app.get('/groups/join/:groupName', groups.joinGroup);
 app.get('/groups/leave/:groupName', groups.leaveGroup);
 app.get('/groups/:group', groups.showGroup);
 
-app.get('/test', test.index);
 app.post('/notification', test.notification); // moves posts data every so often
 
+app.get('/test', test.index);
 
 
 // API
-app.get('/api/v0/stats', api.stats);
+app.post('/api/v0/stats', api.stats);
 app.get('/api/v0/users/me', api.getSelf);
-app.get('/api/v0/users/me/update', api.updateUser);
+app.post('/api/v0/users/me/update', api.updateUser);
 app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
@@ -120,19 +118,19 @@ app.post('/api/v0/groups/create/:group', api.createGroup);
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
         if (err) console.log(err);
-        console.log(success);
+        return success;
     })
 }
 
 function updateAllGroups() {
   steppr.updateAllGroups(function(err, success) {
     if (err) console.log(err);
-    console.log(success);
+    return success;
   })
 }
 
 //will run updateAllUsers() every so often // what the minutes variable is set to
-var minutes = 5, the_interval = minutes * 60 * 1000;
+var minutes = 6, the_interval = minutes * 60 * 1000;
 setInterval(function() {
   updateAllUsers();
   updateAllGroups();

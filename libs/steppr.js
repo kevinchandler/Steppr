@@ -18,9 +18,7 @@ function delimitNumbers(str, callback) {
 
 module.exports = {
 	// returns totalStepsToday, totalSteps, usersToday
-	stats : function(callback) {
-		var now = moment()
-		,   today = now.format("YYYY-MM-DD");
+	stats : function(today, callback) {
 		var payload = {
 			stepsToday : 0,
 			stepsTotal : 0,
@@ -59,7 +57,6 @@ module.exports = {
 	updateAllUsers : function(callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			var userStepsToday;
 			db.collection('users').find({}).each(function(err, doc) {
 				if (err) { callback (err) }
 				if (doc) {

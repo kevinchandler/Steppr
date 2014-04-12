@@ -1,8 +1,6 @@
 var request = require('request')
 ,	 connection = require('./mongo_connection.js')
 ,   moment = require('moment')
-// ,   now = moment()
-// ,   today = now.format("YYYY-MM-DD")
 ,   dotenv = require('dotenv')
 ,   user = require('./user.js')
 ,   fs = require('fs')
@@ -75,11 +73,11 @@ module.exports = {
 					var package = {};
 					package.username = data.username;
 					package.stepsTotal = data.stepsTotal;
-					package.stepsToday = data.stepsToday;
 					package.groups = data.groups;
 					package.badges = data.badges;
 					package.points = data.points;
 					callback(null, package);
+					db.collection('steps').find({ user : username })
 				}
 				else {
 					callback(null, null);
@@ -90,10 +88,10 @@ module.exports = {
 
 	// returns user document. Uses userId rather than username, as viewUser uses username.
 	// this is for the user to get data about themself
-	getUser : function(userId, callback) {
+	getSelf : function(userId, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').findOne({user: userId}, function(err, doc) {
+			db.collection('users').findOne({ user: userId }, function(err, doc) {
 				if (err || !doc) {
 					console.log('error or no doc');
 					return callback(err || 'no doc')
@@ -128,9 +126,7 @@ module.exports = {
   //	 gets each day of moves activity for pastDays in the request query
   //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
-		var now = moment()
-		,   today = now.format("YYYY-MM-DD")
-		,	 pastDays = 1;
+		var pastDays = 1;
 
 		if (!accessToken || !movesId) {
 			log.debug('no accessToken || movesId')
@@ -151,19 +147,11 @@ module.exports = {
 					if (!db) return callback(new Error + ' unable to connect to db');
 					// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
-						if (db === null) {
-							log.error('inside payload.forEach: no db connection\n');
-							return callback(err +' \n no db -- updateUser: payload.forEach')
-						}
 						if (!moves_data || !moves_data.summary) {
 							log.info('no moves data summary');
 							return callback('no moves data');
 						}
 						moves_data.summary.forEach(function(activity) {
-							if (db === null) {
-								log.error('inside moves_data.summary.forEach: no db connection\n');
-								return callback(err +' \n no db -- updateUser: payload.forEach')
-							}
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD");
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
@@ -175,14 +163,14 @@ module.exports = {
 								db.collection('steps').findOne(query, function(err, doc) {
 									if (err) return callback(err);
 									if (!doc) {
-										log.info('Inserting into db: ', movesId, activityDate, steps, today)
+										log.info('Inserting into db: ', movesId, activityDate, steps, activityDate)
 										console.log('No data for ' + today + ' found, inserting: ');
 										// no data found for this date in our db, save it
 										db.collection('steps').insert({
 											"user"  : movesId,
 											"date"  : activityDate,
 											"steps" : steps,
-											"last_updated" : today,
+											"stepsToday" : steps,
 										}, function(err, success){
 											if (err) { callback( err ) }
 											log.info('Data entered into db: ' + movesId, activityDate, steps);
@@ -197,37 +185,32 @@ module.exports = {
 												if (doc.steps !== steps) {
 													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
 													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-												}
-												if (activityDate === today) {
-													db.collection('users').update({user: doc.user}, {$set: { "stepsToday" : steps}}, function(err, success) {
+
+													db.collection('users').update({ user : movesId }, { $set : { 'stepsToday' : steps }}, function(err, success) {
 														if (err) return callback(err);
+														console.log('updateUser: stepsToday updated to -> ' + steps);
 													})
 												}
-											}
-											else {
-												console.log('2');
-												return callback(null, true)
 											}
 										})
 									}
 								})
 							}
+							else {
+								return callback(null, 'updateUser: no activity.steps');
+							}
 						})
 					})
-					callback(null, 'updateUser complete');
 				})
 			}
 			else {
-		    callback(null, true);
+				return callback(null, 'updateUser: no payload'); //no payload
 			}
-			callback(null);
 		})
 	},
 
 	// returns users steps for today
-	userStepsToday : function(movesId, callback ) {
-		var now = moment()
-		,   today = now.format("YYYY-MM-DD");
+	userStepsToday : function(movesId, today, callback ) {
 		if (!movesId) { return callback('getUserSteps - no movesId ')}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -270,9 +253,7 @@ module.exports = {
 		})
 	},
 
-	joinGroup : function( userId, groupName, callback) {
-		var now = moment()
-		,   today = now.format("YYYY-MM-DD");
+	joinGroup : function( userId, groupName, today, callback) {
 
 		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
@@ -358,9 +339,7 @@ module.exports = {
 		})
 	},
 
-	createGroup : function(groupCreator, groupName, callback) {
-		var now = moment()
-		,   today = now.format("YYYY-MM-DD");
+	createGroup : function(groupCreator, groupName, today, callback) {
 		if (!groupName || !groupCreator) {
 			console.log('no name or creator, cannot create group');
 			callback('no name or creator, cannot create group');

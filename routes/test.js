@@ -15,19 +15,9 @@ exports.notification = function(req, res) {
 }
 
 exports.index = function(req, res) {
-  //
-  // groups.updateGroup("Hackers", function(err, success) {
-  //   if(err) {
-  //     console.log(err);
-  //   }
-  //
-  //   console.log(success);
-  // })
-
-
-  steppr.updateAllGroups(function(err, groupSteps) {
+  user.userStepsToday('14104144053355464', '2014-04-12', function(err, success) {
     console.log(err);
-    // if (err || !groupSteps) return (err || 'failed to updateGroup');
-    console.log(groupSteps);
+    console.log(success);
+    return res.end(success);
   })
 }
