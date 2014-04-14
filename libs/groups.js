@@ -5,7 +5,7 @@ var request = require('request')
 ,   dotenv = require('dotenv')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('logs/libs-groups-log.txt', {"flags": "a"}));
+,   log = new Log('debug', fs.createWriteStream('logs/log.txt', {"flags": "a"}));
 
 dotenv.load();
 

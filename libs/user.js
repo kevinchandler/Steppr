@@ -5,7 +5,7 @@ var request = require('request')
 ,   user = require('./user.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('logs/libs-user-log.txt', {"flags": "a"}));
+,   log = new Log('debug', fs.createWriteStream('logs/log.txt', {"flags": "a"}));
 
 dotenv.load();
 
@@ -55,10 +55,10 @@ module.exports = {
 				if (success) {
 					log.info( success, 'username set: ' + username, user );
 					console.log('username successfully set: ', userId,  username );
-					callback(null, success);
+					return callback(null, success);
 				}
 				else {
-					callback('registerUser: could not register user');
+					return callback('registerUser: could not register user');
 				}
 			})
 		})
@@ -67,12 +67,13 @@ module.exports = {
 	viewUser : function(username, callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').findOne({username: username}, function(err, data) {
+			db.collection('users').findOne({ username: username }, function(err, data) {
 				if (err) return callback(err);
 				if (data !== null) {
 					var package = {};
 					package.username = data.username;
 					package.stepsTotal = data.stepsTotal;
+					package.stepsToday = data.stepsToday;
 					package.groups = data.groups;
 					package.badges = data.badges;
 					package.points = data.points;
@@ -115,7 +116,7 @@ module.exports = {
 					callback(null, doc);
 				}
 				else if (!doc) {
-					log.error('findUser complete: no doc found')
+					log.error('findUser complete: no doc found');
 					callback(null);
 				}
 			})
@@ -147,11 +148,19 @@ module.exports = {
 					if (!db) return callback(new Error + ' unable to connect to db');
 					// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 					payload.forEach(function(moves_data) {
+						if (db === null) {
+							log.error('inside payload.forEach: no db connection\n');
+							return callback(err +' \n no db -- updateUser: payload.forEach')
+						}
 						if (!moves_data || !moves_data.summary) {
 							log.info('no moves data summary');
 							return callback('no moves data');
 						}
 						moves_data.summary.forEach(function(activity) {
+							if (db === null) {
+								log.error('inside moves_data.summary.forEach: no db connection\n');
+								return callback(err +' \n no db -- updateUser: payload.forEach')
+							}
 							var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD");
 							if (activity.steps) {
 								// format date from 20140201 -> 2014-02-01
@@ -163,14 +172,14 @@ module.exports = {
 								db.collection('steps').findOne(query, function(err, doc) {
 									if (err) return callback(err);
 									if (!doc) {
-										log.info('Inserting into db: ', movesId, activityDate, steps, activityDate)
+										log.info('Inserting into db: ', movesId, activityDate, steps, today)
 										console.log('No data for ' + today + ' found, inserting: ');
 										// no data found for this date in our db, save it
 										db.collection('steps').insert({
 											"user"  : movesId,
 											"date"  : activityDate,
 											"steps" : steps,
-											"stepsToday" : steps,
+											"last_updated" : today,
 										}, function(err, success){
 											if (err) { callback( err ) }
 											log.info('Data entered into db: ' + movesId, activityDate, steps);
@@ -178,6 +187,21 @@ module.exports = {
 										})
 									}
 									else {
+										payload = {
+											stepsTotal : 0
+										}
+										// loops steps coll for all steps with userId, incrementing the users' stepsTotal
+										db.collection('steps').find({ user : movesId }).each(function(err, doc) {
+											if (err) return callback(err);
+											if (doc && doc.steps) {
+												payload.stepsTotal += doc.steps;
+											}
+											if (!doc) {
+												db.collection('users').update({ user : movesId }, { $set : { 'stepsTotal' : payload.stepsTotal }}, function(err, success) {
+													if (err) { return callback(err); }
+												})
+											}
+										})
 										// doc found for this date, update it
 										db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
 											if (err) return callback(err);
@@ -185,27 +209,32 @@ module.exports = {
 												if (doc.steps !== steps) {
 													console.log('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
 													log.info('Steps Collection: ' + doc.user, doc.steps, ' updated -> ' + steps + ': ' + doc.date + '\n');
-
-													db.collection('users').update({ user : movesId }, { $set : { 'stepsToday' : steps }}, function(err, success) {
-														if (err) return callback(err);
-														console.log('updateUser: stepsToday updated to -> ' + steps);
-													})
 												}
+												db.collection('users').update({ 'user' : movesId }, { $set : { 'stepsToday' : steps }}, function(err, success) {
+													if (err) return callback(err);
+													if (doc.steps !== steps) {
+														log.info('updateUser: stepsToday updated from ' + doc.steps + ' -> ' + steps);
+														console.log('updateUser: stepsToday updated from ' + doc.steps + ' -> ' + steps);
+													}
+												})
+											}
+											else {
+												console.log('2');
+												return callback(null, true)
 											}
 										})
 									}
 								})
 							}
-							else {
-								return callback(null, 'updateUser: no activity.steps');
-							}
 						})
 					})
+					callback(null, 'updateUser complete');
 				})
 			}
 			else {
-				return callback(null, 'updateUser: no payload'); //no payload
+		    callback(null, true);
 			}
+			callback(null);
 		})
 	},
 
@@ -253,7 +282,9 @@ module.exports = {
 		})
 	},
 
-	joinGroup : function( userId, groupName, today, callback) {
+	joinGroup : function( userId, groupName, callback) {
+		var  now = moment()
+		,   today = now.format("YYYY-MM-DD");
 
 		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);

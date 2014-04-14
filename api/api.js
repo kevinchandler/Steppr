@@ -22,6 +22,7 @@ exports.viewUser = function(req, res) {
 exports.getSelf = function(req, res) {
   var userId = req.session._movesId;
   user.getSelf(userId, function(err, data) {
+    console.log(data.stepsToday);
     if (err) return res.json(err);
     if (data) {
       return res.json(data);
@@ -33,10 +34,7 @@ exports.updateUser = function(req, res) {
   var accessToken = req.session._token
   ,   userId = req.session._movesId;
   user.updateUser(accessToken, userId, function(err, data) {
-    if (err) return res.json(err);
-    if (data) {
-      return res.json(data);
-    }
+    // stuff here after updating.
   })
 }
 
@@ -62,7 +60,6 @@ exports.userStepsToday = function(req, res) {
   })
 }
 
-
 exports.viewAllGroups = function(req, res) {
   groups.viewAllGroups(function(err, data) {
     if (err) return res.json(err);
@@ -78,15 +75,13 @@ exports.showGroup = function(req, res) {
   })
 }
 
-
 exports.joinGroup = function(req, res) {
-  var today = req.body.date;
   var userId = req.session._movesId
   ,   groupName = req.params.group;
   if (!req.session._movesId || !req.params.group) {
-    return callback('joinGroup: missing data required to join group');
+    return res.redirect('/');
   }
-  user.joinGroup(userId, groupName, today,  function(err, data) {
+  user.joinGroup(userId, groupName,  function(err, data) {
     if (err) return res.json(err);
     res.json(data);
   });
@@ -94,7 +89,7 @@ exports.joinGroup = function(req, res) {
 
 exports.leaveGroup = function(req, res) {
   if (!req.session._movesId || !req.params.group) {
-    return callback('leaveGroup: missing data required to leave group');
+    return res.redirect('/');
   }
 
   var userId = req.session._movesId

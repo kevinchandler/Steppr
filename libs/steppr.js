@@ -6,7 +6,7 @@ var request = require('request')
 ,	 groups = require('./groups.js')
 ,   fs = require('fs')
 ,   Log = require('log')
-,   log = new Log('debug', fs.createWriteStream('logs/libs-steppr-log.txt', {"flags": "a"}));
+,   log = new Log('debug', fs.createWriteStream('logs/log.txt', {"flags": "a"}));
 
 dotenv.load();
 

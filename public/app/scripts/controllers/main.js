@@ -31,18 +31,6 @@ var app = angular.module('stepprUiApp');
       var  now = moment()
       ,   today = now.format("YYYY-MM-DD");
 
-        $http({
-          url: '/api/v0/stats',
-          method: 'POST',
-          data : {
-            date : today
-          }
-        })
-        .then(function(response) {
-          console.log(response.data);
-          $scope.stats = response.data;
-        })
-
         // get user from db
         $http({
             url: '/api/v0/users/me',
@@ -54,12 +42,10 @@ var app = angular.module('stepprUiApp');
           // then update the user
           $http({
             url: '/api/v0/users/me/update',
-            method: 'POST',
-            data : {
-              date : today
-            }
+            method: 'GET',
           })
           .then(function(response) {
+            // $scope.user = user.data;
           })
         })
     })
