@@ -127,6 +127,8 @@ module.exports = {
   //	 gets each day of moves activity for pastDays in the request query
   //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
+		var  now = moment()
+		,   today = now.format("YYYY-MM-DD");
 		var pastDays = 1;
 
 		if (!accessToken || !movesId) {
