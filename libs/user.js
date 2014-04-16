@@ -427,7 +427,7 @@ module.exports = {
 			,	 challengerUsername;
 
 			// find challengees userId and set challenging : { }
-			// making sure we have both users' id & username 
+			// making sure we have both users' id & username
 			db.collection('users').findOne({ username : challengeeUsername }, function(err, user) {
 				if (err) return callback(err);
 				if (user.challenging.date === date) {
@@ -444,9 +444,9 @@ module.exports = {
 					challengerUsername = user.username;
 
 					// update both users' challenging : { } to eachother
-					db.collection('users').update({ user : challengeeId }, { $set : { challenging : { id : challengerId, username : challengerUsername, date : date }}}, function(err, success) {
+					db.collection('users').update({ user : challengeeId }, { $set : { challenging : { id : challengerId, username : challengerUsername, date : date, winning : false }}}, function(err, success) {
 						if (err) return callback(err);
-						db.collection('users').update({ user : challengerId }, { $set : { challenging : { id : challengeeId, username : challengeeUsername, date : date }}}, function(err, success) {
+						db.collection('users').update({ user : challengerId }, { $set : { challenging : { id : challengeeId, username : challengeeUsername, date : date, winning : false }}}, function(err, success) {
 							if (err) return callback(err);
 							return callback(null, success);
 						})
