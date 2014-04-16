@@ -82,6 +82,7 @@ module.exports = {
 						package.groups = data.groups;
 						package.badges = data.badges;
 						package.points = data.points;
+						package.challenging = data.challenging;
 						callback(null, package);
 						db.collection('steps').find({ user : username })
 					}
@@ -137,8 +138,9 @@ module.exports = {
   //	 gets each day of moves activity for pastDays in the request query
   //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
-		// var  now = moment()
-		// ,   today = now.format("YYYY-MM-DD");
+		var  now = moment()
+		,   today = now.format("YYYY-MM-DD");
+
 		var pastDays = 1;
 
 		if (accessToken && movesId) {
@@ -414,6 +416,42 @@ module.exports = {
 				else if (group) {
 					callback('Unable to create group: already exists');
 				}
+			})
+		})
+	},
+
+	challengeUser : function(challengerId, challengeeUsername, date, callback) {
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			var challengeeId
+			,	 challengerUsername;
+
+			// find challengees userId and set challenging : { }
+			// making sure we have both users' id & username 
+			db.collection('users').findOne({ username : challengeeUsername }, function(err, user) {
+				if (err) return callback(err);
+				if (user.challenging.date === date) {
+					log.info('user is already challenging someone');
+					return callback('user is already challenging someone');
+				}
+				challengeeId = user.user;
+				db.collection('users').findOne({ user : challengerId }, function(err, user) {
+					if (err) return callback(err);
+					if (user.challenging.date === date) {
+						log.info('user is already challenging someone');
+						return callback('user is already challenging someone');
+					}
+					challengerUsername = user.username;
+
+					// update both users' challenging : { } to eachother
+					db.collection('users').update({ user : challengeeId }, { $set : { challenging : { id : challengerId, username : challengerUsername, date : date }}}, function(err, success) {
+						if (err) return callback(err);
+						db.collection('users').update({ user : challengerId }, { $set : { challenging : { id : challengeeId, username : challengeeUsername, date : date }}}, function(err, success) {
+							if (err) return callback(err);
+							return callback(null, success);
+						})
+					})
+				})
 			})
 		})
 	},

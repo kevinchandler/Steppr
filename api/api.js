@@ -14,6 +14,7 @@ exports.stats = function(req, res) {
 exports.viewUser = function(req, res) {
   var username = req.params.username;
   user.viewUser(username, function(err, data) {
+    console.log(data);
     if (err) return res.json(err);
     return res.json(data);
   })
@@ -114,4 +115,19 @@ exports.createGroup = function(req, res) {
     if (err) return res.json(err);
     return res.json(data);
   })
+}
+
+exports.challengeUser = function(req, res) {
+  var today = req.body.date
+  ,   challengee = req.body.challengee;
+  if ( today && challengee ) {
+    user.challengeUser(req.session._movesId, challengee, today, function(err, success) {
+      if (err || !success) { res.send(500, err || 'challengeUser unsuccessful') };
+      res.send(200);
+    })
+  }
+  else {
+    res.send(500, 'Unable to challenge user');
+    log.info('Unable to challenge user');
+  }
 }

@@ -59,8 +59,17 @@
         </li>
       </td>
     </tr>
+    <tr>
+      <td>
+        Challenging
+      </td>
+      <td>
+        <a ng-href='#/users/{{user.challenging.username}}'>{{user.challenging.username}}</a>
+      </td>
+    </tr>
   </table>
-  <div id='challengeUser'>
-    <a ng-click='challenge()'>Challenge {{user.username}}</a>
-  </div>
+<div ng-controller='ChallengeCtrl'>
+  <a ng-click='challengeUser(user.username)'>Challenge {{user.username}}</a>
+</div>
+
 </div>

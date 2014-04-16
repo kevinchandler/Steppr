@@ -115,6 +115,8 @@ app.get('/api/v0/groups/join/:group', api.joinGroup);
 app.post('/api/v0/groups/leave/:group', api.leaveGroup);
 app.post('/api/v0/groups/create/:group', api.createGroup);
 
+app.post('/api/v0/challenge', api.challengeUser);
+
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
         if (err) console.log(err);
