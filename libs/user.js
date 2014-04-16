@@ -421,6 +421,10 @@ module.exports = {
 	},
 
 	challengeUser : function(challengerId, challengeeUsername, date, callback) {
+		if ( !challengerId || !challengeeUsername || !date ) {
+			log.info('challengeUser: missing required date to challenge the user');
+			return callback('challengeUser: missing required date to challenge the user');
+		}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var challengeeId
