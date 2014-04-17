@@ -62,6 +62,7 @@ exports.authenticate = function(req, res) {
                       return res.redirect('/#/home');
                   }
                   if (!doc) {
+                    
                       user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                           if (err) {
                               console.log(err + ' error: unable to create user');

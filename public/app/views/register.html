@@ -1,6 +1,8 @@
 <h3 class="text-muted">Steppr</h3>
 <div ng-controller='RegisterCtrl'>
-  <h3>Set a username:</h3>
-  <input type='text' placeholder='Username' ng-model='username'>
-  <button type='submit' ng-click='register()'>Submit</button>
+  <h3>Register:</h3>
+  <input type='text' placeholder='Username' ng-model='username' required>
+  <input type='email' placeholder='Email address' ng-model='email' required>
+  <input type='number' placeholder='Zipcode' ng-model='zipcode' required>
+  <button type='submit' class='btn btn-md' ng-click='register()'>Submit</button>
 </div>

@@ -94,12 +94,19 @@ var app = angular.module('stepprUiApp');
 
   app.controller('RegisterCtrl', function($scope, $http, $location) {
     $scope.register = function() {
-      var username = $scope.username;
+      var username = $scope.username
+      ,   email = $scope.email
+      ,   zipcode = $scope.zipcode;
+      if ( !username || !email || !zipcode ) {
+        return $scope.message = "Please ensure all fields are correctly filled out"
+      }
       $http({
         url: '/api/v0/users/register',
         method: 'POST',
         data: {
-          username : username
+          username : username,
+          email : email,
+          zipcode : zipcode
         }
       })
       .then(function(response) {

@@ -12,18 +12,23 @@ dotenv.load();
 module.exports = {
 
 	// this is called after user authenticates with moves if user is not already in db
-	createNewUser : function(accessToken, refreshToken, movesId, callback) {
-		if (accessToken && refreshToken && movesId) {
+	createNewUser : function(accessToken, refreshToken, userId, callback) {
+		if (accessToken && refreshToken && userId) {
 			var now = moment()
 			,   today = now.format("YYYY-MM-DD");
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
 				var  placeholder = '';
 				db.collection('users').insert({
-					user: movesId,
+					user: userId,
 					username: '',
 					email: '',
-					birthday: today,
+					joined: today,
+					location : {
+						city : '',
+						state : '',
+						zipcode : '',
+					},
 					stepsToday : 0,
 					stepsTotal : 0,
 					points: {
@@ -31,6 +36,7 @@ module.exports = {
 					},
 					badges: ['Beta Tester'],
 					groups: [],
+					challenging : [],
 					access_token : accessToken,
 					refresh_token : refreshToken,
 				}, function(err, success) {
@@ -49,15 +55,15 @@ module.exports = {
 	},
 
 	// sets/changes username to a user that's already been created
-	registerUser : function(userId, username, callback) {
-		if (userId && username) {
+	registerUser : function(userId, username, email, zipcode, callback) {
+		if (userId && username && zipcode && email) {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
-				db.collection('users').update({ user : userId }, { $set: { "username" : username }}, function(err, success) {
+				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.zipcode" : zipcode, "email" : email }}, function(err, success) {
 					if (err) { log.error(err); return res.redirect('back'); }
 					if (success) {
-						log.info( success, 'username set: ' + username, user );
-						console.log('username successfully set: ', userId,  username );
+						log.info('registerUser: ' + username, user, email, zipcode);
+						console.log('registerUser: ' + username, user, email, zipcode);
 						return callback(null, success);
 					}
 					else {
@@ -77,6 +83,7 @@ module.exports = {
 					if (data !== null) {
 						var package = {};
 						package.username = data.username;
+						package.user = data.user;
 						package.stepsTotal = data.stepsTotal;
 						package.stepsToday = data.stepsToday;
 						package.groups = data.groups;
@@ -135,6 +142,7 @@ module.exports = {
 	},
 
 
+
   //	 gets each day of moves activity for pastDays in the request query
   //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
@@ -146,7 +154,7 @@ module.exports = {
 		if (accessToken && movesId) {
 			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays='+pastDays+'&access_token='+accessToken, function(err, response, body) {
 				console.log('updateUser: ', movesId);
-				if (err) callback(err);
+				if (err) return callback(err);
 				if (!body || !response) {
 					log.error('error: no body or response');
 					return callback('error: no body or response');
@@ -155,6 +163,7 @@ module.exports = {
 				var payload = JSON.parse(body.toString());
 
 				if (payload) { // parsed data from request
+					console.log(payload);
 					connection(function(db) {
 						if (!db) return callback(new Error + ' unable to connect to db');
 						// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
@@ -190,6 +199,7 @@ module.exports = {
 												"user"  : movesId,
 												"date"  : activityDate,
 												"steps" : steps,
+												"zipcode" : zipcode,
 												"last_updated" : today,
 											}, function(err, success){
 												if (err) { callback( err ) }
@@ -214,7 +224,7 @@ module.exports = {
 												}
 											})
 											// doc found for this date, update it
-											db.collection('steps').update({_id: doc._id}, {$set: { 'steps' : steps}}, function(err, success) {
+											db.collection('steps').update({_id: doc._id}, { $set: { 'steps' : steps }}, function(err, success) {
 												if (err) return callback(err);
 												if (success) {
 													if (doc.steps !== steps) {
@@ -298,7 +308,6 @@ module.exports = {
 		var  now = moment()
 		,   today = now.format("YYYY-MM-DD");
 
-		console.log('inside joinGroup callback:', userId, groupName);
 		log.info('inside joinGroup callback: ', userId, groupName);
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -338,7 +347,6 @@ module.exports = {
 	},
 
 	leaveGroup : function(userId, groupName, callback) {
-		console.log('inside leaveGroup callback:', userId, groupName);
 		log.info('inside leaveGroup callback: ', userId, groupName);
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
@@ -420,43 +428,62 @@ module.exports = {
 		})
 	},
 
-	challengeUser : function(challengerId, challengeeUsername, date, callback) {
-		if ( !challengerId || !challengeeUsername || !date ) {
-			log.info('challengeUser: missing required date to challenge the user');
-			return callback('challengeUser: missing required date to challenge the user');
-		}
-		connection(function(db) {
-			if (!db) return callback(new Error + ' unable to connect to db');
-			var challengeeId
-			,	 challengerUsername;
+	// challengeUser : function(challengerId, challengeeUsername, date, callback) {
+
+
+
+	/////////
+	// angular scope has userId, no need to find it from db.
+	////////
+
+
+		// make sure we have the necessary data
+		// if ( !challengerId || !challengeeUsername || !date ) {
+		// 	log.info('challengeUser: missing required date to challenge the user');
+		// 	return callback('challengeUser: missing required date to challenge the user');
+		// }
+		// connection(function(db) {
+		// 	if (!db) return callback(new Error + ' unable to connect to db');
+		// 	var challengeeId
+		// 	,	 challengerUsername;
+
+	// 		 {
+  //    findAndModify: "people",
+  //    query: { name: "Tom", state: "active", rating: { $gt: 10 } },
+  //    sort: { rating: 1 },
+  //    update: { $inc: { score: 1 } }
+  //  }
+
+
 
 			// find challengees userId and set challenging : { }
 			// making sure we have both users' id & username
-			db.collection('users').findOne({ username : challengeeUsername }, function(err, user) {
-				if (err) return callback(err);
-				if (user.challenging.date === date) {
-					log.info('user is already challenging someone');
-					return callback('user is already challenging someone');
-				}
-				challengeeId = user.user;
-				db.collection('users').findOne({ user : challengerId }, function(err, user) {
-					if (err) return callback(err);
-					if (user.challenging.date === date) {
-						log.info('user is already challenging someone');
-						return callback('user is already challenging someone');
-					}
-					challengerUsername = user.username;
-
-					// update both users' challenging : { } to eachother
-					db.collection('users').update({ user : challengeeId }, { $set : { challenging : { id : challengerId, username : challengerUsername, date : date, winning : false }}}, function(err, success) {
-						if (err) return callback(err);
-						db.collection('users').update({ user : challengerId }, { $set : { challenging : { id : challengeeId, username : challengeeUsername, date : date, winning : false }}}, function(err, success) {
-							if (err) return callback(err);
-							return callback(null, success);
-						})
-					})
-				})
-			})
-		})
-	},
+		// 	db.collection('challenges').findOne({ username : challengeeUsername, date : date  }, function(err, challenge) {
+		// 		if (err) return callback(err);
+		// 		if ( challenge ) {
+		// 			log.info('user is already challenging someone');
+		// 			return callback('user is already challenging someone');
+		// 		}
+		// 			// challengee is not challenging anyone, continue
+		// 			challengeeId = user.user;
+		// 			db.collection('users').findOne({ user : challengerId }, function(err, user) {
+		// 				if (err) return callback(err);
+		// 				if (user.challenging.date === date) {
+		// 					log.info('user is already challenging someone');
+		// 					return callback('user is already challenging someone');
+		// 				challengerUsername = user.username;
+		//
+		// 				// update both users' challenging : { } to eachother
+		// 				db.collection('users').update({ user : challengeeId }, { $push : { challenges : { id : challengerId, username : challengerUsername, date : date, winning : false }}}, function(err, success) {
+		// 					if (err) return callback(err);
+		// 					db.collection('users').update({ user : challengerId }, { $push : { challenges : { id : challengeeId, username : challengeeUsername, date : date, winning : false }}}, function(err, success) {
+		// 						if (err) return callback(err);
+		// 						return callback(null, success);
+		// 					})
+		// 				})
+		// 			})
+		// 		}
+		// 	})
+		// })
+	// },
 }

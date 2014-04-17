@@ -89,5 +89,18 @@ module.exports = {
 				}
 			})
 		})
-	}
+	},
+
+	// userChallenge : function(callback) {
+	// 	connection(function(db) {
+	// 		if (!db) return callback(new Error + ' unable to connect to db');
+	// 		// just returns challenging object of document
+	// 		db.collection('users').find({}, { challenging: 1 }).each(function(err, user) {
+	// 			if (err) return callback (err);
+	// 			else {
+	// 				callback(null, userArr);
+	// 			}
+	// 		});
+	// 	})
+	// },
 }

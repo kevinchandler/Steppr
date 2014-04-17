@@ -15,9 +15,11 @@ exports.notification = function(req, res) {
 }
 
 exports.index = function(req, res) {
-  user.userStepsToday('14104144053355464', '2014-04-12', function(err, success) {
-    console.log(err);
+  user.getLocale('Phef4mM8Pb280_X2QxFXm699zTO5XqFN8PdU9504qI43ATVEA98584Y501cgOlZg', '14104144053355464', function(err, success) {
+    if (err) {
+      console.log('EERRRROROR');
+      console.log(err);
+    }
     console.log(success);
-    return res.end(success);
   })
 }

@@ -41,9 +41,11 @@ exports.updateUser = function(req, res) {
 
 exports.registerUser = function(req, res) {
   var username = req.body.username
-  ,   userId = req.session._movesId;
+  ,   email = req.body.email
+  ,   zipcode = req.body.zipcode
+  ,   userId = req.session._movesId
 
-  user.registerUser(userId, username, function(err, success) {
+  user.registerUser(userId, username, email, zipcode, function(err, success) {
     if (err) return res.json(err);
     if (success) {
       return res.send(200);
@@ -118,10 +120,10 @@ exports.createGroup = function(req, res) {
 }
 
 exports.challengeUser = function(req, res) {
-  var today = req.body.date
+  var date = req.body.date
   ,   challengee = req.body.challengee;
-  if ( today && challengee ) {
-    user.challengeUser(req.session._movesId, challengee, today, function(err, success) {
+  if ( date && challengee ) {
+    user.challengeUser(req.session._movesId, challengee, date, function(err, success) {
       if (err || !success) { res.send(500, err || 'challengeUser unsuccessful') };
       res.send(200);
     })
