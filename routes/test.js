@@ -5,7 +5,8 @@ var request = require('request')
 ,   dotenv = require('dotenv')
 ,   user = require('../libs/user.js')
 ,   steppr = require('../libs/steppr.js')
-,   groups = require('../libs/groups.js');
+,   groups = require('../libs/groups.js')
+,   geode = require('geode');
 dotenv.load();
 
 exports.notification = function(req, res) {
@@ -15,11 +16,8 @@ exports.notification = function(req, res) {
 }
 
 exports.index = function(req, res) {
-  user.getLocale('Phef4mM8Pb280_X2QxFXm699zTO5XqFN8PdU9504qI43ATVEA98584Y501cgOlZg', '14104144053355464', function(err, success) {
-    if (err) {
-      console.log('EERRRROROR');
-      console.log(err);
-    }
-    console.log(success);
+  steppr.activityToday(today, function(err, data) {
+    console.log(data);
   })
+
 }

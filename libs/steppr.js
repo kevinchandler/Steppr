@@ -53,12 +53,31 @@ module.exports = {
 		})
 	},
 
+
+	// returns username, stepsToday, location
+	// to be used on landing page to show activity list
+	activityToday : function(today, callback) {
+		if (!today) { return callback( new Error )}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').find({}, { username: 1, stepsToday: 1, location: 1 }).toArray(function(err, doc){
+				if (err) { return callback (err) }
+				if (!doc) {
+					callback(new Error);
+				}
+				if (doc) {
+					callback(null, doc);
+				}
+			})
+		})
+	},
+
 	// //updates all users steps for today: user.updateUser()
 	updateAllUsers : function(callback) {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').find({}).each(function(err, doc) {
-				if (err) { callback (err) }
+				if (err) { return callback (err) }
 				if (doc) {
 					var movesId = doc.user
 					,   accessToken = doc.access_token;

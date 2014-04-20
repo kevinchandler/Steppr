@@ -11,6 +11,15 @@ exports.stats = function(req, res) {
   })
 }
 
+exports.activityToday = function(req, res) {
+  console.log(req.body);
+  var today = req.body.date;
+  steppr.activityToday(today, function(err, data) {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+}
+
 exports.viewUser = function(req, res) {
   var username = req.params.username;
   user.viewUser(username, function(err, data) {
@@ -42,10 +51,10 @@ exports.updateUser = function(req, res) {
 exports.registerUser = function(req, res) {
   var username = req.body.username
   ,   email = req.body.email
-  ,   zipcode = req.body.zipcode
+  ,   state = req.body.state
   ,   userId = req.session._movesId
 
-  user.registerUser(userId, username, email, zipcode, function(err, success) {
+  user.registerUser(userId, username, email, state, function(err, success) {
     if (err) return res.json(err);
     if (success) {
       return res.send(200);

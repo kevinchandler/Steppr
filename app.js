@@ -102,7 +102,7 @@ app.get('/test', test.index);
 
 
 // API
-app.post('/api/v0/stats', api.stats);
+
 app.get('/api/v0/users/me', api.getSelf);
 app.get('/api/v0/users/me/update', api.updateUser);
 app.get('/api/v0/users/:username', api.viewUser);
@@ -110,13 +110,14 @@ app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st 
 app.get('/api/v0/groups', api.viewAllGroups);
 app.get('/api/v0/groups/:group', api.showGroup);
 
+app.post('/api/v0/stats', api.stats);
+app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
 app.post('/api/v0/users/register', api.registerUser);
 app.get('/api/v0/groups/join/:group', api.joinGroup);
 app.post('/api/v0/groups/leave/:group', api.leaveGroup);
 app.post('/api/v0/groups/create/:group', api.createGroup);
 
 app.post('/api/v0/challenge', api.challengeUser);
-
 function updateAllUsers() {
     steppr.updateAllUsers(function(err, success) {
         if (err) console.log(err);

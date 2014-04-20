@@ -4,8 +4,10 @@ var app = angular.module('stepprUiApp');
 
   // landing page
   app.controller('LandingCtrl', function($scope, $http) {
+
     var  now = moment()
     ,   today = now.format("YYYY-MM-DD");
+    $scope.today = today;
 
     // if user on desktop, show #desktopText rather than loginButton
     if(typeof window.orientation === 'undefined'){
@@ -22,8 +24,17 @@ var app = angular.module('stepprUiApp');
       }
     })
     .then(function(response) {
-      console.log(response.data);
       $scope.stats = response.data;
+      $http({
+        url : '/api/v0/activity',
+        method : 'POST',
+        data : {
+          date : today
+        }
+      })
+      .then(function(userActivityToday) {
+        $scope.userActivityToday = userActivityToday.data;
+      })
     })
   })
 
@@ -96,8 +107,8 @@ var app = angular.module('stepprUiApp');
     $scope.register = function() {
       var username = $scope.username
       ,   email = $scope.email
-      ,   zipcode = $scope.zipcode;
-      if ( !username || !email || !zipcode ) {
+      ,   state = $scope.state;
+      if ( !username || !email || !state ) {
         return $scope.message = "Please ensure all fields are correctly filled out"
       }
       $http({
@@ -106,7 +117,7 @@ var app = angular.module('stepprUiApp');
         data: {
           username : username,
           email : email,
-          zipcode : zipcode
+          state : state
         }
       })
       .then(function(response) {
