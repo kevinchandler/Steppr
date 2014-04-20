@@ -60,13 +60,19 @@ module.exports = {
 		if (!today) { return callback( new Error )}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').find({}, { user: 1, username: 1, stepsToday: 1, location: 1 }).toArray(function(err, doc){
+			db.collection('users').find({}, { user: 1, username: 1, stepsToday: 1, location: 1 }).toArray(function(err, package){
 				if (err) { return callback (err) }
-				if (!doc) {
+				if (!package) {
 					callback(new Error);
 				}
-				if (doc) {
-					callback(null, doc);
+				if (package) {
+					// remove any users with 0 stepsToday before sending to the client
+					for (var i = 0; i < package.length; i++) {
+						if (package[i].stepsToday === 0) {
+							package.splice(i, 1);
+						}
+					}
+					callback(null, package);
 				}
 			})
 		})
