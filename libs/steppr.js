@@ -60,7 +60,7 @@ module.exports = {
 		if (!today) { return callback( new Error )}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').find({}, { username: 1, stepsToday: 1, location: 1 }).toArray(function(err, doc){
+			db.collection('users').find({}, { user: 1, username: 1, stepsToday: 1, location: 1 }).toArray(function(err, doc){
 				if (err) { return callback (err) }
 				if (!doc) {
 					callback(new Error);

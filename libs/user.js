@@ -167,23 +167,19 @@ module.exports = {
 						if (!db) return callback(new Error + ' unable to connect to db');
 						// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 						payload.forEach(function(moves_data) {
-							if (db === null) {
-								log.error('inside payload.forEach: no db connection\n');
-								return callback(err +' \n no db -- updateUser: payload.forEach')
-							}
 							if (!moves_data || !moves_data.summary) {
-								log.info('no moves data');
-								return callback('no moves data');
+								db.collection('users').update({ 'user' : movesId }, { $set : { 'stepsToday' : 0 }}, function(err, success) {
+									if (err) log.error(err);
+									log.info('no moves data');
+									return callback('no moves data');
+									return success;
+								})
 							}
 							moves_data.summary.forEach(function(activity) {
-								if (db === null) {
-									log.error('inside moves_data.summary.forEach: no db connection\n');
-									return callback(err +' \n no db -- updateUser: payload.forEach')
-								}
 								var activityDate = moment(moves_data.date, "YYYYMMDD").format("YYYY-MM-DD");
 								if (activity.steps) {
 									// format date from 20140201 -> 2014-02-01
-									var steps = activity.steps;
+									var steps = activity.steps; // number of steps user has today
 
 									// checks to see if there's already a document in the db with the date from moves,
 									// updates db with # of steps from moves
