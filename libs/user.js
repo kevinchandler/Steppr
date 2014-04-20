@@ -55,15 +55,15 @@ module.exports = {
 	},
 
 	// sets/changes username to a user that's already been created
-	registerUser : function(userId, username, email, zipcode, callback) {
-		if (userId && username && zipcode && email) {
+	registerUser : function(userId, username, email, state, callback) {
+		if (userId && username && state && email) {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
-				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.zipcode" : zipcode, "email" : email }}, function(err, success) {
+				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.state" : state, "email" : email }}, function(err, success) {
 					if (err) { log.error(err); return res.redirect('back'); }
 					if (success) {
-						log.info('registerUser: ' + username, user, email, zipcode);
-						console.log('registerUser: ' + username, user, email, zipcode);
+						log.info('registerUser: ' + username, user, email, state);
+						console.log('registerUser: ' + username, user, email, state);
 						return callback(null, success);
 					}
 					else {
@@ -143,7 +143,7 @@ module.exports = {
 
 
 
-  //	 gets each day of moves activity for pastDays in the request query
+  //  gets each day of moves activity for pastDays in the request query
   //	checks to see if each date is in the database and makes sure the steps in db matches what moves gives us
 	updateUser : function (accessToken, movesId, callback) {
 		var  now = moment()
@@ -163,7 +163,6 @@ module.exports = {
 				var payload = JSON.parse(body.toString());
 
 				if (payload) { // parsed data from request
-					console.log(payload);
 					connection(function(db) {
 						if (!db) return callback(new Error + ' unable to connect to db');
 						// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
@@ -199,7 +198,6 @@ module.exports = {
 												"user"  : movesId,
 												"date"  : activityDate,
 												"steps" : steps,
-												"zipcode" : zipcode,
 												"last_updated" : today,
 											}, function(err, success){
 												if (err) { callback( err ) }

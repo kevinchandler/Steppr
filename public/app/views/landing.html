@@ -3,39 +3,37 @@
   <span class='slogan'>the social pedometer </span>
 </h3>
 <div ng-controller='LandingCtrl'>
-  <br />
-</div>
-<div class='col-md-12 col-sm-12 col-xs-12 leaderboard'>
-      <table class='table'>
-        <h3 class='lead'> Stats </h3>
-        <tr>
-          <td>
-            Total steps:
-          </td>
-          <td>
-            {{stats.stepsTotal}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Total steps today:
-          </td>
-          <td>
-            {{stats.stepsToday}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Users today:
-          </td>
-          <td>
-            {{stats.usersToday}}
-          </td>
-        </tr>
-      </table>
-      <hr>
+  <div class='col-md-12 col-sm-12 col-xs-12 leaderboard'>
+    <table class='table'>
+      <h3 class='lead'> Stats </h3>
+      <tr>
+        <td>
+          Total steps:
+        </td>
+        <td>
+          {{stats.stepsTotal}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Total steps today:
+        </td>
+        <td>
+          {{stats.stepsToday}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Users today:
+        </td>
+        <td>
+          {{stats.usersToday}}
+        </td>
+      </tr>
+    </table>
+    <hr>
   </div>
-    <div class='col-md-8 col-xs-12 col-sm-12'>
+    <div class='col-md-7 col-xs-12 col-sm-12'>
       <div id='about'>
         <h3 class='lead'> What is Steppr? </h3>
         <p class='text-muted'>
@@ -50,14 +48,39 @@
           </p>
     </div>
   </div>
-  <div class='col-md-4 col-xs-12 col-sm-12 buttons'>
-    <span id='loginButton'>
-      <a ng-href='/login'><button type="button" class="btn btn-danger btn-circle btn-xl">Let's go <i class="glyphicon glyphicon-chevron-right"></i></button></a>
-    </span>
-    <span id='desktopText'>
-      <p class='alert alert-warning'>
-        Come back on your phone to join the fun!
-      </p>
-    </span>
+  <div class='col-md-5 col-xs-12 col-sm-12 buttons'>
+      <table class='table' id='user_activity'>
+        <h3 class='lead'>Activity today:</h3>
+        <tr>
+          <td>
+            User
+          </td>
+          <td>
+            Steps
+          </td>
+          <td>
+            State
+          </td>
+        </tr>
+        <tr ng-repeat='user in userActivityToday | orderBy:user.stepsToday '>
+          <td>
+            {{user.username}}
+          </td>
+          <td>
+            {{user.stepsToday}}
+          </td>
+          <td>
+            {{user.location.state}}
+          </td>
+        </tr>
+      </table>
+      <span id='loginButton'>
+        <a ng-href='/login'><button type="button" class="btn btn-danger btn-circle btn-xl">Let's go <i class="glyphicon glyphicon-chevron-right"></i></button></a>
+      </span>
+      <span id='desktopText'>
+        <p class='alert alert-warning'>
+          Come back on your phone to join the fun!
+        </p>
+      </span>
   </div>
 </div>

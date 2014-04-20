@@ -12,7 +12,9 @@ body {
 input {
     color: #000;
 }
-
+td#table_title {
+  margin-bottom: 2em;
+}
 #rect {
     position: absolute;
     top: 13%;
