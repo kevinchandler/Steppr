@@ -64,7 +64,7 @@
         </tr>
         <tr ng-repeat="user in userActivityToday | orderBy:'stepsToday':'reverse=true'">
           <td>
-            {{user.username}}
+            {{user.username || Anonymous}}
           </td>
           <td>
             {{user.stepsToday}}
