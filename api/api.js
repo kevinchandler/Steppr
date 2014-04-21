@@ -50,11 +50,11 @@ exports.updateUser = function(req, res) {
 
 exports.registerUser = function(req, res) {
   var username = req.body.username
-  ,   email = req.body.email
+  // ,   email = req.body.email
   ,   state = req.body.state
-  ,   userId = req.session._movesId
+  ,   userId = req.session._movesId;
 
-  user.registerUser(userId, username, email, state, function(err, success) {
+  user.registerUser(userId, username, state, function(err, success) {
     if (err) return res.json(err);
     if (success) {
       return res.send(200);

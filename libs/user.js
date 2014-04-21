@@ -55,15 +55,16 @@ module.exports = {
 	},
 
 	// sets/changes username to a user that's already been created
-	registerUser : function(userId, username, email, state, callback) {
-		if (userId && username && state && email) {
+	registerUser : function(userId, username, state, callback) {
+		// removed email for now.
+		if ( userId && username && state ) {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
-				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.state" : state, "email" : email }}, function(err, success) {
+				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.state" : state }}, function(err, success) {
 					if (err) { log.error(err); return res.redirect('back'); }
 					if (success) {
-						log.info('registerUser: ' + username, user, email, state);
-						console.log('registerUser: ' + username, user, email, state);
+						log.info('registerUser: ' + username, user, state);
+						console.log('registerUser: ' + username, user, state);
 						return callback(null, success);
 					}
 					else {

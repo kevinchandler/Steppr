@@ -38,7 +38,7 @@ var app = angular.module('stepprUiApp');
     })
   })
 
-  app.controller('DashboardCtrl', function ($scope, $route, $http) {
+  app.controller('DashboardCtrl', function ($scope, $route, $http, $location) {
     var  now = moment()
     ,   today = now.format("YYYY-MM-DD");
 
@@ -49,6 +49,10 @@ var app = angular.module('stepprUiApp');
       })
       .then(function(user) {
         $scope.user = user.data;
+
+        if ( $scope.user.username.length < 1 ) {
+          $location.path('/register');
+        }
 
         // then update the user
         $http({
@@ -106,9 +110,9 @@ var app = angular.module('stepprUiApp');
   app.controller('RegisterCtrl', function($scope, $http, $location) {
     $scope.register = function() {
       var username = $scope.username
-      ,   email = $scope.email
+      // ,   email = $scope.email
       ,   state = $scope.state;
-      if ( !username || !email || !state ) {
+      if ( !username || !state ) {
         return $scope.message = "Please ensure all fields are correctly filled out"
       }
       $http({
@@ -116,7 +120,7 @@ var app = angular.module('stepprUiApp');
         method: 'POST',
         data: {
           username : username,
-          email : email,
+          // email : email,
           state : state
         }
       })
