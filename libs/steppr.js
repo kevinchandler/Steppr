@@ -62,7 +62,7 @@ module.exports = {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').find({}, { user: 1, username: 1, stepsToday: 1, location: 1 }).toArray(function(err, package){
 				if (err) { return callback (err) }
-				if (!package) {
+				if ( !package ) {
 					callback(new Error);
 				}
 				if (package) {
@@ -71,6 +71,8 @@ module.exports = {
 						if (package[i].stepsToday === 0) {
 							package.splice(i, 1);
 						}
+						// console.log(package[i].stepsToday);
+						// package[i].stepsToday = delimitNumbers(package[i].stepsToday);
 					}
 					callback(null, package);
 				}

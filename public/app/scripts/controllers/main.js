@@ -33,7 +33,7 @@ var app = angular.module('stepprUiApp');
         }
       })
       .then(function(userActivityToday) {
-        $scope.userActivityToday = userActivityToday.data;
+        $scope.userActivityToday = userActivityToday.data;  
       })
     })
   })
