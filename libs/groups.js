@@ -86,7 +86,7 @@ module.exports = {
 					db.collection('groups').findOne({ name : groupName }, function(err, group) {
 						if (err) return callback('updateGroup: failed to find group');
 						if (package.steps !== group.stepsToday) {
-							db.collection('groups').update({ name : groupName }, { $set : { 'stepsToday' : package.steps }}, function(err, success) {
+							db.collection('groups').update({ name : groupName }, { $inc : { 'stepsToday' : package.steps }}, function(err, success) {
 								if (err || !success) return callback(err || 'updateGroup: failed to update groups stepsToday');
 								callback(null, success);
 							})

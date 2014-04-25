@@ -11,7 +11,6 @@ var routes = require('./routes')
 ,   dashboard = require('./routes/dashboard.js')
 ,   user = require('./libs/user.js')
 ,   groups = require('./routes/groups.js')
-,   test = require('./routes/test.js')
 ,   steppr = require('./libs/steppr.js')
 var http = require('http');
 var path = require('path');
@@ -96,9 +95,12 @@ app.get('/groups/join/:groupName', groups.joinGroup);
 app.get('/groups/leave/:groupName', groups.leaveGroup);
 app.get('/groups/:group', groups.showGroup);
 
-app.post('/notification', test.notification); // moves posts data every so often
 
-app.get('/test', test.index);
+// moves posts data every so often
+app.post('/notification', function(req, res) {
+  res.end();
+});
+
 
 
 // API
