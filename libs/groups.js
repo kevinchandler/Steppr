@@ -85,8 +85,8 @@ module.exports = {
 					// mongo reached the end; check if groups steps today = package.steps & update if not then send package
 					db.collection('groups').findOne({ name : groupName }, function(err, group) {
 						if (err) return callback('updateGroup: failed to find group');
-						if (package.steps !== group.steps.today) {
-							db.collection('groups').update({ name : groupName }, { $set : { 'steps.today' : package.steps }}, function(err, success) {
+						if (package.steps !== group.stepsToday) {
+							db.collection('groups').update({ name : groupName }, { $set : { 'stepsToday' : package.steps }}, function(err, success) {
 								if (err || !success) return callback(err || 'updateGroup: failed to update groups steps.today');
 								callback(null, success);
 							})
