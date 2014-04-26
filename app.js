@@ -108,7 +108,7 @@ app.get('/api/v0/groups', api.viewAllGroups);
 app.get('/api/v0/groups/:group', api.showGroup);
 
 app.post('/api/v0/stats', api.stats);
-app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
+// app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
 app.post('/api/v0/users/register', api.registerUser);
 app.get('/api/v0/groups/join/:group', api.joinGroup);
 app.post('/api/v0/groups/leave/:group', api.leaveGroup);
