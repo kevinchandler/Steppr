@@ -62,18 +62,18 @@ exports.authenticate = function(req, res) {
                       return res.redirect('/#/home');
                   }
                   if (!doc) {
-                    
+                    // user registered, create one and then redirect to the registration page.
                       user.createNewUser(body.access_token, body.refresh_token, profile.userId, function(err, success) {
                           if (err) {
-                              console.log(err + ' error: unable to create user');
+                              log.error(err + ' error: unable to create user');
                               return res.redirect('/');
                           }
                           if (success) {
-                              console.log('Created new user: \n');
+                              log.info('Created new user: \n');
                               return res.redirect('/#/register');
                           }
                           else {
-                              console.log('unable to createNewUser \n');
+                              log.error('unable to createNewUser \n');
                               return res.redirect('/');
                           }
                       })
