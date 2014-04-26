@@ -486,7 +486,7 @@ module.exports = {
 						members : [],
 						steps : {
 							today : 0,
-							total : 0
+							total : 0,
 							daily : [],
 						},
 					}, function(err, success) {
