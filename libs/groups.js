@@ -31,13 +31,23 @@ module.exports = {
 				if (!group) {
 					callback(null, package)
 				}
-				else {
+				if (group.steps.today) {
 					package.push({
 						_id: group._id,
 						name: group.name,
 						steps : {
 							today : delimitNumbers(group.steps.today),
 							total : delimitNumbers(group.steps.total)
+						}
+					})
+				}
+				else {
+					package.push({
+						_id: group._id,
+						name: group.name,
+						steps : {
+							today : 0,
+							total : 0
 						}
 					})
 				}
