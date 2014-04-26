@@ -8,6 +8,7 @@ var request = require('request')
 ,   Log = require('log')
 ,   log = new Log('debug', fs.createWriteStream('logs/log.txt', {"flags": "a"}));
 
+
 dotenv.load();
 
 function delimitNumbers(str, callback) {
@@ -59,7 +60,6 @@ module.exports = {
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			db.collection('users').find({}, { user: 1, username: 1, 'steps': 1, 'info': 1 }).toArray(function(err, usersArr){
-				console.log(usersArr[0]);
 				if (err) { return callback (err) }
 				if ( usersArr.length === 0 ) {
 					return callback('no users to grab');

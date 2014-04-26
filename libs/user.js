@@ -484,8 +484,11 @@ module.exports = {
 						creator : groupCreator,
 						created : today,
 						members : [],
-						stepsToday : 0,
-						stepsTotal : 0,
+						steps : {
+							today : 0,
+							total : 0
+							daily : [],
+						},
 					}, function(err, success) {
 						if (err) {
 							return callback(err);
