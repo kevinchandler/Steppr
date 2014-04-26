@@ -259,7 +259,8 @@ module.exports = {
 	// 	}
 	// },
 
-
+ // to do :
+	//	when 0 steps today, request(movesApi) for yesterdays steps, to grab accurate data
 	updateUser : function (accessToken, movesId, callback) {
 		var  now = moment()
 		,    today = now.format("YYYY-MM-DD")
