@@ -4,10 +4,8 @@ var routes = require('./routes')
 ,   api = require('./api/api.js')
 ,	 connection = require('./libs/mongo_connection.js')
 ,   moves = require('./routes/moves.js')
-,   dashboard = require('./routes/dashboard.js')
 ,   user = require('./libs/user.js')
-,   groups = require('./routes/groups.js')
-,   steppr = require('./libs/steppr.js')
+,   steppr = require('./libs/steppr.js');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
@@ -30,7 +28,7 @@ app.use(function(req, res, next){
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'hbs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -38,8 +36,9 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meow' }));
+app.use(express.cookieSession({ secret: process.env.COOKIE_SESSION ||  'meoqqqqqw' }));
 app.use(app.router);
+// app.use(express.static(path.join(__dirname, 'public/app')));
 app.use(express.static(path.join(__dirname, 'public/app')));
 
 // development only
@@ -61,15 +60,15 @@ if (process.argv[2])  {
         console.log('Remote url: ' + url);
     });
 }
-
-function authenticate(req, res, next) {
-    if (!req.session._token && req.session._movesId) {
-      return res.redirect('/#');
-    }
-    else {
-      next();
-    }
-}
+//
+// function authenticate(req, res, next) {
+//     if (!req.session._token && req.session._movesId) {
+//       return res.redirect('/');
+//     }
+//     else {
+//       next();
+//     }
+// }
 
 app.get('/login', routes.login);
 app.get('/moves', moves.index);
@@ -84,19 +83,6 @@ app.get('/logout', function(req, res) {
 })
 
 
-app.get('/groups', groups.index);
-app.get('/groups/create', user.createGroup);
-app.post('/groups/create', user.createGroup);
-app.get('/groups/join/:groupName', groups.joinGroup);
-app.get('/groups/leave/:groupName', groups.leaveGroup);
-app.get('/groups/:group', groups.showGroup);
-
-
-// moves posts data every so often
-app.post('/notification', function(req, res) {
-  res.end();
-});
-
 
 // API
 
@@ -105,10 +91,10 @@ app.get('/api/v0/users/me/update', api.updateUser);
 app.get('/api/v0/users/:username', api.viewUser);
 app.get('/api/v0/user_today', api.userStepsToday); // takes user movesId as 1st param
 app.get('/api/v0/groups', api.viewAllGroups);
-app.get('/api/v0/groups/:group', api.showGroup);
+app.get('/api/v0/groups/:group', api.viewGroup);
 
 app.post('/api/v0/stats', api.stats);
-// app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
+app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
 app.post('/api/v0/users/register', api.registerUser);
 app.get('/api/v0/groups/join/:group', api.joinGroup);
 app.post('/api/v0/groups/leave/:group', api.leaveGroup);
@@ -116,6 +102,13 @@ app.post('/api/v0/groups/create/:group', api.createGroup);
 
 app.post('/api/v0/challenge', api.challengeUser);
 
+app.get('/migrate', routes.migrate);
+
+
+// moves posts data every so often. not doing anything w/ it yet
+app.post('/notification', function(req, res) {
+  res.end();
+});
 
 
 function updateAllUsers() {

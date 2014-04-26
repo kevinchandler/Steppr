@@ -11,14 +11,14 @@ exports.stats = function(req, res) {
   })
 }
 //
-// exports.activityToday = function(req, res) {
-//   console.log(req.body);
-//   var today = req.body.date;
-//   steppr.activityToday(today, function(err, data) {
-//     if (err) return res.json(err)
-//     return res.json(data)
-//   })
-// }
+exports.activityToday = function(req, res) {
+  console.log(req.body);
+  var today = req.body.date;
+  steppr.activityToday(today, function(err, data) {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+}
 
 exports.viewUser = function(req, res) {
   var username = req.params.username;
@@ -79,9 +79,9 @@ exports.viewAllGroups = function(req, res) {
    })
 }
 
-exports.showGroup = function(req, res) {
+exports.viewGroup = function(req, res) {
   groupName = req.params.group;
-  groups.showGroup(groupName, function(err, data) {
+  groups.viewGroup(groupName, function(err, data) {
     if (err) return res.json(err);
     res.json(data);
   })

@@ -1,48 +1,38 @@
-var steppr = require('../libs/steppr.js');
-//
-// function delimitNumbers(str, callback) {
-//     return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
-//         return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
-//     });
-// }
-//
-// exports.index = function(req, res) {
-//     var ua = req.header('user-agent');
-//     steppr.stats(function(err, payload) {
-//         if (err) {
-//             console.log(err);
-//             res.render('desktop.jade');
-//         }
-//         if (payload) {
-//             if (req.session._token && req.session._movesId) {
-//                 res.redirect('/home');
-//             }
-//             if(!/mobile/i.test(ua)) {
-//                 res.render('desktop.jade', {
-//                     totalSteps: delimitNumbers(payload.totalSteps),
-//                     usersToday : payload.usersToday,
-//                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
-//                 });
-//             }
-//             else {
-//                 console.log('rendering landing.jade', payload.totalSteps, payload.usersToday, payload.totalStepsToday);
-//                 res.render('landing.jade', {
-//                     totalSteps: delimitNumbers(payload.totalSteps),
-//                     usersToday : payload.usersToday,
-//                     totalStepsToday : delimitNumbers(payload.totalStepsToday),
-//                 });
-//             }
-//         }
-//     })
-// }
+var steppr = require('../libs/steppr.js')
+,   user = require('../libs/user.js')
+,   groups = require('../libs/groups.js')
+,   connection = require('../libs/mongo_connection.js');
 
 
 exports.login = function(req, res) {
-  
   if (req.session._token && req.session._movesId) {
     res.redirect('/#/home');
   }
   else {
     res.redirect('/moves');
   }
+}
+
+
+exports.migrate = function(req,res) {
+  connection(function(db) {
+    if (!db) return callback(new Error + ' unable to connect to db');
+    db.collection('steps').find().each(function(err, stepsDoc){
+      console.log(stepsDoc);
+      if (err) { return callback (err) }
+      if (stepsDoc && stepsDoc.steps) {
+        var package = {
+          date : stepsDoc.date,
+          steps : stepsDoc.steps,
+        }
+        db.collection('users').update({user : stepsDoc.user}, { $push : { 'steps.daily' : package }}, function(err, success) {
+          if (err) console.log(err);
+          if (success) console.log(user + ' collection updated successfully, ' + stepsDoc.date, stepsDoc.steps);
+        })
+      }
+      if (!stepsDoc) {
+        return res.end('done', 200);
+      }
+    })
+  })
 }

@@ -33,7 +33,6 @@ var app = angular.module('stepprUiApp');
         }
       })
       .then(function(userActivityToday) {
-        console.log(userActivityToday.data);
         $scope.userActivityToday = userActivityToday.data;
       })
     })
@@ -49,18 +48,18 @@ var app = angular.module('stepprUiApp');
           method: 'GET',
       })
       .then(function(user) {
+
         $scope.user = user.data;
-
-        if ( $scope.user.username.length < 1 ) {
-          $location.path('/register');
-        }
-
-        // then update the user
+        if (!$scope.user)
+ {
+   console.log('UGH');
+ }        // then update the user
         $http({
           url: '/api/v0/users/me/update',
           method: 'GET',
         })
         .then(function(response) {
+          alert(response.data);
           // $scope.user = user.data;
         })
       })

@@ -35,7 +35,8 @@ module.exports = {
 						total: 0
 					},
 					steps : {
-						today : '',
+						today : 0,
+						total : 0,
 						daily : []
 					},
 					badges: ['Beta Tester'],
@@ -88,14 +89,14 @@ module.exports = {
 						var package = {};
 						package.username = data.username;
 						package.user = data.user;
-						package.stepsTotal = data.stepsTotal;
-						package.stepsToday = data.stepsToday;
+						package.stepsTotal = data.steps.total;
+						package.stepsToday = data.steps.today;
 						package.groups = data.groups;
 						package.badges = data.badges;
 						package.points = data.points;
-						package.challenging = data.challenging;
+						// package.challenging = data.challenging;
 						callback(null, package);
-						db.collection('steps').find({ user : username })
+						// db.collection('steps').find({ user : username })
 					}
 					else {
 						callback(null, null);

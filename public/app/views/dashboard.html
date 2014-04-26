@@ -1,27 +1,4 @@
-<nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#/">Steppr</a>
-    </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#/home">Home</a></li>
-        <li><a href="#/groups">Groups</a></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-
-<div ng-controller='DashboardCtrl'>
+<div ng-controller='DashboardCtrl' ng-if='user.username'>
   <table class='table'>
     <h3 class='lead'> Welcome, {{user.username}}</h3>
     <tr>
@@ -29,7 +6,7 @@
         Total steps
       </td>
       <td>
-        {{user.stepsTotal}}
+        {{user.steps.total}}
       </td>
     </tr>
     <tr>
@@ -58,14 +35,6 @@
         <li ng-repeat='badge in user.badges'>
           {{badge}}
         </li>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        Challenging
-      </td>
-      <td>
-        <a ng-href='#/users/{{user.challenging.username}}'>{{user.challenging.username}}</a>
       </td>
     </tr>
   </table>

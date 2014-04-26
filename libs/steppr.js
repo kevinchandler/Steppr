@@ -55,30 +55,30 @@ module.exports = {
 
 	// returns username, stepsToday, location
 	// to be used on landing page to show activity list
-	// activityToday : function(today, callback) {
-	// 	if (!today) { return callback( new Error )}
-	// 	connection(function(db) {
-	// 		if (!db) return callback(new Error + ' unable to connect to db');
-	// 		db.collection('users').find({}, { user: 1, username: 1, 'steps': 1, 'info': 1 }).toArray(function(err, usersArr){
-	// 			if (err) { return callback (err) }
-	// 			if ( usersArr.length === 0 ) {
-	// 				return callback('no users to grab');
-	// 			}
-	// 			if ( usersArr ) {
-	// 				// remove any users with 0 stepsToday before sending to the client
-	// 				for (var i = 0; i < usersArr.length; i++) {
-	// 					if (usersArr[i] && usersArr[i].steps.today && usersArr[i].steps.today === 0) {
-	// 						usersArr.splice(i, 1);
-	// 					}
-	// 					else {
-	// 						usersArr[i].steps.today = delimitNumbers(usersArr[i].steps.today);
-	// 					}
-	// 				}
-	// 				callback(null, usersArr);
-	// 			}
-	// 		})
-	// 	})
-	// },
+	activityToday : function(today, callback) {
+		if (!today) { return callback( new Error )}
+		connection(function(db) {
+			if (!db) return callback(new Error + ' unable to connect to db');
+			db.collection('users').find({}, { user: 1, username: 1, steps: 1, info: 1 }).toArray(function(err, usersArr){
+				if (err) { return callback (err) }
+				if ( usersArr.length === 0 ) {
+					return callback('no users to grab');
+				}
+				if ( usersArr ) {
+					// remove any users with 0 stepsToday before sending to the client
+					for (var i = 0; i < usersArr.length; i++) {
+						if (usersArr[i] && usersArr[i].steps.today && usersArr[i].steps.today === 0) {
+							usersArr.splice(i, 1);
+						}
+						else {
+							usersArr[i].steps.today = delimitNumbers(usersArr[i].steps.today);
+						}
+					}
+					callback(null, usersArr);
+				}
+			})
+		})
+	},
 
 	// //updates all users steps for today: user.updateUser()
 	updateAllUsers : function(callback) {
