@@ -28,8 +28,8 @@ module.exports = {
 					package.push({
 						_id: group._id,
 						name: group.name,
-						stepsTotal : group.steps.total || 0,
-						stepsToday : group.steps.today || 0,
+						stepsTotal : group.stepsTotal,
+						stepsToday : group.stepsToday,
 					})
 				}
 			})
@@ -55,8 +55,8 @@ module.exports = {
 					return callback('no group members');
 				}
 				else {
-					package.stepsTotal += group.steps.total;
-					package.stepsToday += group.steps.today;
+					package.stepsTotal += group.stepsTotal;
+					package.stepsToday += group.stepsToday;
 					var groupMembers = [];
 					group.members.forEach(function(member) {
 						package.members.push(member);
