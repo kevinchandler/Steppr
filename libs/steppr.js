@@ -17,7 +17,7 @@ function delimitNumbers(str, callback) {
 }
 
 module.exports = {
-	// returns totalStepsToday, totalSteps, usersToday
+	// data about each user, returning stepsToday, stepsTotal, usersToday
 	stats : function(today, callback) {
 		var payload = {
 			stepsToday : 0,
@@ -26,28 +26,26 @@ module.exports = {
 		}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('steps').find({ date: today }).each(function(err, stepsToday) {
+			db.collection('users').find().each(function(err, user) {
 				if (err) return callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
-				if (stepsToday) {
-					payload.usersToday += 1;
-					payload.stepsToday += stepsToday.steps
+				if (user) {
+					if (user.steps) {
+						payload.usersToday += 1;
+						payload.stepsToday += user.steps.today
+						// iterate users past days steps to get their total steps
+						for (var i = 0; i < user.steps.daily.length; i++) {
+							payload.stepsTotal += user.steps.daily[i].steps;
+						}
+						payload.stepsTotal += user.steps.today; // we got previous days' steps, now lets add todays steps to the total
+					}
 				}
-				if (!stepsToday) {
-					db.collection('steps').find({}).each(function(err, stepsTotal) {
-						if (err) callback( err );
-						// last doc is null again. this is how we know we're done.
-						if (!stepsTotal) {
-							payload.stepsToday = delimitNumbers(payload.stepsToday);
-							payload.stepsTotal = delimitNumbers(payload.stepsTotal);
-							payload.usersToday = delimitNumbers(payload.usersToday);
-							log.info('stats complete: ', payload);
-							callback( null, payload );
-						}
-						else {
-							payload.stepsTotal +=  stepsTotal.steps;
-						}
-					})
+				if (!user) { // end of mongodb collection
+					payload.stepsToday = delimitNumbers(payload.stepsToday);
+					payload.stepsTotal = delimitNumbers(payload.stepsTotal);
+					payload.usersToday = delimitNumbers(payload.usersToday);
+					log.info('stats complete: ', payload);
+					callback( null, payload );
 				}
 			})
 		})
@@ -60,21 +58,23 @@ module.exports = {
 		if (!today) { return callback( new Error )}
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
-			db.collection('users').find({}, { user: 1, username: 1, stepsToday: 1, location: 1 }).toArray(function(err, package){
+			db.collection('users').find({}, { user: 1, username: 1, 'steps': 1, 'info': 1 }).toArray(function(err, usersArr){
+				console.log(usersArr[0]);
 				if (err) { return callback (err) }
-				if ( !package ) {
-					callback(new Error);
+				if ( usersArr.length === 0 ) {
+					return callback('no users to grab');
 				}
-				if (package) {
+				if ( usersArr ) {
 					// remove any users with 0 stepsToday before sending to the client
-					for (var i = 0; i < package.length; i++) {
-						if (package[i].stepsToday === 0) {
-							package.splice(i, 1);
+					for (var i = 0; i < usersArr.length; i++) {
+						if (usersArr[i] && usersArr[i].steps.today === 0) {
+							usersArr.splice(i, 1);
 						}
-						// console.log(package[i].stepsToday);
-						// package[i].stepsToday = delimitNumbers(package[i].stepsToday);
+						else {
+							usersArr[i].steps.today = delimitNumbers(usersArr[i].steps.today);
+						}
 					}
-					callback(null, package);
+					callback(null, usersArr);
 				}
 			})
 		})

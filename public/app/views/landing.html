@@ -62,15 +62,15 @@
             State
           </td>
         </tr>
-        <tr ng-repeat="user in userActivityToday | orderBy:'stepsToday':'reverse=true'">
+        <tr ng-repeat="user in userActivityToday | orderBy:'steps.today':'reverse=true'">
           <td>
             {{user.username || 'Anonymous'}}
           </td>
           <td>
-            {{user.stepsToday}}
+            {{user.steps.today}}
           </td>
           <td>
-            {{user.location.state}}
+            {{user.info.location.state}}
           </td>
         </tr>
       </table>

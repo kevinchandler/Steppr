@@ -63,7 +63,7 @@ module.exports = {
 		if ( userId && username && state ) {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
-				db.collection('users').update({ user : userId }, { $set: { "username" : username, "location.state" : state }}, function(err, success) {
+				db.collection('users').update({ user : userId }, { $set: { "username" : username, "info.location.state" : state }}, function(err, success) {
 					if (err) { log.error(err); return res.redirect('back'); }
 					if (success) {
 						log.info('registerUser: ' + username, user, state);
@@ -315,7 +315,7 @@ module.exports = {
 												log.error( err );
 											}
 											if ( !user ) {
-												return callback( 'No user retrieved from databse' );
+												return callback( 'No user retrieved from database' );
 											}
 											users.update({ user : movesId }, { $set : { 'steps.today' : steps }}, function(err, success) {
 												if (err) return callback(err);
