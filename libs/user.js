@@ -330,7 +330,6 @@ module.exports = {
 							db.collection('users').update({ user : userId }, { $push: { groups: groupName }}, function(err, success) {
 								if (err) callback(err);
 								if (success) {
-									console.log(success);
 									return callback(null, success);
 								}
 								else {

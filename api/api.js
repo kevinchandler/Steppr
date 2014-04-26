@@ -88,13 +88,14 @@ exports.viewGroup = function(req, res) {
 
 exports.joinGroup = function(req, res) {
   var userId = req.session._movesId
-  ,   groupName = req.params.group;
-  if (!req.session._movesId || !req.params.group) {
+  ,   groupName = req.body.groupName;
+
+  if (!req.session._movesId || !req.body.groupName) {
     return res.redirect('/');
   }
-  user.joinGroup(userId, groupName, function(err, data) {
+  user.joinGroup(userId, groupName, function(err, success) {
     if (err) return res.json(err);
-    return res.json(data);
+    return res.json(success);
   });
 }
 

@@ -139,7 +139,6 @@ var app = angular.module('stepprUiApp');
       method: 'GET'
     })
     .then(function(response) {
-      console.log(response.data);
       $scope.groups = response.data;
     })
   })
@@ -166,8 +165,11 @@ var app = angular.module('stepprUiApp');
 
     $scope.joinGroup = function() {
       $http({
-        url: '/api/v0/groups/join/'+groupName,
+        url: '/api/v0/groups/join',
         method: 'POST',
+        data : {
+          groupName : groupName
+        }
       })
       .then(function(response) {
         window.location.reload();

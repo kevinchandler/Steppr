@@ -96,7 +96,7 @@ app.get('/api/v0/groups/:group', api.viewGroup);
 app.post('/api/v0/stats', api.stats);
 app.post('/api/v0/activity', api.activityToday) // get active users and steps for today
 app.post('/api/v0/users/register', api.registerUser);
-app.get('/api/v0/groups/join/:group', api.joinGroup);
+app.post('/api/v0/groups/join', api.joinGroup);
 app.post('/api/v0/groups/leave/:group', api.leaveGroup);
 app.post('/api/v0/groups/create/:group', api.createGroup);
 

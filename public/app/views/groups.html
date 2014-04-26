@@ -14,14 +14,13 @@
     </tr>
     <tr ng-repeat='group in groups'>
       <td>
-          <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a>
+        <a ng-href='#/groups/{{group.name}}'>{{group.name}}</a>
     </td>
     <td>
-      {{group.stepsToday}}
+      {{group.steps.today}}
     </td>
     <td>
-      {{group.stepsTotal}}
-    </li>
+      {{group.steps.total}}
     </td>
   </tr>
   </table>

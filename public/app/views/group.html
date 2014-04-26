@@ -1,6 +1,6 @@
 <div ng-controller='GroupCtrl'>
   <table class='table'>
-    <h3 class='lead'> {{group.name}} <span class='pull-right'><a ng-href='/api/v0/groups/join/{{group.name}}'>Join {{group.name}}</a></span></h3>
+    <h3 class='lead'> {{group.name}} <span class='pull-right'><a ng-click='joinGroup()'>Join {{group.name}}</a></span></h3>
     <tr>
       <td>
         Today
@@ -14,10 +14,10 @@
     </tr>
     <tr>
     <td>
-      {{group.stepsToday}}
+      {{group.steps.today}}
     </td>
     <td>
-      {{group.stepsTotal}}
+      {{group.steps.total}}
     </li>
     </td>
       <td>
