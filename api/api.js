@@ -10,15 +10,15 @@ exports.stats = function(req, res) {
     return res.json(data);
   })
 }
-
-exports.activityToday = function(req, res) {
-  console.log(req.body);
-  var today = req.body.date;
-  steppr.activityToday(today, function(err, data) {
-    if (err) return res.json(err)
-    return res.json(data)
-  })
-}
+//
+// exports.activityToday = function(req, res) {
+//   console.log(req.body);
+//   var today = req.body.date;
+//   steppr.activityToday(today, function(err, data) {
+//     if (err) return res.json(err)
+//     return res.json(data)
+//   })
+// }
 
 exports.viewUser = function(req, res) {
   var username = req.params.username;
