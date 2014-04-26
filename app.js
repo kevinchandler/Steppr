@@ -102,7 +102,6 @@ app.post('/notification', function(req, res) {
 });
 
 
-
 // API
 
 app.get('/api/v0/users/me', api.getSelf);
@@ -124,10 +123,10 @@ app.post('/api/v0/challenge', api.challengeUser);
 
 
 function updateAllUsers() {
-    steppr.updateAllUsers(function(err, success) {
-        if (err) console.log(err);
-        return success;
-    })
+  steppr.updateAllUsers(function(err, success) {
+      if (err) console.log(err);
+      return success;
+  })
 }
 
 function updateAllGroups() {
