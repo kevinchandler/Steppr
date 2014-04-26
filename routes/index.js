@@ -14,6 +14,9 @@ exports.login = function(req, res) {
 }
 
 
+
+
+// migrating collection from steps to user.steps.daily
 exports.migrate = function(req,res) {
   connection(function(db) {
     if (!db) return callback(new Error + ' unable to connect to db');
