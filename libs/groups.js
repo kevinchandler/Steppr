@@ -28,8 +28,8 @@ module.exports = {
 					package.push({
 						_id: group._id,
 						name: group.name,
-						stepsTotal : group.steps.total,
-						stepsToday : group.steps.today
+						stepsTotal : group.steps.total || 0,
+						stepsToday : group.steps.today || 0,
 					})
 				}
 			})
