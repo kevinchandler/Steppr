@@ -78,7 +78,7 @@ module.exports = {
 	// 			}
 	// 		})
 	// 	})
-	},
+	// },
 
 	// //updates all users steps for today: user.updateUser()
 	updateAllUsers : function(callback) {
