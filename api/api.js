@@ -32,7 +32,6 @@ exports.viewUser = function(req, res) {
 exports.getSelf = function(req, res) {
   var userId = req.session._movesId;
   user.getSelf(userId, function(err, data) {
-    console.log(data.stepsToday);
     if (err) return res.json(err);
     if (data) {
       return res.json(data);
@@ -93,9 +92,9 @@ exports.joinGroup = function(req, res) {
   if (!req.session._movesId || !req.params.group) {
     return res.redirect('/');
   }
-  user.joinGroup(userId, groupName,  function(err, data) {
+  user.joinGroup(userId, groupName, function(err, data) {
     if (err) return res.json(err);
-    res.json(data);
+    return res.json(data);
   });
 }
 

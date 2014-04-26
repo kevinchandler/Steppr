@@ -1,25 +1,3 @@
-<nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#/">Steppr</a>
-    </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#/home">Home</a></li>
-        <li><a href="#/groups">Groups</a></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
 <div ng-controller='UserCtrl'>
   <table class='table'>
     <h3 class='lead'> {{user.username}}'s Stats</h3>
@@ -28,7 +6,7 @@
         Total steps
       </td>
       <td>
-        {{user.stepsTotal}}
+        {{user.steps.total}}
       </td>
     </tr>
     <tr>
@@ -39,7 +17,7 @@
         {{user.steps.today}}
       </td>
     </tr>
-    <tr>
+    <tr ng-if='group in userGroups'>
       <td>
         Groups
       </td>
@@ -60,7 +38,7 @@
         </li>
       </td>
     </tr>
-    <tr>
+    <tr ng-if='user.challenging.username'>
       <td>
         Challenging
       </td>
@@ -69,8 +47,19 @@
       </td>
     </tr>
   </table>
-<div ng-controller='ChallengeCtrl'>
+<!-- <div ng-controller='ChallengeCtrl'>
   <a ng-click='challengeUser(user.username)'>Challenge {{user.username}}</a>
-</div>
-
+</div> -->
+<footer>
+  <div class="navbar navbar-inverse navbar-fixed-bottom">
+    <div class="container">
+      <ul class="nav navbar-nav">
+          <li><a href="#/home">Home</a></li>
+          <li><a href="#/groups">Groups</a></li>
+          <li class='active'><a href="#/users">Users</a></li>
+          <li><a href="#/settings">Settings</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
 </div>

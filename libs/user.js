@@ -9,6 +9,13 @@ var request = require('request')
 
 dotenv.load();
 
+
+function delimitNumbers(str, callback) {
+	return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
+			return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
+	});
+}
+
 module.exports = {
 
 	// this is called after user authenticates with moves if user is not already in db
@@ -86,14 +93,16 @@ module.exports = {
 				db.collection('users').findOne({ username: username }, function(err, data) {
 					if (err) return callback(err);
 					if (data !== null) {
-						var package = {};
+						var package = {
+							steps : { },
+						};
 						package.username = data.username;
 						package.user = data.user;
-						package.stepsTotal = data.steps.total;
-						package.stepsToday = data.steps.today;
+						package.steps.total = delimitNumbers(data.steps.total);
+						package.steps.today = delimitNumbers(data.steps.today);
 						package.groups = data.groups;
 						package.badges = data.badges;
-						package.points = data.points;
+						package.points = delimitNumbers(data.points);
 						// package.challenging = data.challenging;
 						callback(null, package);
 						// db.collection('steps').find({ user : username })
@@ -112,14 +121,24 @@ module.exports = {
 		if (userId) {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
-				db.collection('users').findOne({ user: userId }, function(err, doc) {
-					if (err || !doc) {
-						console.log('error or no doc');
-						return callback(err || 'no doc')
+				db.collection('users').findOne({ user: userId }, function(err, data) {
+					console.log(data);
+					if (err || !data) {
+						console.log('error or no data');
+						return callback(err || 'no data')
 					}
 					else {
-						console.log(doc);
-						return callback(null, doc);
+						var package = {
+							steps : { },
+						};
+						package.username = data.username;
+						package.user = data.user;
+						package.steps.total = delimitNumbers(data.steps.total);
+						package.steps.today = delimitNumbers(data.steps.today);
+						package.groups = data.groups;
+						package.badges = data.badges;
+						package.points = delimitNumbers(data.points);
+						return callback(null, package);
 					}
 				})
 			})

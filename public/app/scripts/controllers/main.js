@@ -48,19 +48,20 @@ var app = angular.module('stepprUiApp');
           method: 'GET',
       })
       .then(function(user) {
-
         $scope.user = user.data;
-        if (!$scope.user)
- {
-   console.log('UGH');
- }        // then update the user
+        // then update the user
         $http({
           url: '/api/v0/users/me/update',
           method: 'GET',
         })
-        .then(function(response) {
-          alert(response.data);
-          // $scope.user = user.data;
+        .then(function(user) {
+          $http({
+              url: '/api/v0/users/me',
+              method: 'GET',
+          })
+          .then(function(user) {
+            $scope.user = user.data
+          })
         })
       })
   })
