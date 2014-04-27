@@ -44,8 +44,8 @@
           <td> Steps </td>
           <td> State </td>
         </tr>
-        <tr ng-repeat="user in userActivityToday | orderBy:'steps.today':'reverse=false'">
-          <td> {{user.username || 'Anonymous'}} </td>
+        <tr ng-repeat="user in userActivityToday | orderBy:'steps.today':'reverse=true'" ng-if='user.steps.today'>
+          <td> {{user.username}} </td>
           <td>{{user.steps.today}} </td>
           <td> {{user.info.location.state}} </td>
         </tr>
