@@ -7,28 +7,16 @@
     <table class='table'>
       <h3 class='lead'> Stats </h3>
       <tr>
-        <td>
-          Total steps:
-        </td>
-        <td>
-          {{stats.stepsTotal}}
-        </td>
+        <td>Total steps: </td>
+        <td>{{stats.stepsTotal}}</td>
       </tr>
       <tr>
-        <td>
-          Total steps today:
-        </td>
-        <td>
-          {{stats.stepsToday}}
-        </td>
+        <td>Total steps today:</td>
+        <td>{{stats.stepsToday}}</td>
       </tr>
       <tr>
-        <td>
-          Users today:
-        </td>
-        <td>
-          {{stats.usersToday}}
-        </td>
+        <td> Users today:</td>
+        <td>{{stats.usersToday}}</td>
       </tr>
     </table>
     <hr>
@@ -52,30 +40,18 @@
       <table class='table' id='user_activity'>
         <h3 class='lead'>Activity today:</h3>
         <tr>
-          <td>
-            User
-          </td>
-          <td>
-            Steps
-          </td>
-          <td>
-            State
-          </td>
+          <td> User </td>
+          <td> Steps </td>
+          <td> State </td>
         </tr>
-        <tr ng-repeat="user in userActivityToday | orderBy:'steps.today':'reverse=true'">
-          <td>
-            {{user.username || 'Anonymous'}}
-          </td>
-          <td>
-            {{user.steps.today}}
-          </td>
-          <td>
-            {{user.info.location.state}}
-          </td>
+        <tr ng-repeat="user in userActivityToday | orderBy:'steps.today':'reverse=false'">
+          <td> {{user.username || 'Anonymous'}} </td>
+          <td>{{user.steps.today}} </td>
+          <td> {{user.info.location.state}} </td>
         </tr>
       </table>
       <span id='loginButton'>
-        <a ng-href='/login'><button type="button" class="btn btn-success btn-circle btn-xl">Let's go <i class="glyphicon glyphicon-chevron-right"></i></button></a>
+        <a ng-href='/moves'><button type="button" class="btn btn-success btn-circle btn-xl">Let's go <i class="glyphicon glyphicon-chevron-right"></i></button></a>
       </span>
       <span id='desktopText'>
         <p class='alert alert-warning'>

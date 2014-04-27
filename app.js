@@ -102,9 +102,6 @@ app.post('/api/v0/groups/create/:group', api.createGroup);
 
 app.post('/api/v0/challenge', api.challengeUser);
 
-app.get('/migrate', routes.migrate);
-
-
 // moves posts data every so often. not doing anything w/ it yet
 app.post('/notification', function(req, res) {
   res.end();
