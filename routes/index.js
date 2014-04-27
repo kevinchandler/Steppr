@@ -17,7 +17,7 @@ exports.login = function(req, res) {
 
 
 // migrating collection from steps to user.steps.daily
-exports.migrate = function(req,res) {
+exports.migrateStepsToUsers = function(req,res) {
   connection(function(db) {
     if (!db) return callback(new Error + ' unable to connect to db');
     db.collection('steps').find().each(function(err, stepsDoc){
@@ -38,4 +38,20 @@ exports.migrate = function(req,res) {
       }
     })
   })
+}
+
+
+exports.refactorGroupSteps = function(req, res) {
+  connection(function(db) {
+    if (!db) return callback(new Error + ' unable to connect to db');
+    db.collection('groups').find().each(function(err, group){
+      var package = {
+          today : 0,
+          total : 0,
+      }
+      if (err) { return callback (err) }
+      db.collection('groups').update({ name : group.name }, { $set : { steps : package  }}, function(err, success) {
+        if (err) return callback(err);
+        console.log(success);
+      })
 }

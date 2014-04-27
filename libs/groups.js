@@ -29,9 +29,9 @@ module.exports = {
 				if (err) { return callback(err) };
 				// no more groups, send package.
 				if (!group) {
-					callback(null, package)
+					return callback(null, package)
 				}
-				if (group.steps.today) {
+				if (group.steps) {
 					package.push({
 						_id: group._id,
 						name: group.name,
@@ -91,7 +91,6 @@ module.exports = {
 	updateGroup : function(groupName, callback) {
 		var now = moment()
 		,   today = now.format("YYYY-MM-DD");
-
 		connection(function(db) {
 			if (!db) return callback(new Error + ' unable to connect to db');
 			var package = {
