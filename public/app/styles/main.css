@@ -79,38 +79,18 @@ h3.lead {
     border-bottom: 0;
   }
 }
-
-
-
-
-
-
-
-
-/* bootsnipp */
-
-.btn-circle {
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 12px;
-  line-height: 1.428571429;
-  border-radius: 15px;
+#loginButton {
+  position: relative;
+  margin-top: 1em;
+  left: 50%;
 }
-.btn-circle.btn-lg {
-  width: 50px;
-  height: 50px;
-  padding: 10px 16px;
-  font-size: 18px;
-  line-height: 1.33;
-  border-radius: 25px;
+i.glyphicon-log-in {
+  font-size: 4em;
 }
-.btn-circle.btn-xl {
-  width: 180px;
-  height: 70px;
+.btn-square.btn-xl {
+  width: 3em;
   padding: 10px 16px;
   font-size: 24px;
   line-height: 1.33;
-  border-radius: 35px;
+  border-radius: 60%;
 }

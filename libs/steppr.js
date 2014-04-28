@@ -31,7 +31,7 @@ module.exports = {
 				if (err) return callback( err );
 				// loops through each, the last collection from mongo returns null. Hence checking for nostepstoday
 				if (user) {
-					if (user.steps) {
+					if (user.steps.today) {
 						payload.usersToday += 1;
 						payload.stepsToday += user.steps.today
 						// iterate users past days steps to get their total steps

@@ -168,6 +168,7 @@ module.exports = {
 
  // to do :
 	//	when 0 steps today, request(movesApi) for yesterdays steps, to grab accurate data
+	// check to see who had most steps, and which group, and award them a badge.
 	updateUser : function (accessToken, movesId, callback) {
 		var  now = moment()
 		,    today = now.format("YYYY-MM-DD")
