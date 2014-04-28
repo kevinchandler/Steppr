@@ -197,6 +197,7 @@ module.exports = {
 								users.findOne({ user : movesId }, function(err, user) {
 									if (err) return callback(err);
 									if ( user.steps.today !== 0 ) {
+										// check to see if steps.today isnt already 0 before adding yesterdays data to daily steps
 										var package = {
 											date : yesterday,
 											steps : 0,
