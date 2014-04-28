@@ -49,8 +49,12 @@ module.exports = {
 					badges: ['Beta Tester'],
 					groups: [],
 					challenging : [],
-					access_token : accessToken,
-					refresh_token : refreshToken,
+					oauth : {
+						moves : {
+							access_token : accessToken,
+							refresh_token : refreshToken,
+						}
+					},
 				}, function(err, success) {
 					if (err) {
 						log(err);
@@ -122,10 +126,9 @@ module.exports = {
 			connection(function(db) {
 				if (!db) return callback(new Error + ' unable to connect to db');
 				db.collection('users').findOne({ user: userId }, function(err, data) {
-					console.log(data);
 					if (err || !data) {
 						console.log('error or no data');
-						return callback(err || 'no data')
+						return callback(false)
 					}
 					else {
 						var package = {
@@ -170,17 +173,12 @@ module.exports = {
 	//	when 0 steps today, request(movesApi) for yesterdays steps, to grab accurate data
 	// check to see who had most steps, and which group, and award them a badge.
 	updateUser : function (accessToken, movesId, callback) {
-		var  now = moment()
-		,    today = now.format("YYYY-MM-DD")
-		,		yesterday = moment().subtract('days', 1).format('YYYY-MM-DD')
-		,	  pastDays = 1;
-
 		if (accessToken && movesId) {
-			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays='+pastDays+'&access_token='+accessToken, function(err, response, body) {
+			request('https://api.moves-app.com/api/1.1/user/activities/daily?pastDays=1&access_token='+accessToken, function(err, response, body) {
 				if (err) return callback(err);
 				if (!body || !response) {
-					log.error('error: no body or response');
-					return callback('error: no body or response');
+					log.error('updateUser: no body or response from moves');
+					return callback('updateUser: no body or response from moves');
 				}
 
 				// data retrieved from moves api
@@ -192,29 +190,18 @@ module.exports = {
 						var users = db.collection('users');
 						// each of the days retrieved from moves, check to see if it's in the db, if so, make sure the # of steps match, update if not.
 						payload.forEach(function(moves_data) {
+
+							// user has no steps for this day. change steps.today to 0 and push current stepsToday into steps.daily array
 							if (!moves_data || !moves_data.summary) {
-								// no steps for this date, change steps.today to 0 and push current stepsToday into steps.daily array
 								users.findOne({ user : movesId }, function(err, user) {
 									if (err) return callback(err);
-									if ( user.steps.today !== 0 ) {
-										// check to see if steps.today isnt already 0 before adding yesterdays data to daily steps
-										var package = {
-											date : yesterday,
-											steps : 0,
-										}
-										users.update({ 'user' : movesId}, { $push : { 'steps.daily' : package }}, function(err, success) {
-											if (err) return callback(err);
-											if (success) { // steps.daily updated with yesterday's steps. Now set steps.today to 0
-												users.update({ 'user' : movesId }, { $set : {  'steps.today' : 0 }}, function(err, success) {
-													if (err) log.error(err);
-													log.info('updateUser: New day : ' + movesId, yesterday, steps);
-													return callback(null, success);
-												})
-											}
+									if (user.steps.today !== 0) { // only want set steps.today once
+										// reset steps.today and update steps.daily with yesterdays steps
+										users.update({ 'user' : movesId }, { $set : {  'steps.today' : 0 }}, function(err, success) {
+											if (err) log.error(err);
+											log.info('updateUser: New day : ' + movesId + " steps.today set to 0");
+											return callback(null, success);
 										})
-									}
-									else {
-										return callback('User has no steps for today, nothing to update')
 									}
 								})
 							}
@@ -245,6 +232,7 @@ module.exports = {
 														user.steps.daily.forEach(function(el) {
 															userStepsTotal += el.steps
 														})
+														userStepsTotal += user.steps.today;
 														users.update({ user : movesId }, { $set : { 'steps.total' : userStepsTotal }}, function(err, success) {
 															if (err) return callback(err);
 															console.log('successfully updated user total steps ' + movesId);
